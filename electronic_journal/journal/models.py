@@ -6,23 +6,47 @@ from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
 
-    def create_user(self, email, name, surname, password=None):
+    def create_user(self, email, name, surname, password=None, is_staff=False, is_admin=False, is_active=True):
         custom_user = self.model(email=self.normalize_email(email), name=name, surname=surname)
         custom_user.set_password(password)
+        custom_user.is_staff = is_staff
+        custom_user.is_admin = is_admin
+        custom_user.is_active = is_active
         custom_user.save()
         return custom_user
 
-    def create_superuser(self, email, password, name="admin", surname="admin"):
+    def create_staffuser(self, email, name, surname, password=None):
         user = self.create_user(
             email,
             name=name,
             surname=surname,
             password=password,
+            is_staff=True
         )
-        user.staff = True
-        user.admin = True
-        user.save(using=self._db)
         return user
+
+    def create_superuser(self, email, name, surname, password=None):
+        user = self.create_user(
+            email,
+            name=name,
+            surname=surname,
+            password=password,
+            is_staff=True,
+            is_admin=True
+        )
+        return user
+
+    # def create_superuser(self, email, password, name="admin", surname="admin"):
+    #     user = self.create_user(
+    #         email,
+    #         name=name,
+    #         surname=surname,
+    #         password=password,
+    #     )
+    #     user.staff = True
+    #     user.admin = True
+    #     user.save(using=self._db)
+    #     return user
 
 
 class CustomUser(AbstractBaseUser):
