@@ -32,15 +32,12 @@ class CustomUser(AbstractBaseUser):
     REQUIRED_FIELDS = ["name", "surname"]
 
     def __str__(self):
-        return self.name
-
-    def get_short_name(self):
         if self.name and self.surname:
             return f'{self.surname} {self.name}'
         return self.email.split('@')[0]
 
     def get_full_name(self):
-        if all(self.name, self.surname, self.patronymic):
+        if self.name and self.surname and self.patronymic:
             return f'{self.surname}  {self.name} {self.patronymic}'
         return self.email.split('@')[0]
 
@@ -50,7 +47,7 @@ class Teacher(models.Model):
     working_since = models.CharField(max_length=4, verbose_name="Почав(ла) працювати з")
 
     def __str__(self):
-        return self.user.get_short_name()
+        return str(self.user)
 
 
 class Group(models.Model):
@@ -67,4 +64,4 @@ class Student(models.Model):
     subgroup = models.CharField(max_length=2)
 
     def __str__(self):
-        return self.user.get_short_name()
+        return str(self.user)
