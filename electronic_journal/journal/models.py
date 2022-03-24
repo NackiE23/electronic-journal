@@ -78,6 +78,12 @@ class CustomUser(AbstractBaseUser):
             return f'{self.surname}  {self.name} {self.patronymic}'
         return self.email.split('@')[0]
 
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
