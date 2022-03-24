@@ -14,21 +14,17 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser):
-    # Names
-    name = models.CharField(max_length=15, blank=True, null=True)
-    surname = models.CharField(max_length=15, blank=True, null=True)
+    name = models.CharField(max_length=15, null=False)
+    surname = models.CharField(max_length=15, null=False)
     patronymic = models.CharField(max_length=15, blank=True, null=True)
-    # contact
+
     email = models.EmailField(unique=True)  # require
-    phone_number = models.CharField(max_length=16)
-    # about
+    phone_number = models.CharField(max_length=16, blank=True, null=True)
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
 
     objects = CustomUserManager()
 
-    # Main Field for authentication
     USERNAME_FIELD = 'email'
-    # When user create must need to fill this field
     REQUIRED_FIELDS = ["name", "surname"]
 
     def __str__(self):
