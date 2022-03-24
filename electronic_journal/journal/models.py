@@ -22,10 +22,15 @@ class CustomUser(AbstractBaseUser):
     phone_number = models.CharField(max_length=16, blank=True, null=True)
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
 
-    objects = CustomUserManager()
+    # Permission
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["name", "surname"]
+
+    objects = CustomUserManager()
 
     def __str__(self):
         if self.name and self.surname:
