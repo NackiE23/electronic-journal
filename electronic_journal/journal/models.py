@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 class CustomUserManager(BaseUserManager):
@@ -39,11 +37,12 @@ class CustomUser(AbstractBaseUser):
     def get_short_name(self):
         if self.name and self.surname:
             return f'{self.surname} {self.name}'
+        return self.email.split('@')[0]
 
-    # def get_full_name(self):
-    #     if all(self.name, self.surname, self.patronymic):
-    #         return f'{self.surname}  {self.name} {self.patronymic}'
-    #     return self.email.split('@')[0]
+    def get_full_name(self):
+        if all(self.name, self.surname, self.patronymic):
+            return f'{self.surname}  {self.name} {self.patronymic}'
+        return self.email.split('@')[0]
 
 
 class Teacher(models.Model):
