@@ -1,0 +1,30 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+
+<a type="button" href="{% url 'main' %}">Home</a>
+<h2>New User</h2>
+
+<div>
+    <form method="POST">
+        {%csrf_token%}
+        <label>email</label>
+        <input type="email" name="email">
+
+        <label>name</label>
+        <input type="text" name="name">
+
+        <label>surname</label>
+        <input type="text" name="surname">
+
+        <label>password</label>
+        <input type="password" name="password">
+
+        <label>working_since</label>
+        <input type="text" name="working_since">
+
+        <button type="submit">submit</button>
+    </form>
+</div>
+
+{% endblock %}
