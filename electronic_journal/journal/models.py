@@ -10,7 +10,6 @@ class CustomUserManager(BaseUserManager):
         custom_user = self.model(email=self.normalize_email(email), name=name, surname=surname)
         custom_user.set_password(password)
         custom_user.save()
-        print('custom user manager')
         return custom_user
 
 
