@@ -12,11 +12,11 @@ class CustomUserManager(BaseUserManager):
         custom_user.save()
         return custom_user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, name="admin", surname="admin"):
         user = self.create_user(
             email,
-            name='admin',
-            surname="admin",
+            name=name,
+            surname=surname,
             password=password,
         )
         user.staff = True
