@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 
+from .models import *
+
 
 def main(request):
     user_model = get_user_model()
@@ -19,8 +21,8 @@ def create_new_user(request):
         user_model = get_user_model()
         user_obj = user_model.objects.create_user(email=email, name=name, surname=surname)
         user_obj.set_password(password)
-        user_obj.teacher.working_since = working_since
         user_obj.save()
+        Teacher.objects.create(user=user_obj, working_since=working_since)
         return redirect('main')
     else:
         return render(request, 'journal/create_new_user.html', {'title': 'New User'})

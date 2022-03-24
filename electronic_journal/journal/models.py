@@ -36,6 +36,10 @@ class CustomUser(AbstractBaseUser):
     def __str__(self):
         return self.name
 
+    def get_short_name(self):
+        if self.name and self.surname:
+            return f'{self.surname} {self.name}'
+
     # def get_full_name(self):
     #     if all(self.name, self.surname, self.patronymic):
     #         return f'{self.surname}  {self.name} {self.patronymic}'
@@ -47,12 +51,4 @@ class Teacher(models.Model):
     working_since = models.CharField(max_length=4, verbose_name="Почав(ла) працювати з")
 
     def __str__(self):
-        # return self.user.get_full_name()
-        return str(self.user)
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def update_teacher_signal(sender, instance, created, **kwargs):
-    if created:
-        Teacher.objects.create(user=instance)
-    instance.teacher.save()
+        return self.user.get_short_name()
