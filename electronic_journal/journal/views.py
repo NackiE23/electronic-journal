@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 from .models import *
+from .forms import *
 
 
 def main(request):
@@ -11,18 +14,19 @@ def main(request):
     return render(request, 'journal/main.html', {'all_users': all_users, 'title': "main"})
 
 
-def create_new_user(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        name = request.POST['name']
-        surname = request.POST['surname']
-        password = request.POST['password']
-        working_since = request.POST['working_since']
-        user_model = get_user_model()
-        user_obj = user_model.objects.create_user(email=email, name=name, surname=surname)
-        user_obj.set_password(password)
-        user_obj.save()
-        Teacher.objects.create(user=user_obj, working_since=working_since)
+class RegisterUser(CreateView):
+    form_class = RegisterUserForm
+    template_name = 'journal/create_new_user.html'
+    success_url = reverse_lazy('main')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Resister"
+        # context['count'] = YourModel.objects.all()
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        # user = form.save()
+        # login(self.request, user)
         return redirect('main')
-    else:
-        return render(request, 'journal/create_new_user.html', {'title': 'New User'})

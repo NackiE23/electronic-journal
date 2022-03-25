@@ -1,15 +1,13 @@
 from django import forms
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm
 
+# from .models import *
 
 User = get_user_model()
 
 
 class UserAdminCreationForm(forms.ModelForm):
-    """A form for creating new users in django admin. Includes all the required
-    fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
@@ -35,10 +33,6 @@ class UserAdminCreationForm(forms.ModelForm):
 
 
 class UserAdminChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-        the user, but replaces the password field with admin's
-        password hash display field.
-        """
     password = ReadOnlyPasswordHashField()
 
     class Meta:
@@ -50,3 +44,15 @@ class UserAdminChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+
+class RegisterUserForm(UserCreationForm):
+    name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'class': 'form-input'}))
+    password1 = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    password2 = forms.CharField(label="Повтор пароля", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'surname', 'password1', 'password2')

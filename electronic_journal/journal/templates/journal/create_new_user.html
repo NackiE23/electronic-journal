@@ -7,23 +7,12 @@
 
 <div>
     <form method="POST">
-        {%csrf_token%}
-        <label>email</label>
-        <input type="email" name="email">
-
-        <label>name</label>
-        <input type="text" name="name">
-
-        <label>surname</label>
-        <input type="text" name="surname">
-
-        <label>password</label>
-        <input type="password" name="password">
-
-        <label>working_since</label>
-        <input type="text" name="working_since">
-
-        <button type="submit">submit</button>
+        {% csrf_token %}
+        {% for f in form %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+        <button type="submit">Регистрация</button>
     </form>
 </div>
 
