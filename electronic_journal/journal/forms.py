@@ -49,6 +49,9 @@ class UserAdminChangeForm(forms.ModelForm):
 
 
 class RegisterUserForm(UserCreationForm):
+    CHOICES = (('Student', 'Студент'), ('Teacher', 'Викладач'), )
+    choices = forms.ChoiceField(label="Роль", widget=forms.Select(attrs={'class': 'form-input'}),
+                                choices=CHOICES)
     name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'class': 'form-input'}))
@@ -57,7 +60,7 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('email', 'name', 'surname', 'password1', 'password2')
+        fields = ('choices', 'email', 'name', 'surname', 'password1', 'password2')
 
 
 class LoginUserForm(AuthenticationForm):

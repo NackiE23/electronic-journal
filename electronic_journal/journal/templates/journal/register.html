@@ -7,14 +7,56 @@
 <h2>New User</h2>
 
 <div>
-    <form method="POST">
+    <form id="register-form" method="POST">
         {% csrf_token %}
+
         {% for f in form %}
             <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
             <div class="form-error">{{ f.errors }}</div>
         {% endfor %}
+
+        <div id="additional-elements"></div>
+
         <button type="submit">Регистрация</button>
     </form>
 </div>
 
+{% endblock %}
+
+
+{% block script %}
+<script>
+    const form = document.querySelector('#register-form');
+    const additional = document.querySelector('#additional-elements')
+    const selected = document.querySelector('#id_choices');
+
+    function student_additional() {
+        additional.innerHTML = `
+            <p><label class="form-label" for="id_sb">subgroup</label>
+            <input type="text" name="subgroup" class="form-input" required id="id_sb"></p>
+        `;
+    }
+
+    function teacher_additional() {
+        additional.innerHTML = `
+            <p><label class="form-label" for="id_ws">working_since</label>
+            <input type="text" name="working_since" class="form-input" required id="id_ws"></p>
+        `;
+    }
+
+    function change_additional() {
+        if (selected.value == "Student") {
+            student_additional();
+        } else if (selected.value == "Teacher") {
+            teacher_additional();
+        }
+    }
+
+    selected.onchange = () => {
+        console.log(selected.value);
+        change_additional();
+    }
+
+    change_additional();
+</script>
 {% endblock %}

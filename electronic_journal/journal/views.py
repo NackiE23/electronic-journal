@@ -22,12 +22,17 @@ class RegisterUser(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = "Resister"
-        # context['count'] = YourModel.objects.all()
+        context['title'] = "Register"
         return context
 
     def form_valid(self, form):
         user = form.save()
+        if self.request.POST['choices'] == "Teacher":
+            ws = self.request.POST['working_since']
+            Teacher.objects.create(user=user, working_since=ws)
+        elif self.request.POST['choices'] == "Student":
+            sb = self.request.POST['subgroup']
+            print(sb)
         login(self.request, user)
         return redirect('main')
 
