@@ -17,7 +17,7 @@ def main(request):
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
-    template_name = 'journal/create_new_user.html'
+    template_name = 'journal/register.html'
     success_url = reverse_lazy('main')
 
     def get_context_data(self, **kwargs):
