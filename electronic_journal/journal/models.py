@@ -83,7 +83,7 @@ class Teacher(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=45, verbose_name="Назва групи")
-    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    teacher = models.OneToOneField('Teacher', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
