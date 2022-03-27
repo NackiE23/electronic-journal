@@ -30,11 +30,15 @@ class RegisterUser(CreateView):
         user = form.save()
         if self.request.POST['choices'] == "Teacher":
             working_since = self.request.POST['working_since']
+            user.role = self.request.POST['choices']
+            user.save()
             Teacher.objects.create(user=user, working_since=working_since)
         elif self.request.POST['choices'] == "Student":
             group = self.request.POST['groups']
             group = Group.objects.get(pk=group)
             subgroup = self.request.POST['subgroup']
+            user.role = self.request.POST['choices']
+            user.save()
             Student.objects.create(user=user, group=group, subgroup=subgroup)
         login(self.request, user)
         return redirect('main')

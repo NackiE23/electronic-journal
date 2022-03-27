@@ -46,6 +46,8 @@ class CustomUser(AbstractBaseUser):
     phone_number = models.CharField(max_length=16, blank=True, null=True)
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
 
+    role = models.CharField(max_length=8, null=False, default="Other")
+
     # Permission
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
