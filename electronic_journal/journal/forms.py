@@ -1,6 +1,7 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm, AuthenticationForm
 
 # from .models import *
 
@@ -56,3 +57,7 @@ class RegisterUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'name', 'surname', 'password1', 'password2')
+
+
+class LoginUserForm(AuthenticationForm):
+    pass
