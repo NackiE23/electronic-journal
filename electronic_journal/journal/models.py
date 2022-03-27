@@ -91,7 +91,7 @@ class Group(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    group = models.ForeignKey("Group", on_delete=models.CASCADE)
+    group = models.OneToOneField("Group", on_delete=models.CASCADE)
     subgroup = models.CharField(max_length=2)
 
     def __str__(self):
