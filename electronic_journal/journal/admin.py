@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 
 from .forms import UserAdminChangeForm, UserAdminCreationForm
-
+from .models import *
 
 User = get_user_model()
 
@@ -46,3 +46,15 @@ class UserInAdmin(UserAdmin):
 
     ordering = ('email',)
     filter_horizontal = ()
+
+
+admin.site.register(Teacher)
+admin.site.register(Group)
+admin.site.register(Student)
+admin.site.register(Attendance)
+admin.site.register(EvaluationSystem)
+admin.site.register(Subject)
+admin.site.register(GroupSubject)
+admin.site.register(TeacherSubject)
+admin.site.register(Lesson)
+admin.site.register(StudentGrade)
