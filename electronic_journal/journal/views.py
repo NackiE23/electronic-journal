@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
@@ -24,10 +26,12 @@ def own_profile(request):
 
 
 def profile(request, pk):
+    cur_user = get_user_model().objects.get(pk=pk)
+    guest_condition = str(request.user) == "AnonymousUser" or cur_user != request.user
     context = {
         'title': 'Profile',
-        'cur_user': get_user_model().objects.get(pk=pk),
-        'pk': pk,
+        'cur_user': cur_user,
+        'guest': guest_condition,
     }
     return render(request, 'journal/profile.html', context=context)
 
@@ -36,7 +40,20 @@ def profile(request, pk):
 def change_profile(request):
     context = {
         'title': 'Change profile',
+        'form': UserChangeForm,
     }
+
+    if request.method == "POST":
+        user = request.user
+        user.email = request.POST['email']
+        user.name = request.POST['name']
+        user.surname = request.POST['surname']
+        user.patronymic = request.POST['patronymic']
+        user.avatar = request.FILES['avatar']
+        user.phone_number = request.POST['phone_number']
+        user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
+        user.save()
+
     return render(request, 'journal/change_profile.html', context=context)
 
 

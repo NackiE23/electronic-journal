@@ -9,6 +9,21 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationFor
 User = get_user_model()
 
 
+class UserChangeForm(forms.ModelForm):
+    email = forms.EmailField(label="E-mail", widget=forms.EmailInput(attrs={'class': 'form-input',
+                                                                            'placeholder': 'Вкажіть пошту'}))
+    avatar = forms.ImageField(label="Фото", widget=forms.ClearableFileInput(attrs={'class': 'form-input'}))
+    name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    patronymic = forms.CharField(label="По батькові", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    phone_number = forms.CharField(label="phone_number", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    date_of_birth = forms.DateField(label="date_of_birth", widget=forms.DateInput(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = User
+        fields = ('email', 'avatar', 'name', 'surname', 'patronymic', 'phone_number', 'date_of_birth')
+
+
 class UserAdminCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)

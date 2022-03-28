@@ -2,30 +2,32 @@
 
 {% block main %}
 <ul style="list-style: none">
-    <li>name - {{ cur_user.name }}
-    <li>surname - {{ cur_user.surname }}
-    <li>patronymic - {{ cur_user.patronymic }}
-    <li>email - {{ cur_user.email }}
-    <li>avatar - {{ cur_user.avatar }}
-    <li>phone number - {{ cur_user.phone_number }}
-    <li>role - {{ cur_user.role }}
-    {% if cur_user.pk == user.pk %}
+    <li>name - {{ cur_user.name }}</li>
+    <li>surname - {{ cur_user.surname }}</li>
+    <li>patronymic - {{ cur_user.patronymic }}</li>
+    <li>email - {{ cur_user.email }}</li>
+    <li>avatar - <img class="img-article-left" src="{{user.avatar.url}}" width="70" height="50"></li>
+    <li>phone number - {{ cur_user.phone_number }}</li>
+    <li>role - {{ cur_user.role }}</li>
+    <li>date of birth - {{ cur_user.date_of_birth }}</li>
+    {{ guest }}
+    {% if not guest %}
         <li><a href="{% url 'change_profile' %}">Change profile</a></li>
     {% endif %}
 </ul>
 <hr>
 
-{% if user.role == "Admin" %}
+{% if cur_user.role == "Admin" %}
     <h1>It isn't your page. Your page is 127.0.0.1:8000/admin/</h1>
 
-{% elif user.role == "Teacher" %}
+{% elif cur_user.role == "Teacher" %}
     <h1>I'm a teacher!</h1>
 
-{% elif user.role == "Student" %}
+{% elif cur_user.role == "Student" %}
     <h2>I'm a student!</h2>
 
 {% else %}
-    <h1>{{ user }}</h1>
+    <h1>{{ cur_user }}</h1>
     <h2>Who am I?</h2>
 
 {% endif %}

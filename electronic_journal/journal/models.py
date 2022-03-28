@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -74,6 +75,9 @@ class CustomUser(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
+    def get_absolute_url(self):
+        return reverse('profile', kwargs={'pk': self.pk})
+
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -145,11 +149,19 @@ class TeacherSubject(models.Model):
         return f"{self.teacher} - {self.group_subject}"
 
 
+class LessonType(models.Model):
+    name = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.name
+
+
 class Lesson(models.Model):
     date = models.DateField(default=timezone.now)
     topic = models.CharField(max_length=200, verbose_name="Тема")
     homework = models.CharField(max_length=200, verbose_name="Домашнє завдання")
     note = models.CharField(max_length=200, verbose_name="Примітка")
+    type = models.ForeignKey('LessonType', on_delete=models.CASCADE)
     teacher_subject = models.ForeignKey("TeacherSubject", on_delete=models.CASCADE)
 
     def __str__(self):
