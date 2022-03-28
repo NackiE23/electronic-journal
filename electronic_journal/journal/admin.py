@@ -21,7 +21,7 @@ class UserInAdmin(UserAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('email', 'password', ('name', 'surname'), 'role',)
+            'fields': ('email', 'password', ('name', 'surname', 'patronymic'), 'role',)
         }),
         ('Contact', {
             # 'classes': ('collapse',),

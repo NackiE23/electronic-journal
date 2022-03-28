@@ -6,6 +6,15 @@
 </head>
 <body style="text-align: center; padding-top: 50px;">
 
+{% block menu %}
+<a type="button" href="{% url 'register' %}">Register</a>
+<a type="button" href="{% url 'login' %}">Log in</a>
+<a type="button" href="{% url 'logout' %}">Log out</a>
+<a type="button" href="{% url 'own_profile' %}">My profile</a>
+<a type="button" href="{% url 'main' %}">Main</a>
+<hr>
+{% endblock %}
+
 {% block main %}
 
 {% endblock %}

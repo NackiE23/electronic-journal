@@ -1,7 +1,9 @@
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
 
 from .models import *
@@ -13,6 +15,29 @@ def main(request):
     all_users = user_model.objects.all()
 
     return render(request, 'journal/main.html', {'all_users': all_users, 'title': "main"})
+
+
+@login_required(login_url='login')
+def own_profile(request):
+    # return render(request, 'journal/profile.html', {'title': 'Profile'})
+    return redirect('profile', request.user.pk)
+
+
+def profile(request, pk):
+    context = {
+        'title': 'Profile',
+        'cur_user': get_user_model().objects.get(pk=pk),
+        'pk': pk,
+    }
+    return render(request, 'journal/profile.html', context=context)
+
+
+@login_required(login_url='login')
+def change_profile(request):
+    context = {
+        'title': 'Change profile',
+    }
+    return render(request, 'journal/change_profile.html', context=context)
 
 
 class RegisterUser(CreateView):
@@ -41,7 +66,7 @@ class RegisterUser(CreateView):
             user.save()
             Student.objects.create(user=user, group=group, subgroup=subgroup)
         login(self.request, user)
-        return redirect('main')
+        return redirect('own_profile')
 
 
 class LoginUser(LoginView):
@@ -54,4 +79,9 @@ class LoginUser(LoginView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('main')
+        return reverse_lazy('own_profile')
+
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(reverse("login"))

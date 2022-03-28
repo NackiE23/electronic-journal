@@ -3,8 +3,6 @@
 {% block main %}
 
 <h1>Current Users: {{ all_users|length }}</h1>
-<a type="button" href="{% url 'register' %}">New User</a>
-<a type="button" href="{% url 'login' %}">Log in</a>
 <hr>
 
 {% for user in all_users %}
