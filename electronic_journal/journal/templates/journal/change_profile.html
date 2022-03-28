@@ -10,6 +10,9 @@ change your profile here, {{ user.name }}
     {% csrf_token %}
 
     {% for f in form %}
+        {% if f.id_for_label == "id_avatar" %}
+        <p><img src='{{ user.avatar.url }}' width=50></p>
+        {% endif %}
         <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
         <div class="form-error">{{ f.errors }}</div>
     {% endfor %}

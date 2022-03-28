@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
 
 from .forms import UserAdminChangeForm, UserAdminCreationForm
 from .models import *
@@ -16,7 +17,7 @@ class UserInAdmin(UserAdmin):
     add_form = UserAdminCreationForm
 
     search_fields = ['email', 'name', 'surname', 'is_admin', 'is_staff', 'is_active']
-    list_display = ['email', 'is_admin', 'is_staff', 'is_active']
+    list_display = ['email', 'get_html_photo', 'is_admin', 'is_staff', 'is_active']
     list_filter = ['is_admin', 'is_staff', 'is_active']
 
     fieldsets = (
@@ -29,7 +30,7 @@ class UserInAdmin(UserAdmin):
         }),
         ('Biographical Details', {
             # 'classes': ('collapse',),
-            'fields': ('avatar',)
+            'fields': ('avatar', 'get_html_photo')
         }),
         ('Permissions', {
             'fields': ('is_admin', 'is_staff', 'is_active')
@@ -46,6 +47,13 @@ class UserInAdmin(UserAdmin):
 
     ordering = ('email',)
     filter_horizontal = ()
+    readonly_fields = ('get_html_photo', )
+
+    def get_html_photo(self, object):
+        if object.avatar:
+            return mark_safe(f"<img src='{object.avatar.url}' width=50>")
+
+    get_html_photo.short_description = "Miniature"
 
 
 admin.site.register(Teacher)
