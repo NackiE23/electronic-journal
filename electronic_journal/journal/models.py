@@ -45,10 +45,10 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True)  # require
     phone_number = models.CharField(max_length=16, blank=True, null=True)
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
+    date_of_birth = models.DateField(null=True)
 
     role = models.CharField(max_length=8, null=False, default="Other")
 
-    # Permission
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -164,3 +164,10 @@ class StudentGrade(models.Model):
 
     def __str__(self):
         return self.student
+
+
+class Message(models.Model):
+    sender_name = models.CharField(max_length=45)
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now=True)
+    text = models.TextField()
