@@ -47,6 +47,7 @@ class CustomUser(AbstractBaseUser):
     phone_number = models.CharField(max_length=16, blank=True, null=True)
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
     date_of_birth = models.DateField(null=True)
+    about = models.TextField(null=True)
 
     role = models.CharField(max_length=8, null=False, default="Other")
 
@@ -81,7 +82,6 @@ class CustomUser(AbstractBaseUser):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    working_since = models.CharField(max_length=4, verbose_name="Почав(ла) працювати з")
 
     def __str__(self):
         return str(self.user)
@@ -175,7 +175,7 @@ class StudentGrade(models.Model):
     attendance = models.ForeignKey("Attendance", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.student
+        return str(self.student)
 
 
 class Message(models.Model):

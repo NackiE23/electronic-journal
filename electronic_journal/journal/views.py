@@ -33,6 +33,15 @@ def profile(request, pk):
         'cur_user': cur_user,
         'guest': guest_condition,
     }
+
+    if cur_user.role == "Teacher":
+        teacher = cur_user.teacher
+
+        c_def = {
+            'subjects': TeacherSubject.objects.filter(teacher=teacher),
+        }
+        context = dict(list(context.items()) + list(c_def.items()))
+
     return render(request, 'journal/profile.html', context=context)
 
 
@@ -44,15 +53,20 @@ def change_profile(request):
     }
 
     if request.method == "POST":
-        user = request.user
-        user.email = request.POST['email']
-        user.name = request.POST['name']
-        user.surname = request.POST['surname']
-        user.patronymic = request.POST['patronymic']
-        user.avatar = request.FILES['avatar']
-        user.phone_number = request.POST['phone_number']
-        user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
-        user.save()
+        if request.POST['form-action'] == "change_user_text_info":
+            user = request.user
+            user.email = request.POST['email']
+            user.name = request.POST['name']
+            user.surname = request.POST['surname']
+            user.patronymic = request.POST['patronymic']
+            user.phone_number = request.POST['phone_number']
+            user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
+            user.about = request.POST['about']
+            user.save()
+        if request.POST['form-action'] == "change_user_avatar":
+            user = request.user
+            user.avatar = request.FILES['avatar']
+            user.save()
 
     return render(request, 'journal/change_profile.html', context=context)
 

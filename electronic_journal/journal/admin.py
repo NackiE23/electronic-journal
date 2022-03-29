@@ -22,7 +22,7 @@ class UserInAdmin(UserAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('email', 'password', ('name', 'surname', 'patronymic'), 'role',)
+            'fields': ('email', 'password', ('name', 'surname', 'patronymic'), 'role', 'about',)
         }),
         ('Contact', {
             # 'classes': ('collapse',),
@@ -30,7 +30,7 @@ class UserInAdmin(UserAdmin):
         }),
         ('Biographical Details', {
             # 'classes': ('collapse',),
-            'fields': ('avatar', 'get_html_photo')
+            'fields': ('avatar', 'get_html_photo', 'date_of_birth')
         }),
         ('Permissions', {
             'fields': ('is_admin', 'is_staff', 'is_active')
@@ -47,7 +47,7 @@ class UserInAdmin(UserAdmin):
 
     ordering = ('email',)
     filter_horizontal = ()
-    readonly_fields = ('get_html_photo', )
+    readonly_fields = ('get_html_photo', 'is_admin', 'is_staff', 'is_active')
 
     def get_html_photo(self, object):
         if object.avatar:
@@ -65,4 +65,5 @@ admin.site.register(Subject)
 admin.site.register(GroupSubject)
 admin.site.register(TeacherSubject)
 admin.site.register(Lesson)
+admin.site.register(LessonType)
 admin.site.register(StudentGrade)

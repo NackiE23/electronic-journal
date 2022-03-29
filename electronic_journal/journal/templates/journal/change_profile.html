@@ -6,17 +6,30 @@
 change your profile here, {{ user.name }}
 <hr>
 
-<form id="change-form" method="POST" enctype="multipart/form-data">
+<p>{% if user.avatar %}<img src='{{ user.avatar.url }}' width=150>{% endif %}</p>
+
+<form class="change-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+        <label class="form-label" for="id_avatar">Change photo</label>
+        <input type="file" id="id_avatar" name="avatar">
+    </p>
+
+    <input type="hidden" name="form-action" value="change_user_avatar">
+    <button type="submit">Submit</button>
+</form>
+
+<hr>
+
+<form class="change-form" method="POST">
     {% csrf_token %}
 
     {% for f in form %}
-        {% if f.id_for_label == "id_avatar" %}
-        <p><img src='{{ user.avatar.url }}' width=50></p>
-        {% endif %}
         <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
         <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
 
+    <input type="hidden" name="form-action" value="change_user_text_info">
     <button type="submit">Submit</button>
 </form>
 
@@ -30,5 +43,6 @@ change your profile here, {{ user.name }}
     document.querySelector('#id_patronymic').value = '{{ user.patronymic }}';
     document.querySelector('#id_phone_number').value = '{{ user.phone_number }}';
     document.querySelector('#id_date_of_birth').value = '{{ user.date_of_birth |date_form_for_input }}';
+    document.querySelector('#id_about').value = '{{ user.about }}';
 </script>
 {% endblock %}
