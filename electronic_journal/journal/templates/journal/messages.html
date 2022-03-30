@@ -1,0 +1,14 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+
+{% for message in messages %}
+<div>
+    <p>Time: {{ message.time }}</p>
+    <p>From: {{ message.from_user }}</p>
+    <p>Text: {{ message.text }}</p>
+</div>
+<hr>
+{% endfor %}
+
+{% endblock %}

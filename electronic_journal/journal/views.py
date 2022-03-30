@@ -49,32 +49,12 @@ def profile(request, pk):
 
 
 @login_required(login_url='login')
-def edit_profile(request):
+def messages(request):
     context = {
-        'title': 'Edit profile',
-        'form': UserChangeForm,
+        'title': 'Messages',
+        'messages': Message.objects.filter(to_user=request.user),
     }
-    if request.method == "POST":
-        if request.POST['form-action'] == "change_user_text_info":
-            form = UserChangeForm(request.POST)
-            if form.is_valid():
-                print("success")
-            print(form.errors)
-            # user = request.user
-            # user.email = request.POST['email']
-            # user.name = request.POST['name']
-            # user.surname = request.POST['surname']
-            # user.patronymic = request.POST['patronymic']
-            # user.phone_number = request.POST['phone_number']
-            # user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
-            # user.about = request.POST['about']
-            # user.save()
-        if request.POST['form-action'] == "change_user_avatar":
-            user = request.user
-            user.avatar = request.FILES['avatar']
-            user.save()
-
-    return render(request, 'journal/edit_profile.html', context=context)
+    return render(request, 'journal/messages.html', context=context)
 
 
 def group(request, group_slug):

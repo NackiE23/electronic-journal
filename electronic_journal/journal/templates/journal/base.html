@@ -14,7 +14,7 @@
 {% if user.is_authenticated %}
 <a type="button" href="{% url 'logout' %}">Log out</a>
 <a type="button" href="{% url 'own_profile' %}">My profile</a>
-<a type="button" href="{% url 'own_profile' %}">Messages</a>
+<a type="button" href="{% url 'messages' %}">Messages</a>
 {% endif %}
 <hr>
 {% endblock %}
