@@ -2,10 +2,13 @@ import datetime
 
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
+from django.views import generic
 from django.views.generic import CreateView
 
 from .models import *
@@ -46,29 +49,32 @@ def profile(request, pk):
 
 
 @login_required(login_url='login')
-def change_profile(request):
+def edit_profile(request):
     context = {
-        'title': 'Change profile',
+        'title': 'Edit profile',
         'form': UserChangeForm,
     }
-
     if request.method == "POST":
         if request.POST['form-action'] == "change_user_text_info":
-            user = request.user
-            user.email = request.POST['email']
-            user.name = request.POST['name']
-            user.surname = request.POST['surname']
-            user.patronymic = request.POST['patronymic']
-            user.phone_number = request.POST['phone_number']
-            user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
-            user.about = request.POST['about']
-            user.save()
+            form = UserChangeForm(request.POST)
+            if form.is_valid():
+                print("success")
+            print(form.errors)
+            # user = request.user
+            # user.email = request.POST['email']
+            # user.name = request.POST['name']
+            # user.surname = request.POST['surname']
+            # user.patronymic = request.POST['patronymic']
+            # user.phone_number = request.POST['phone_number']
+            # user.date_of_birth = datetime.datetime.strptime(request.POST['date_of_birth'], '%Y-%m-%d')
+            # user.about = request.POST['about']
+            # user.save()
         if request.POST['form-action'] == "change_user_avatar":
             user = request.user
             user.avatar = request.FILES['avatar']
             user.save()
 
-    return render(request, 'journal/change_profile.html', context=context)
+    return render(request, 'journal/edit_profile.html', context=context)
 
 
 def group(request, group_slug):
@@ -78,6 +84,22 @@ def group(request, group_slug):
         'members': Student.objects.filter(group=group_obj),
     }
     return render(request, 'journal/group.html', context=context)
+
+
+class UserEditView(LoginRequiredMixin, generic.UpdateView):
+    login_url = reverse_lazy('login')
+
+    form_class = MyUserChangeForm
+    template_name = 'journal/edit_profile.html'
+    success_url = reverse_lazy('own_profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Edit Profile"
+        return context
+
+    def get_object(self):
+        return self.request.user
 
 
 class RegisterUser(CreateView):

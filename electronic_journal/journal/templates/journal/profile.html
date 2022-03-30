@@ -16,12 +16,12 @@
     <li>date of birth - {{ cur_user.date_of_birth }}</li>
     <li>about - {{ cur_user.about }}</li>
     {% if not guest %}
-        <li><a href="{% url 'change_profile' %}">Change profile</a></li>
+        <li><a href="{% url 'edit_profile' %}">Edit profile</a></li>
     {% endif %}
 </ul>
 <hr>
 
-{% if not guest %}
+
 {% if cur_user.role == "Admin" %}
     <h1>It isn't your page. Your page is 127.0.0.1:8000/admin/</h1>
 
@@ -30,7 +30,7 @@
     <ul>
         <li>Куратор групи - <a href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
         {% for subject in subjects %}
-            <li>{{ subject.group_subject.subject }} ({{ subject.subgroup }} підгруппа)</li>
+            <li>{{ subject.group_subject.subject }} ({{ subject.group_subject.group }}, {{ subject.subgroup }} підгруппа)</li>
         {% endfor %}
     </ul>
 
@@ -46,6 +46,6 @@
     <h2>Who am I?</h2>
 
 {% endif %}
-{% endif %}
+
 
 {% endblock %}

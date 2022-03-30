@@ -1,0 +1,21 @@
+{% extends 'journal/base.html' %}
+{% load date_tags %}
+
+{% block main %}
+
+Edit your profile here, {{ user.name }}
+<hr>
+
+<form class="change-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+    <input type="hidden" name="form-action" value="change_user_text_info">
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

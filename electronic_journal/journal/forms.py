@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -9,19 +11,20 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationFor
 User = get_user_model()
 
 
-class UserChangeForm(forms.ModelForm):
+class MyUserChangeForm(forms.ModelForm):
     email = forms.EmailField(label="E-mail", widget=forms.EmailInput(attrs={'class': 'form-input',
                                                                             'placeholder': 'Вкажіть пошту'}))
     name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
     patronymic = forms.CharField(label="По батькові", widget=forms.TextInput(attrs={'class': 'form-input'}))
     phone_number = forms.CharField(label="phone_number", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    date_of_birth = forms.DateField(label="date_of_birth", widget=forms.DateInput(attrs={'class': 'form-input'}))
+    date_of_birth = forms.DateField(label="date_of_birth", initial=datetime.date.today(),
+                                    widget=forms.DateInput(attrs={'class': 'form-input'}))
     about = forms.CharField(label="about", widget=forms.Textarea(attrs={'class': 'form-input'}))
 
     class Meta:
         model = User
-        fields = ('email', 'name', 'surname', 'patronymic', 'phone_number', 'date_of_birth', 'about')
+        fields = ('avatar', 'email', 'name', 'surname', 'patronymic', 'phone_number', 'date_of_birth', 'about')
 
 
 class UserAdminCreationForm(forms.ModelForm):
