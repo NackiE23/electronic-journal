@@ -2,9 +2,9 @@ import datetime
 
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -116,10 +116,9 @@ class RegisterUser(CreateView):
     def form_valid(self, form):
         user = form.save()
         if self.request.POST['choices'] == "Teacher":
-            working_since = self.request.POST['working_since']
             user.role = self.request.POST['choices']
             user.save()
-            Teacher.objects.create(user=user, working_since=working_since)
+            Teacher.objects.create(user=user)
         elif self.request.POST['choices'] == "Student":
             group = self.request.POST['groups']
             group = Group.objects.get(pk=group)
@@ -129,6 +128,17 @@ class RegisterUser(CreateView):
             Student.objects.create(user=user, group=group, subgroup=subgroup)
         login(self.request, user)
         return redirect('own_profile')
+
+
+class PasswordsChangeView(PasswordChangeView):
+    form_class = PasswordChangeForm
+    template_name = 'journal/change_password.html'
+    success_url = reverse_lazy('own_profile')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Change password form"
+        return context
 
 
 class LoginUser(LoginView):

@@ -22,6 +22,13 @@ class MyUserChangeForm(forms.ModelForm):
                                     widget=forms.DateInput(attrs={'class': 'form-input'}))
     about = forms.CharField(label="about", widget=forms.Textarea(attrs={'class': 'form-input'}))
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['patronymic'].required = False
+        self.fields['phone_number'].required = False
+        self.fields['date_of_birth'].required = False
+        self.fields['about'].required = False
+
     class Meta:
         model = User
         fields = ('avatar', 'email', 'name', 'surname', 'patronymic', 'phone_number', 'date_of_birth', 'about')
