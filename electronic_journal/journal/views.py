@@ -71,6 +71,15 @@ def change_profile(request):
     return render(request, 'journal/change_profile.html', context=context)
 
 
+def group(request, group_slug):
+    group_obj = Group.objects.get(slug=group_slug)
+    context = {
+        'curator': group_obj.teacher,
+        'members': Student.objects.filter(group=group_obj),
+    }
+    return render(request, 'journal/group.html', context=context)
+
+
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'journal/register.html'

@@ -56,8 +56,12 @@ class UserInAdmin(UserAdmin):
     get_html_photo.short_description = "Miniature"
 
 
+class GroupInAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ("name",)}
+
+
 admin.site.register(Teacher)
-admin.site.register(Group)
+admin.site.register(Group, GroupInAdmin)
 admin.site.register(Student)
 admin.site.register(Attendance)
 admin.site.register(EvaluationSystem)

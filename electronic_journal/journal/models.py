@@ -89,10 +89,14 @@ class Teacher(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=45, verbose_name="Назва групи")
+    slug = models.SlugField(max_length=45, unique=True, verbose_name="URL")
     teacher = models.OneToOneField('Teacher', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('group', kwargs={'group_slug': self.slug})
 
 
 class Student(models.Model):

@@ -3,8 +3,8 @@
 {% block main %}
 <ul style="list-style: none">
     <li>avatar
-        {% if user.avatar %}
-            <li><img class="img-article-left" src="{{user.avatar.url}}" width="150"></li>
+        {% if cur_user.avatar %}
+            <li><img class="img-article-left" src="{{cur_user.avatar.url}}" width="350"></li>
         {% endif %}
     </li>
     <li>name - {{ cur_user.name }}</li>
@@ -28,7 +28,7 @@
 {% elif cur_user.role == "Teacher" %}
     <h1>Teacher</h1>
     <ul>
-        <li>Куратор групи - {{ cur_user.teacher.group }}</li>
+        <li>Куратор групи - <a href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
         {% for subject in subjects %}
             <li>{{ subject.group_subject.subject }} ({{ subject.subgroup }} підгруппа)</li>
         {% endfor %}
