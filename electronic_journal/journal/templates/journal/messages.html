@@ -7,6 +7,11 @@
     <p>Time: {{ message.time }}</p>
     <p>From: {{ message.from_user }}</p>
     <p>Text: {{ message.text }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="pk-message" value="{{ message.pk }}">
+        <button type="submit">Delete</button>
+    </form>
 </div>
 <hr>
 {% endfor %}

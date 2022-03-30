@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile/edit/', UserEditView.as_view(), name="edit_profile"),
     path('messages/', messages, name="messages"),
     path('group/<slug:group_slug>/', group, name="group"),
+    path('journal/list/', journals, name="journals"),
     path('register/', RegisterUser.as_view(), name="register"),
     path('login/', LoginUser.as_view(), name="login"),
     path('logout/', logout_user, name="logout"),

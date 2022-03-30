@@ -52,8 +52,14 @@ def profile(request, pk):
 def messages(request):
     context = {
         'title': 'Messages',
-        'messages': Message.objects.filter(to_user=request.user),
+        # 'messages': Message.objects.filter(to_user=request.user),
+        'messages': Message.objects.order_by('-time'),
     }
+
+    if request.method == "POST":
+        pk = request.POST['pk-message']
+        Message.objects.get(pk=pk).delete()
+
     return render(request, 'journal/messages.html', context=context)
 
 
@@ -64,6 +70,13 @@ def group(request, group_slug):
         'members': Student.objects.filter(group=group_obj),
     }
     return render(request, 'journal/group.html', context=context)
+
+
+def journals(request):
+    context = {
+        'title': 'Journals'
+    }
+    return render(request, 'journal/journals.html', context=context)
 
 
 class UserEditView(LoginRequiredMixin, generic.UpdateView):
