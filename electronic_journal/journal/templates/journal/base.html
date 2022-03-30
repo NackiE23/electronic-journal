@@ -11,9 +11,11 @@
 {% block menu %}
 <a type="button" href="{% url 'register' %}">Register</a>
 <a type="button" href="{% url 'login' %}">Log in</a>
+{% if user.is_authenticated %}
 <a type="button" href="{% url 'logout' %}">Log out</a>
 <a type="button" href="{% url 'own_profile' %}">My profile</a>
-<a type="button" href="{% url 'main' %}">Main</a>
+<a type="button" href="{% url 'own_profile' %}">Messages</a>
+{% endif %}
 <hr>
 {% endblock %}
 

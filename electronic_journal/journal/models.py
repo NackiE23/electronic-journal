@@ -183,7 +183,7 @@ class StudentGrade(models.Model):
 
 
 class Message(models.Model):
-    sender_name = models.CharField(max_length=45)
-    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="from_user")
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
     time = models.DateTimeField(auto_now=True)
     text = models.TextField()
