@@ -72,11 +72,25 @@ def group(request, group_slug):
     return render(request, 'journal/group.html', context=context)
 
 
-def journals(request):
+def journal_list(request, group_slug="1-mp-9"):
+    group_obj = Group.objects.get(slug=group_slug)
     context = {
-        'title': 'Journals'
+        'title': 'Journal list',
+        'group_subjects': GroupSubject.objects.filter(group=group_obj),
     }
     return render(request, 'journal/journals.html', context=context)
+
+
+def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
+    group_obj = Group.objects.get(slug=group_slug)
+    subject_obj = Subject.objects.get(slug=subject_slug)
+    group_subject_obj = GroupSubject.objects.get(group=group_obj, subject=subject_obj)
+    context = {
+        'title': 'Journal',
+        'group_subject': group_subject_obj,
+        'teacher_subject': TeacherSubject.objects.get(group_subject=group_subject_obj)
+    }
+    return render(request, 'journal/journal.html', context=context)
 
 
 class UserEditView(LoginRequiredMixin, generic.UpdateView):

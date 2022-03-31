@@ -1,0 +1,99 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+<div class="info">
+    <h1>{{ group_subject }} </h1>
+
+    <h4>Викладач: {{ teacher_subject.teacher }}</h4>
+</div>
+
+<div class="table">
+    <table id="table">
+        <colgroup>
+            <col>
+            <col span="2" style="background-color: #D6EEEE">
+            <col span="3" style="background-color: pink">
+        </colgroup>
+        <tr>
+            <th></th>
+            <th>Student</th>
+            <th>Date1</th>
+            <th>Date2</th>
+            <th>Date3</th>
+            <th>Date4</th>
+            <th>Date5</th>
+        </tr>
+        {% for i in '12345' %}
+        <tr>
+            <td>{{ i }}</td>
+            <td>Peter</td>
+            <td><input type="number" value="2" /></td>
+            <td><input type="number" value="2" /></td>
+            <td><input type="number" value="2" /></td>
+            <td><input type="number" value="2" /></td>
+            <td><input type="number" value="2" /></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <button>Add row</button>
+</div>
+
+<hr>
+
+<div>
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            dfg
+                        </td>
+                        <td>
+                            sdf
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            dfg
+                        </td>
+                        <td>
+                            sdf
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+<button>Add row</button>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+const addColumn = () => {
+  for (const [i, row] of [...document.querySelectorAll('#table tr')].entries()) {
+    const input = document.createElement("input")
+    input.setAttribute('type', 'number')
+    const cell = document.createElement(i ? "td" : "th")
+    cell.appendChild(input)
+    row.appendChild(cell)
+  };
+}
+
+document.querySelector('button').onclick = addColumn
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+
+</script>
+{% endblock %}

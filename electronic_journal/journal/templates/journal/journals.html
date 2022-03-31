@@ -1,7 +1,9 @@
 {% extends 'journal/base.html' %}
 
 {% block main %}
-
-
-
+<ol>
+{% for group_subject in group_subjects %}
+    <li>{{ group_subject }}<a href="{% url 'journal' %}">Link</a> </li>
+{% endfor %}
+</ol>
 {% endblock %}

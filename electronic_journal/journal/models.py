@@ -126,6 +126,7 @@ class EvaluationSystem(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=45, verbose_name="Назва предмету")
+    slug = models.SlugField(max_length=45, unique=True, verbose_name="identificator")
     short_name = models.CharField(max_length=33, verbose_name="Скорочена назва предмету")
     evaluation_system = models.ForeignKey("EvaluationSystem", on_delete=models.CASCADE)
 
@@ -139,7 +140,7 @@ class GroupSubject(models.Model):
     amount_of_hours = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.subject.name} в групі {self.group.name}"
+        return f"{self.subject.name} {self.group.name}"
 
 
 class TeacherSubject(models.Model):
