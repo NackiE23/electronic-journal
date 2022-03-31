@@ -186,6 +186,6 @@ class StudentGrade(models.Model):
 class Message(models.Model):
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="from_user")
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
-    time = models.DateTimeField(auto_now=True)
+    time = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
     is_check = models.BooleanField(default=False)

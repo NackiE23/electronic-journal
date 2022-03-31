@@ -1,17 +1,32 @@
 {% extends 'journal/base.html' %}
-
+{% load date_tags %}
+{% load tz %}
 {% block main %}
 
 {% for message in messages %}
 <div>
-    <p>Time: {{ message.time }}</p>
+    {% if not message.is_check %}
+    <p>Don't checked</p>
+    {% else %}
+    <p>Checked</p>
+    {% endif %}
+    <p>Time: {{ message.time | date:"Y-m-d H:i" }}</p>
     <p>From: {{ message.from_user }}</p>
     <p>Text: {{ message.text }}</p>
     <form method="POST">
         {% csrf_token %}
+        <input type="hidden" name="button" value="delete_button">
         <input type="hidden" name="pk-message" value="{{ message.pk }}">
         <button type="submit">Delete</button>
     </form>
+    {% if not message.is_check %}
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="button" value="check_button">
+        <input type="hidden" name="pk-message" value="{{ message.pk }}">
+        <button type="submit">Check</button>
+    </form>
+    {% endif %}
 </div>
 <hr>
 {% endfor %}

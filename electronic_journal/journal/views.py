@@ -52,13 +52,17 @@ def profile(request, pk):
 def messages(request):
     context = {
         'title': 'Messages',
-        # 'messages': Message.objects.filter(to_user=request.user),
         'messages': Message.objects.order_by('-time'),
     }
 
     if request.method == "POST":
         pk = request.POST['pk-message']
-        Message.objects.get(pk=pk).delete()
+        message_obj = Message.objects.get(pk=pk)
+        if request.POST['button'] == "delete_button":
+            message_obj.delete()
+        else:
+            message_obj.is_check = True
+            message_obj.save()
 
     return render(request, 'journal/messages.html', context=context)
 
