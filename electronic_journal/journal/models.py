@@ -188,3 +188,4 @@ class Message(models.Model):
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
     time = models.DateTimeField(auto_now=True)
     text = models.TextField()
+    is_check = models.BooleanField(default=False)
