@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
@@ -102,7 +104,6 @@ class Group(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group = models.ForeignKey("Group", on_delete=models.CASCADE)
-    subgroup = models.CharField(max_length=2)
 
     def __str__(self):
         return str(self.user)
@@ -146,23 +147,31 @@ class GroupSubject(models.Model):
 class TeacherSubject(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE)
     group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE)
-    subgroup = models.CharField(max_length=10, verbose_name="Підгрупа")
     semester = models.PositiveIntegerField(verbose_name="Семестр")
     academic_year = models.CharField(max_length=4, verbose_name="Навчальний рік")
+    students = models.CharField(max_length=200)
 
     def __str__(self):
         return f"{self.teacher} - {self.group_subject}"
 
+    def set_students(self, students):
+        self.students = json.dumps(students)
+
+    def get_students(self):
+        return json.loads(self.students)
+
 
 class LessonType(models.Model):
     name = models.CharField(max_length=25)
+    slug = models.SlugField(max_length=25, unique=True, verbose_name="identificator")
 
     def __str__(self):
         return self.name
 
 
 class Lesson(models.Model):
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(auto_now_add=True)
+    last_update = models.DateTimeField(auto_now=True)
     topic = models.CharField(max_length=200, verbose_name="Тема")
     homework = models.CharField(max_length=200, verbose_name="Домашнє завдання")
     note = models.CharField(max_length=200, verbose_name="Примітка")

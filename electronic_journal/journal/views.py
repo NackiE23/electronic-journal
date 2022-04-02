@@ -60,7 +60,7 @@ def messages(request):
         message_obj = Message.objects.get(pk=pk)
         if request.POST['button'] == "delete_button":
             message_obj.delete()
-        else:
+        elif request.POST['button'] == "check_button":
             message_obj.is_check = True
             message_obj.save()
 
@@ -89,11 +89,52 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     group_obj = Group.objects.get(slug=group_slug)
     subject_obj = Subject.objects.get(slug=subject_slug)
     group_subject_obj = GroupSubject.objects.get(group=group_obj, subject=subject_obj)
+    teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj)
+
+    students_objs = Student.objects.filter(group=group_obj).order_by('-user')
+    condition = (len(teacher_subject_obj.get_students()) != 0)
+    students = students_objs.filter(pk__in=teacher_subject_obj.get_students()) if condition \
+        else None
+    other_students = students_objs.exclude(pk__in=teacher_subject_obj.get_students()) if condition \
+        else students_objs
+
     context = {
         'title': 'Journal',
+        'lesson_create_form': LessonCreateForm,
         'group_subject': group_subject_obj,
-        'teacher_subject': TeacherSubject.objects.get(group_subject=group_subject_obj)
+        'teacher_subject': teacher_subject_obj,
+        'lessons': Lesson.objects.filter(teacher_subject=teacher_subject_obj),
+        # студенти, які входять вже є у журналі
+        'students': students,
+        # інші студенти, які не входять в класс, але тієїж групи
+        'other_students': other_students,
     }
+
+    if request.method == "POST":
+        if request.POST['button'] == "add_student":
+            selected_students_list = request.POST.getlist('students')
+            students_list = teacher_subject_obj.get_students()
+            for student in selected_students_list:
+                students_list.append(student)
+            teacher_subject_obj.set_students(students_list)
+            teacher_subject_obj.save()
+            return redirect('journal')
+        if request.POST['button'] == "delete_student":
+            selected_students_list = request.POST.getlist('students')
+            students_list = teacher_subject_obj.get_students()
+            for student in selected_students_list:
+                students_list.remove(student)
+            teacher_subject_obj.set_students(students_list)
+            teacher_subject_obj.save()
+            return redirect('journal')
+        if request.POST['button'] == "add_column":
+            pass
+            # form = LessonCreateForm(request.POST)
+            # if form.is_valid():
+            #     form.save()
+                # lesson_obj.teacher_subject = teacher_subject_obj
+                # lesson_obj.save()
+
     return render(request, 'journal/journal.html', context=context)
 
 
@@ -133,10 +174,9 @@ class RegisterUser(CreateView):
         elif self.request.POST['choices'] == "Student":
             group = self.request.POST['groups']
             group = Group.objects.get(pk=group)
-            subgroup = self.request.POST['subgroup']
             user.role = self.request.POST['choices']
             user.save()
-            Student.objects.create(user=user, group=group, subgroup=subgroup)
+            Student.objects.create(user=user, group=group)
         login(self.request, user)
         return redirect('own_profile')
 

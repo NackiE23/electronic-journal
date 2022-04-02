@@ -16,3 +16,7 @@ table {
 th, td {
   padding: 15px;
 }
+
+input {
+    border: none;
+}

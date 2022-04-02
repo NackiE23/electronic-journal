@@ -16,3 +16,11 @@ table {
 th, td {
   padding: 15px;
 }
+
+table input {
+    width: 100%;
+}
+
+input {
+    border: none;
+}

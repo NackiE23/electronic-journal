@@ -6,9 +6,25 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm, AuthenticationForm
 
-# from .models import *
+from .models import Lesson, LessonType, TeacherSubject
 
 User = get_user_model()
+
+
+class LessonCreateForm(forms.ModelForm):
+    topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    type = forms.ModelChoiceField(label="Тип", queryset=LessonType.objects.all(),
+                                  widget=forms.Select(attrs={'class': 'form-input'}))
+    teacher_subject = forms.ModelChoiceField(queryset=TeacherSubject.objects.all(), widget=forms.HiddenInput())
+
+    class Meta:
+        model = Lesson
+        fields = ('topic', 'homework', 'note', 'type', 'teacher_subject')
+
+    def __init__(self, *args, **kwargs):
+        super(LessonCreateForm, self).__init__(*args, **kwargs)
 
 
 class MyUserChangeForm(forms.ModelForm):

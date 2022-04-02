@@ -1,5 +1,5 @@
 {% extends 'journal/base.html' %}
-
+{% load journal_tags %}
 {% block main %}
 <div class="info">
     <h1>{{ group_subject }} </h1>
@@ -7,93 +7,123 @@
     <h4>Викладач: {{ teacher_subject.teacher }}</h4>
 </div>
 
-<div class="table">
-    <table id="table">
-        <colgroup>
-            <col>
-            <col span="2" style="background-color: #D6EEEE">
-            <col span="3" style="background-color: pink">
-        </colgroup>
-        <tr>
-            <th></th>
-            <th>Student</th>
-            <th>Date1</th>
-            <th>Date2</th>
-            <th>Date3</th>
-            <th>Date4</th>
-            <th>Date5</th>
-        </tr>
-        {% for i in '12345' %}
-        <tr>
-            <td>{{ i }}</td>
-            <td>Peter</td>
-            <td><input type="number" value="2" /></td>
-            <td><input type="number" value="2" /></td>
-            <td><input type="number" value="2" /></td>
-            <td><input type="number" value="2" /></td>
-            <td><input type="number" value="2" /></td>
-        </tr>
+<p>Lessons</p>
+{% for lesson in lessons %}
+<p>- {{ lesson }} {{ lesson.date }}</p>
+{% endfor %}
+
+{% if not students %}
+<h1>You don't have any stundent</h1>
+{% else %}
+<table>
+    <tr>
+        <th>№</th>
+        <th>Student</th>
+        {% for lesson in lessons %}
+        <th>{{ lesson.date }}</th>
         {% endfor %}
-    </table>
-
-    <button>Add row</button>
-</div>
-
+    </tr>
+    {% for student in students|enum %}
+    <tr>
+        <td>{{ student|id }}</td>
+        <td>{{ student|name }}</td>
+        {% for lesson in lessons %}
+        <td><input type="number" min="0" max="{{ group_subject.subject.evaluation_system.numerical_form }}"></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<button onclick="dropdown()">Add row</button>
+{% endif %}
 <hr>
 
-<div>
-    <table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td>
-                            dfg
-                        </td>
-                        <td>
-                            sdf
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td>
-                            dfg
-                        </td>
-                        <td>
-                            sdf
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-<button>Add row</button>
-</div>
+<form id="form" method="POST" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
+    {% csrf_token %}
+
+    {% for f in lesson_create_form %}
+        <p>
+            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+            {{ f }}
+        </p>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+    <input type="hidden" name="button" value="add_column">
+    <button type="submit">Додати стовпчик</button>
+</form>
+
+{% if not other_students %}
+<h1>Наразі немає студентів, яких можна додати</h1>
+{% else %}
+<form method="POST" style="float: left">
+    {% csrf_token %}
+
+    <div id="id_students">
+        {% for student in other_students|enum %}
+        <div>
+            <label for="id_students_{{ student|id }}">
+                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="id_students_{{ student|id }}">
+                {{ student|name }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <input type="hidden" name="button" value="add_student">
+    <button type="submit">Додати студента(ів)</button>
+</form>
+{% endif %}
+
+{% if students %}
+<form method="POST" style="float: right">
+    {% csrf_token %}
+
+    <div id="id_student">
+        {% for student in students|enum %}
+        <div>
+            <label for="pk_students_{{ student|id }}">
+                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="pk_students_{{ student|id }}">
+                {{ student|name }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+
+    <input type="hidden" name="button" value="delete_student">
+    <button type="submit">Видалити студента(ів)</button>
+</form>
+{% endif %}
+
 {% endblock %}
 
 {% block script %}
 <script>
+function dropdown()
+{
+    const form = document.getElementById("form");
 
-const addColumn = () => {
-  for (const [i, row] of [...document.querySelectorAll('#table tr')].entries()) {
-    const input = document.createElement("input")
-    input.setAttribute('type', 'number')
-    const cell = document.createElement(i ? "td" : "th")
-    cell.appendChild(input)
-    row.appendChild(cell)
-  };
+    if (form.style.display == "block") {
+        form.style.display = "none";
+    } else {
+        form.style.display = "block";
+    }
 }
 
-document.querySelector('button').onclick = addColumn
+<!--const addColumn = () => {-->
+<!--  for (const [i, row] of [...document.querySelectorAll('#table tr')].entries()) {-->
+<!--    const input = document.createElement("input")-->
+<!--    input.setAttribute('type', 'number')-->
+<!--    const cell = document.createElement(i ? "td" : "th")-->
+<!--    cell.appendChild(input)-->
+<!--    row.appendChild(cell)-->
+<!--  };-->
+<!--}-->
+
+<!--document.querySelector('button').onclick = addColumn-->
 
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script>
+<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>-->
+<!--<script>-->
 
-</script>
+<!--</script>-->
 {% endblock %}

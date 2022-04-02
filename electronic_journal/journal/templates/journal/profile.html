@@ -30,7 +30,7 @@
     <ul>
         <li>Куратор групи - <a href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
         {% for subject in subjects %}
-            <li>{{ subject.group_subject.subject }} ({{ subject.group_subject.group }}, {{ subject.subgroup }} підгруппа)</li>
+            <li>{{ subject.group_subject.subject }} {{ subject.group_subject.group }}</li>
         {% endfor %}
     </ul>
 
