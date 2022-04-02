@@ -100,7 +100,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
 
     context = {
         'title': 'Journal',
-        'lesson_create_form': LessonCreateForm,
+        'lesson_create_form': LessonCreateForm(initial={'teacher_subject': teacher_subject_obj}),
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
         'lessons': Lesson.objects.filter(teacher_subject=teacher_subject_obj),
@@ -128,12 +128,9 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
             teacher_subject_obj.save()
             return redirect('journal')
         if request.POST['button'] == "add_column":
-            pass
-            # form = LessonCreateForm(request.POST)
-            # if form.is_valid():
-            #     form.save()
-                # lesson_obj.teacher_subject = teacher_subject_obj
-                # lesson_obj.save()
+            form = LessonCreateForm(request.POST)
+            if form.is_valid():
+                form.save()
 
     return render(request, 'journal/journal.html', context=context)
 
