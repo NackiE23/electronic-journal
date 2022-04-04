@@ -16,6 +16,7 @@
 <h1>You don't have any stundent</h1>
 {% else %}
 <table>
+    {% csrf_token %}
     <tr>
         <th>№</th>
         <th>Student</th>
@@ -28,11 +29,12 @@
         <td>{{ student|id }}</td>
         <td>{{ student|name }}</td>
         {% for lesson in lessons %}
-        <td><input type="number" min="0" max="{{ group_subject.subject.evaluation_system.numerical_form }}"></td>
+        <td><input type="text" id="{{ student|get_pk }}" name="{{ lesson.date| date:'d:m:Y' }}"></td>
         {% endfor %}
     </tr>
     {% endfor %}
 </table>
+<br>
 <button onclick="dropdown()">Add row</button>
 {% endif %}
 <hr>
@@ -42,7 +44,10 @@
 
     {% for f in lesson_create_form %}
         <p>
+            {% if f.id_for_label == 'id_teacher_subject' %}
+            {% else %}
             <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+            {% endif %}
             {{ f }}
         </p>
         <div class="form-error">{{ f.errors }}</div>
@@ -94,6 +99,7 @@
 </form>
 {% endif %}
 
+<p id="pa"></p>
 {% endblock %}
 
 {% block script %}
@@ -109,21 +115,30 @@ function dropdown()
     }
 }
 
-<!--const addColumn = () => {-->
-<!--  for (const [i, row] of [...document.querySelectorAll('#table tr')].entries()) {-->
-<!--    const input = document.createElement("input")-->
-<!--    input.setAttribute('type', 'number')-->
-<!--    const cell = document.createElement(i ? "td" : "th")-->
-<!--    cell.appendChild(input)-->
-<!--    row.appendChild(cell)-->
-<!--  };-->
-<!--}-->
-
-<!--document.querySelector('button').onclick = addColumn-->
-
 </script>
-<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>-->
-<!--<script>-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+let table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
-<!--</script>-->
+$("td").find('input').change(function() {
+
+    $.ajax({
+        url: '{{ journal }}',
+        type: 'post',
+        data: {
+            csrfmiddlewaretoken: table_csrf,
+            id: $(this).attr('id'),
+            date: $(this).attr('name'),
+            value: $(this).val(),
+        },
+        success: function(responce) {
+            $("#pa").append(responce.data);
+        }
+    });
+
+    console.log($(this).attr('name'));
+    console.log($(this).attr('id'));
+    console.log($(this).val());
+});
+</script>
 {% endblock %}

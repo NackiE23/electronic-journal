@@ -1,11 +1,12 @@
 import datetime
+from time import time
 
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
@@ -111,6 +112,13 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     }
 
     if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            student_id = request.POST['id']
+            date = request.POST['date']
+            value = request.POST['value']
+
+            result = f"I've got: {student_id=} {date=} {value=}"
+            return JsonResponse({'data': result}, status=200)
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students()
