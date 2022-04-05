@@ -112,13 +112,33 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     }
 
     if request.method == "POST":
+        # AJAX
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            student_id = request.POST['id']
-            date = request.POST['date']
+            student_id = request.POST['student_id']
+            lesson_id = request.POST['lesson_id']
             value = request.POST['value']
 
-            result = f"I've got: {student_id=} {date=} {value=}"
-            return JsonResponse({'data': result}, status=200)
+            if value == "н":
+                result = "I've got: 'н'"
+                return JsonResponse({'data': result}, status=200)
+            else:
+                try:
+                    assert isinstance(int(value), int)
+                    assert int(value) >= 0
+                    lesson_obj = Lesson.objects.get(pk=lesson_id)
+                    student_obj = Student.objects.get(pk=student_id)
+                    obj, created = StudentLesson.objects.update_or_create(lesson=lesson_obj, student=student_obj,
+                                                                          mark=value)
+
+                    result = f"I've got: {student_id=} {lesson_id=} {value=}"
+                    return JsonResponse({'data': result}, status=200)
+                except ValueError:
+                    result = f"{value} - Неприйнятне значення!!!"
+                    return JsonResponse({'data': result}, status=200)
+                except AssertionError:
+                    result = f"{value} - Неприйнятне значення"
+                    return JsonResponse({'data': result}, status=200)
+        # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students()
@@ -127,6 +147,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
             return redirect('journal')
+        # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students()
@@ -135,6 +156,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
             return redirect('journal')
+        # Add Column
         if request.POST['button'] == "add_column":
             form = LessonCreateForm(request.POST)
             if form.is_valid():

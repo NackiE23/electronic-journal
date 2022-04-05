@@ -182,11 +182,10 @@ class Lesson(models.Model):
         return self.topic
 
 
-class StudentGrade(models.Model):
+class StudentLesson(models.Model):
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE)
     student = models.ForeignKey("Student", on_delete=models.CASCADE)
-    mark = models.PositiveIntegerField()
-    attendance = models.ForeignKey("Attendance", on_delete=models.CASCADE)
+    mark = models.CharField(max_length=3)
 
     def __str__(self):
         return str(self.student)

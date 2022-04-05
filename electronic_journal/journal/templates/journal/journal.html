@@ -29,7 +29,7 @@
         <td>{{ student|id }}</td>
         <td>{{ student|name }}</td>
         {% for lesson in lessons %}
-        <td><input type="text" id="{{ student|get_pk }}" name="{{ lesson.date| date:'d:m:Y' }}"></td>
+        <td><input type="text" id="{{ student|get_pk }}" name="{{ lesson.pk }}"></td>
         {% endfor %}
     </tr>
     {% endfor %}
@@ -127,8 +127,8 @@ $("td").find('input').change(function() {
         type: 'post',
         data: {
             csrfmiddlewaretoken: table_csrf,
-            id: $(this).attr('id'),
-            date: $(this).attr('name'),
+            student_id: $(this).attr('id'),
+            lesson_id: $(this).attr('name'),
             value: $(this).val(),
         },
         success: function(responce) {
@@ -136,9 +136,6 @@ $("td").find('input').change(function() {
         }
     });
 
-    console.log($(this).attr('name'));
-    console.log($(this).attr('id'));
-    console.log($(this).val());
 });
 </script>
 {% endblock %}
