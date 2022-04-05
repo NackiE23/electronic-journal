@@ -130,7 +130,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                     obj, created = StudentLesson.objects.update_or_create(lesson=lesson_obj, student=student_obj,
                                                                           mark=value)
 
-                    result = f"I've got: {student_id=} {lesson_id=} {value=}"
+                    result = f"Object have been created: {student_id=} {lesson_id=} {value=}"
                     return JsonResponse({'data': result}, status=200)
                 except ValueError:
                     result = f"{value} - Неприйнятне значення!!!"
@@ -163,6 +163,10 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 form.save()
 
     return render(request, 'journal/journal.html', context=context)
+
+
+def example_table(request):
+    return render(request, 'journal/example_table.html', {'title': 'example_table'})
 
 
 class UserEditView(LoginRequiredMixin, generic.UpdateView):
