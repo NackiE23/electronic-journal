@@ -129,18 +129,18 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 student_pk = request.POST['student_pk']
                 lesson_pk = request.POST['lesson_pk']
                 value = request.POST['value']
-                print(type(value), value, )
 
-                if value == "н":
-                    result = "I've got: 'н'"
-                    return JsonResponse({'data': result}, status=200)
-                else:
-                    try:
-                        lesson_obj = Lesson.objects.get(pk=lesson_pk)
-                        student_obj = Student.objects.get(pk=student_pk)
-                        stl_obj, created = StudentLesson.objects.get_or_create(lesson=lesson_obj, student=student_obj)
-                        if value == "":
-                            stl_obj.mark = None
+                try:
+                    lesson_obj = Lesson.objects.get(pk=lesson_pk)
+                    student_obj = Student.objects.get(pk=student_pk)
+                    stl_obj, created = StudentLesson.objects.get_or_create(lesson=lesson_obj, student=student_obj)
+
+                    if value == "":
+                        stl_obj.mark = None
+                        stl_obj.save()
+                    else:
+                        if value == "н":
+                            stl_obj.mark = value
                             stl_obj.save()
                         else:
                             assert isinstance(int(value), int)
@@ -148,17 +148,17 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                             stl_obj.mark = value
                             stl_obj.save()
 
-                        result = f"{created=}; {student_pk=}; {lesson_pk=}; {value=};"
-                        return JsonResponse({'data': result}, status=200)
-                    except ValueError:
-                        result = f"{value} - Неприйнятне значення!!!"
-                        return JsonResponse({'data': result}, status=200)
-                    except AssertionError:
-                        result = f"{value} - Неприйнятне значення"
-                        return JsonResponse({'data': result}, status=200)
-                    except Exception as e:
-                        result = f"Error: {e}"
-                        return JsonResponse({'data': result}, status=200)
+                    result = f"{created=}; {student_pk=}; {lesson_pk=}; {value=};"
+                    return JsonResponse({'data': result}, status=200)
+                except ValueError:
+                    result = f"{value} - Неприйнятне значення!!!"
+                    return JsonResponse({'data': result}, status=200)
+                except AssertionError:
+                    result = f"{value} - Неприйнятне значення"
+                    return JsonResponse({'data': result}, status=200)
+                except Exception as e:
+                    result = f"Error: {e}"
+                    return JsonResponse({'data': result}, status=200)
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
