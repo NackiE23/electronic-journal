@@ -121,7 +121,7 @@ function dropdown()
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-//$(document).ready(function(){
+$(document).ready(function(){
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
     $("td input").change(function() {
@@ -144,9 +144,9 @@ function dropdown()
     const list = {{ student_lesson_list|safe }}
     console.log(list, typeof list)
     for (let dict in list) {
-        $("#pa").append(list[dict].student_pk+ ' ' + list[dict].lesson_pk+ ' ' + list[dict].mark + '|');
+        $(`input[data-student-pk=${list[dict].student_pk}][data-lesson-pk=${list[dict].lesson_pk}]`).val(list[dict].mark);
     }
 
-//});
+});
 </script>
 {% endblock %}
