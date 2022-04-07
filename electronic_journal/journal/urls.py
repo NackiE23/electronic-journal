@@ -18,4 +18,5 @@ urlpatterns = [
     path('password/change/', PasswordsChangeView.as_view(), name="password_change"),
 
     path('example_table/', example_table, name="example_table"),
+    path('test_table/', test_table, name="test_table"),
 ]

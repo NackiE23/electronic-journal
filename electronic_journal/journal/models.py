@@ -185,7 +185,7 @@ class Lesson(models.Model):
 class StudentLesson(models.Model):
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE)
     student = models.ForeignKey("Student", on_delete=models.CASCADE)
-    mark = models.CharField(max_length=3)
+    mark = models.CharField(max_length=3, null=True)
 
     def __str__(self):
         return str(self.student)

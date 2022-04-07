@@ -99,12 +99,22 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     other_students = students_objs.exclude(pk__in=teacher_subject_obj.get_students()) if condition \
         else students_objs
 
+    lesson_objs = Lesson.objects.filter(teacher_subject=teacher_subject_obj)
+    student_lesson_objects = StudentLesson.objects.filter(lesson__in=lesson_objs)
+    student_lesson_list = [
+        {'student_pk': obj.student.pk,
+         'lesson_pk': obj.lesson.pk,
+         'mark': obj.mark} for obj in student_lesson_objects
+    ]
+    json_student_lesson_list = json.dumps(student_lesson_list)
+
     context = {
         'title': 'Journal',
         'lesson_create_form': LessonCreateForm(initial={'teacher_subject': teacher_subject_obj}),
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
-        'lessons': Lesson.objects.filter(teacher_subject=teacher_subject_obj),
+        'lessons': lesson_objs,
+        'student_lesson_list': json_student_lesson_list,
         # студенти, які входять вже є у журналі
         'students': students,
         # інші студенти, які не входять в класс, але тієїж групи
@@ -114,30 +124,41 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     if request.method == "POST":
         # AJAX
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            student_id = request.POST['student_id']
-            lesson_id = request.POST['lesson_id']
-            value = request.POST['value']
+            # Write down a mark
+            if request.POST['type'] == "write down a mark":
+                student_pk = request.POST['student_pk']
+                lesson_pk = request.POST['lesson_pk']
+                value = request.POST['value']
+                print(type(value), value, )
 
-            if value == "н":
-                result = "I've got: 'н'"
-                return JsonResponse({'data': result}, status=200)
-            else:
-                try:
-                    assert isinstance(int(value), int)
-                    assert int(value) >= 0
-                    lesson_obj = Lesson.objects.get(pk=lesson_id)
-                    student_obj = Student.objects.get(pk=student_id)
-                    obj, created = StudentLesson.objects.update_or_create(lesson=lesson_obj, student=student_obj,
-                                                                          mark=value)
+                if value == "н":
+                    result = "I've got: 'н'"
+                    return JsonResponse({'data': result}, status=200)
+                else:
+                    try:
+                        lesson_obj = Lesson.objects.get(pk=lesson_pk)
+                        student_obj = Student.objects.get(pk=student_pk)
+                        stl_obj, created = StudentLesson.objects.get_or_create(lesson=lesson_obj, student=student_obj)
+                        if value == "":
+                            stl_obj.mark = None
+                            stl_obj.save()
+                        else:
+                            assert isinstance(int(value), int)
+                            assert int(value) >= 0
+                            stl_obj.mark = value
+                            stl_obj.save()
 
-                    result = f"Object have been created: {student_id=} {lesson_id=} {value=}"
-                    return JsonResponse({'data': result}, status=200)
-                except ValueError:
-                    result = f"{value} - Неприйнятне значення!!!"
-                    return JsonResponse({'data': result}, status=200)
-                except AssertionError:
-                    result = f"{value} - Неприйнятне значення"
-                    return JsonResponse({'data': result}, status=200)
+                        result = f"{created=}; {student_pk=}; {lesson_pk=}; {value=};"
+                        return JsonResponse({'data': result}, status=200)
+                    except ValueError:
+                        result = f"{value} - Неприйнятне значення!!!"
+                        return JsonResponse({'data': result}, status=200)
+                    except AssertionError:
+                        result = f"{value} - Неприйнятне значення"
+                        return JsonResponse({'data': result}, status=200)
+                    except Exception as e:
+                        result = f"Error: {e}"
+                        return JsonResponse({'data': result}, status=200)
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
@@ -167,6 +188,10 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
 
 def example_table(request):
     return render(request, 'journal/example_table.html', {'title': 'example_table'})
+
+
+def test_table(request):
+    return render(request, 'journal/test_table.html', {'title': 'test_table'})
 
 
 class UserEditView(LoginRequiredMixin, generic.UpdateView):

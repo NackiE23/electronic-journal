@@ -29,7 +29,9 @@
         <td>{{ student|id }}</td>
         <td>{{ student|name }}</td>
         {% for lesson in lessons %}
-        <td><input type="text" id="{{ student|get_pk }}" name="{{ lesson.pk }}"></td>
+        <td>
+            <input type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
+        </td>
         {% endfor %}
     </tr>
     {% endfor %}
@@ -99,7 +101,8 @@
 </form>
 {% endif %}
 
-<p id="pa"></p>
+<p id="pa">
+</p>
 {% endblock %}
 
 {% block script %}
@@ -118,24 +121,32 @@ function dropdown()
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-let table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
+//$(document).ready(function(){
+    const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
-$("td").find('input').change(function() {
-
-    $.ajax({
-        url: '{{ journal }}',
-        type: 'post',
-        data: {
-            csrfmiddlewaretoken: table_csrf,
-            student_id: $(this).attr('id'),
-            lesson_id: $(this).attr('name'),
-            value: $(this).val(),
-        },
-        success: function(responce) {
-            $("#pa").append(responce.data);
-        }
+    $("td input").change(function() {
+        $.ajax({
+            url: '{{ journal }}',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: table_csrf,
+                type: 'write down a mark',
+                student_pk: $(this).attr('data-student-pk'),
+                lesson_pk: $(this).attr('data-lesson-pk'),
+                value: $(this).val(),
+            },
+            success: function(responce) {
+                $("#pa").append(responce.data);
+            }
+        });
     });
 
-});
+    const list = {{ student_lesson_list|safe }}
+    console.log(list, typeof list)
+    for (let dict in list) {
+        $("#pa").append(list[dict].student_pk+ ' ' + list[dict].lesson_pk+ ' ' + list[dict].mark + '|');
+    }
+
+//});
 </script>
 {% endblock %}
