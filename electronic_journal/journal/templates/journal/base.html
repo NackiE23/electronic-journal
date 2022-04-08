@@ -11,13 +11,13 @@
 <body style="text-align: center; padding-top: 50px;">
 
 {% block menu %}
-<a type="button" href="{% url 'register' %}">Register</a>
-<a type="button" href="{% url 'login' %}">Log in</a>
+<a type="button" href="{% url 'register' %}">Реєстрація</a>
+<a type="button" href="{% url 'login' %}">Вхід</a>
 {% if user.is_authenticated %}
-<a type="button" href="{% url 'logout' %}">Log out</a>
-<a type="button" href="{% url 'own_profile' %}">My profile</a>
-<a type="button" href="{% url 'messages' %}">Messages</a>
-<a type="button" href="{% url 'journal_list' %}">Journals</a>
+<a type="button" href="{% url 'logout' %}">Вихід</a>
+<a type="button" href="{% url 'own_profile' %}">Мій профіль</a>
+<a type="button" href="{% url 'messages' %}">Повідомлення</a>
+<a type="button" href="{% url 'journal_list' %}">Журнали</a>
 {% endif %}
 <hr>
 {% endblock %}

@@ -7,11 +7,6 @@
     <h4>Викладач: {{ teacher_subject.teacher }}</h4>
 </div>
 
-<p>Lessons</p>
-{% for lesson in lessons %}
-<p>- {{ lesson }} {{ lesson.date }}</p>
-{% endfor %}
-
 {% if not students %}
 <h1>You don't have any stundent</h1>
 {% else %}
@@ -19,9 +14,9 @@
     {% csrf_token %}
     <tr>
         <th>№</th>
-        <th>Student</th>
+        <th>Студент</th>
         {% for lesson in lessons %}
-        <th>{{ lesson.date }}</th>
+        <th id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">{{ lesson.date | date:"d" }}</th>
         {% endfor %}
     </tr>
     {% for student in students|enum %}
@@ -37,7 +32,7 @@
     {% endfor %}
 </table>
 <br>
-<button onclick="dropdown()">Add row</button>
+<button id="add_row_button">Додати стовпчик</button>
 {% endif %}
 <hr>
 
@@ -101,27 +96,18 @@
 </form>
 {% endif %}
 
-<p id="pa">
-</p>
+<p id="additional">{{ lesson_date }}</p>
 {% endblock %}
 
 {% block script %}
-<script>
-function dropdown()
-{
-    const form = document.getElementById("form");
-
-    if (form.style.display == "block") {
-        form.style.display = "none";
-    } else {
-        form.style.display = "block";
-    }
-}
-
-</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function(){
+
+    $("#add_row_button").click(function() {
+        $("#form").toggle();
+    });
+
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
     $("td input").change(function() {
@@ -136,15 +122,21 @@ $(document).ready(function(){
                 value: $(this).val(),
             },
             success: function(responce) {
-                $("#pa").append(responce.data);
+                $("#additional").append(responce.data + "<br>");
             }
         });
     });
 
-    const list = {{ student_lesson_list|safe }}
-    console.log(list, typeof list)
-    for (let dict in list) {
-        $(`input[data-student-pk=${list[dict].student_pk}][data-lesson-pk=${list[dict].lesson_pk}]`).val(list[dict].mark);
+    const stl_list = {{ student_lesson_list|safe }};
+    console.log(stl_list, typeof stl_list);
+    for (let i in stl_list) {
+        $(`input[data-student-pk=${stl_list[i].student_pk}][data-lesson-pk=${stl_list[i].lesson_pk}]`).val(stl_list[i].mark);
+    }
+
+    const months = {{ months|safe }};
+    console.log(months, typeof months);
+    for (let i in months) {
+        $(`#lesson${i}`).append("<div style='color: blue; position: absolute; bottom: 35px;'>" + " " + months[i] + "</div>");
     }
 
 });

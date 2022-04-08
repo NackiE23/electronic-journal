@@ -56,6 +56,11 @@ class UserInAdmin(UserAdmin):
     get_html_photo.short_description = "Miniature"
 
 
+class StudentLessonAdmin(admin.ModelAdmin):
+    list_display = ['lesson', 'student', 'mark', 'date']
+    readonly_fields = ('date', )
+
+
 class SlugToName(admin.ModelAdmin):
     prepopulated_fields = {'slug': ("name",)}
 
@@ -70,4 +75,4 @@ admin.site.register(GroupSubject)
 admin.site.register(TeacherSubject)
 admin.site.register(Lesson)
 admin.site.register(LessonType)
-admin.site.register(StudentLesson)
+admin.site.register(StudentLesson, StudentLessonAdmin)

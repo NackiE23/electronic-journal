@@ -100,6 +100,13 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         else students_objs
 
     lesson_objs = Lesson.objects.filter(teacher_subject=teacher_subject_obj)
+    months = {}
+    for lesson_obj in lesson_objs:
+        month = number_to_month(lesson_obj.date.month)
+        if month not in months.values():
+            months.update({lesson_obj.pk: month})
+    json_months = json.dumps(months)
+
     student_lesson_objects = StudentLesson.objects.filter(lesson__in=lesson_objs)
     student_lesson_list = [
         {'student_pk': obj.student.pk,
@@ -114,6 +121,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
         'lessons': lesson_objs,
+        'months': json_months,
         'student_lesson_list': json_student_lesson_list,
         # студенти, які входять вже є у журналі
         'students': students,
@@ -148,7 +156,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                             stl_obj.mark = value
                             stl_obj.save()
 
-                    result = f"{created=}; {student_pk=}; {lesson_pk=}; {value=};"
+                    result = f"Зміни внесені: {created=}; {student_pk=}; {lesson_pk=}; {value=};"
                     return JsonResponse({'data': result}, status=200)
                 except ValueError:
                     result = f"{value} - Неприйнятне значення!!!"
@@ -167,7 +175,6 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 students_list.append(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
-            return redirect('journal')
         # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
@@ -176,12 +183,13 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 students_list.remove(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
-            return redirect('journal')
         # Add Column
         if request.POST['button'] == "add_column":
             form = LessonCreateForm(request.POST)
             if form.is_valid():
                 form.save()
+
+        return redirect('journal')
 
     return render(request, 'journal/journal.html', context=context)
 
@@ -264,3 +272,32 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
+
+
+def number_to_month(number):
+    if number == 1:
+        return "Січень"
+    elif number == 2:
+        return "Лютий"
+    elif number == 3:
+        return "Березень"
+    elif number == 4:
+        return "Квітень"
+    elif number == 5:
+        return "Травень"
+    elif number == 6:
+        return "Червень"
+    elif number == 7:
+        return "Липень"
+    elif number == 8:
+        return "Серпень"
+    elif number == 9:
+        return "Вересень"
+    elif number == 10:
+        return "Жовтень"
+    elif number == 11:
+        return "Листопад"
+    elif number == 12:
+        return "Грудень"
+    else:
+        return "Undefind"
