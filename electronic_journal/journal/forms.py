@@ -27,6 +27,18 @@ class LessonCreateForm(forms.ModelForm):
         super(LessonCreateForm, self).__init__(*args, **kwargs)
 
 
+class LessonUpdateForm(forms.ModelForm):
+    topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    type = forms.ModelChoiceField(label="Тип", queryset=LessonType.objects.all(),
+                                  widget=forms.Select(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = Lesson
+        fields = ('topic', 'homework', 'note', 'type')
+
+
 class MyUserChangeForm(forms.ModelForm):
     email = forms.EmailField(label="E-mail", widget=forms.EmailInput(attrs={'class': 'form-input',
                                                                             'placeholder': 'Вкажіть пошту'}))

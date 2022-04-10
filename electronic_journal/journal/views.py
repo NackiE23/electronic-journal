@@ -105,7 +105,6 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         month = number_to_month(lesson_obj.date.month)
         if month not in months.values():
             months.update({lesson_obj.pk: month})
-    json_months = json.dumps(months)
 
     student_lesson_objects = StudentLesson.objects.filter(lesson__in=lesson_objs)
     student_lesson_list = [
@@ -113,7 +112,6 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
          'lesson_pk': obj.lesson.pk,
          'mark': obj.mark} for obj in student_lesson_objects
     ]
-    json_student_lesson_list = json.dumps(student_lesson_list)
 
     context = {
         'title': 'Journal',
@@ -121,8 +119,9 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
         'lessons': lesson_objs,
-        'months': json_months,
-        'student_lesson_list': json_student_lesson_list,
+        'lesson_update_form': LessonUpdateForm,
+        'months': json.dumps(months),
+        'student_lesson_list': json.dumps(student_lesson_list),
         # студенти, які входять вже є у журналі
         'students': students,
         # інші студенти, які не входять в класс, але тієїж групи
@@ -167,6 +166,16 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 except Exception as e:
                     result = f"Error: {e}"
                     return JsonResponse({'data': result}, status=200)
+            # Get lesson info
+            if request.POST['type'] == "get lesson info":
+                lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
+                info = {
+                    'topic': lesson_obj.topic,
+                    'homework': lesson_obj.homework,
+                    'note': lesson_obj.note,
+                    'type_pk': lesson_obj.type.pk,
+                }
+                return JsonResponse(info, status=200)
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')

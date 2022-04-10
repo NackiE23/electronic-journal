@@ -16,7 +16,10 @@
         <th>№</th>
         <th>Студент</th>
         {% for lesson in lessons %}
-        <th id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">{{ lesson.date | date:"d" }}</th>
+        <th id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+            {{ lesson.date | date:"d" }}
+            <button class="activate_lesson_update_form">Змінити</button>
+        </th>
         {% endfor %}
     </tr>
     {% for student in students|enum %}
@@ -35,6 +38,21 @@
 <button id="add_row_button">Додати стовпчик</button>
 {% endif %}
 <hr>
+
+<div id="lesson_update" style="display: none; position: absolute; top: 0; left: 0; background-color: gray; padding: 100px;">
+    <form id="lesson_update__update_form" method="POST">
+        {{ lesson_update_form.as_p }}
+        <input type="hidden" name="lesson_pk">
+        <input type="hidden" name="button" value="update_lesson">
+        <button type="submit">Зберегти зміни</button>
+    </form>
+
+    <form id="lesson_update__delete_form" method="POST">
+        <input type="hidden" name="lesson_pk">
+        <input type="hidden" name="button" value="delete_lesson">
+        <button type="submit">Видалити урок</button>
+    </form>
+</div>
 
 <form id="form" method="POST" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
     {% csrf_token %}
@@ -103,12 +121,32 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function(){
+    const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
+
+    $(".activate_lesson_update_form").click(function() {
+        $("#lesson_update").toggle();
+        let lesson_pk = $(this).parent().attr('data-lesson-pk')
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: table_csrf,
+                type: 'get lesson info',
+                lesson_pk: lesson_pk,
+            },
+            success: function(responce) {
+                $('#lesson_update__update_form input[name="topic"]').val(responce.topic);
+                $('#lesson_update__update_form input[name="homework"]').val(responce.homework);
+                $('#lesson_update__update_form input[name="note"]').val(responce.note);
+                $('#lesson_update__update_form input[name="lesson_pk"]').val(lesson_pk);
+                $(`#lesson_update__update_form select option[value=${responce.type_pk}]`).prop("selected", true);
+            }
+        });
+    });
 
     $("#add_row_button").click(function() {
         $("#form").toggle();
     });
-
-    const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
     $("td input").change(function() {
         $.ajax({
@@ -136,7 +174,7 @@ $(document).ready(function(){
     const months = {{ months|safe }};
     console.log(months, typeof months);
     for (let i in months) {
-        $(`#lesson${i}`).append("<div style='color: blue; position: absolute; bottom: 35px;'>" + " " + months[i] + "</div>");
+        $(`#lesson${i}`).append("<div style='color: red; position: absolute; bottom: 35px;'>" + " " + months[i] + "</div>");
     }
 
 });

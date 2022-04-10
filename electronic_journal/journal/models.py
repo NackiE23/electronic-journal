@@ -172,9 +172,9 @@ class LessonType(models.Model):
 class Lesson(models.Model):
     date = models.DateField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    topic = models.CharField(max_length=200, verbose_name="Тема")
-    homework = models.CharField(max_length=200, verbose_name="Домашнє завдання")
-    note = models.CharField(max_length=200, verbose_name="Примітка")
+    topic = models.CharField(max_length=200, verbose_name="Тема", null=True)
+    homework = models.CharField(max_length=200, verbose_name="Домашнє завдання", null=True)
+    note = models.CharField(max_length=200, verbose_name="Примітка", null=True)
     type = models.ForeignKey('LessonType', on_delete=models.CASCADE)
     teacher_subject = models.ForeignKey("TeacherSubject", on_delete=models.CASCADE)
 
@@ -182,7 +182,7 @@ class Lesson(models.Model):
         return self.topic
 
     def is_changeable(self):
-        return timezone.now() - self.date
+        return self.date
 
 
 class StudentLesson(models.Model):
