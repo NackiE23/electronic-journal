@@ -176,6 +176,25 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                     'type_pk': lesson_obj.type.pk,
                 }
                 return JsonResponse(info, status=200)
+            # Change lesson
+            if request.POST['type'] == "change_lesson":
+                try:
+                    lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
+                    if request.POST['name'] == 'topic':
+                        lesson_obj.topic = request.POST['value']
+                        lesson_obj.save()
+                    elif request.POST['name'] == 'homework':
+                        lesson_obj.homework = request.POST['value']
+                        lesson_obj.save()
+                    elif request.POST['name'] == 'note':
+                        lesson_obj.note = request.POST['value']
+                        lesson_obj.save()
+                    elif request.POST['name'] == 'type':
+                        lesson_obj.type = LessonType.objects.get(pk=int(request.POST['value']))
+                        lesson_obj.save()
+                    return JsonResponse({'message': 'Lesson changed successfuly'}, status=200)
+                except Exception as e:
+                    return JsonResponse({'message': f"Error: {e}"}, status=200)
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
@@ -184,6 +203,11 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 students_list.append(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
+        # Add Column
+        if request.POST['button'] == "add_column":
+            form = LessonCreateForm(request.POST)
+            if form.is_valid():
+                form.save()
         # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
@@ -192,11 +216,13 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
                 students_list.remove(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
-        # Add Column
-        if request.POST['button'] == "add_column":
-            form = LessonCreateForm(request.POST)
-            if form.is_valid():
-                form.save()
+        # Delete lesson
+        if request.POST['button'] == "delete_lesson":
+            try:
+                Lesson.objects.get(pk=request.POST['lesson_pk']).delete()
+                return redirect('journal')
+            except Exception as e:
+                return JsonResponse({'message': f'Error: {e}'}, status=200)
 
         return redirect('journal')
 

@@ -40,17 +40,12 @@
 <hr>
 
 <div id="lesson_update" style="display: none; position: absolute; top: 0; left: 0; background-color: gray; padding: 100px;">
+    {{ lesson_update_form.as_p }}
     <form id="lesson_update__update_form" method="POST">
-        {{ lesson_update_form.as_p }}
-        <input type="hidden" name="lesson_pk">
-        <input type="hidden" name="button" value="update_lesson">
-        <button type="submit">Зберегти зміни</button>
-    </form>
-
-    <form id="lesson_update__delete_form" method="POST">
+        {% csrf_token %}
         <input type="hidden" name="lesson_pk">
         <input type="hidden" name="button" value="delete_lesson">
-        <button type="submit">Видалити урок</button>
+        <button type="submit" name="delete" style="background-color: black; border-color: black; color: white;">Видалити урок</button>
     </form>
 </div>
 
@@ -135,11 +130,28 @@ $(document).ready(function(){
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
-                $('#lesson_update__update_form input[name="topic"]').val(responce.topic);
-                $('#lesson_update__update_form input[name="homework"]').val(responce.homework);
-                $('#lesson_update__update_form input[name="note"]').val(responce.note);
-                $('#lesson_update__update_form input[name="lesson_pk"]').val(lesson_pk);
-                $(`#lesson_update__update_form select option[value=${responce.type_pk}]`).prop("selected", true);
+                $('#lesson_update input[name="topic"]').val(responce.topic);
+                $('#lesson_update input[name="homework"]').val(responce.homework);
+                $('#lesson_update input[name="note"]').val(responce.note);
+                $('#lesson_update input[name="lesson_pk"]').val(lesson_pk);
+                $(`#lesson_update select option[value=${responce.type_pk}]`).prop("selected", true);
+            }
+        });
+    });
+
+    $("#lesson_update input, #lesson_update select").change(function() {
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: table_csrf,
+                type: 'change_lesson',
+                lesson_pk: $("#lesson_update form input[name='lesson_pk']").val(),
+                name: $(this).attr('name'),
+                value: $(this).val(),
+            },
+            success: function(responce) {
+                $("#additional").append(responce.message);
             }
         });
     });
@@ -150,7 +162,7 @@ $(document).ready(function(){
 
     $("td input").change(function() {
         $.ajax({
-            url: '{{ journal }}',
+            url: '',
             type: 'post',
             data: {
                 csrfmiddlewaretoken: table_csrf,
