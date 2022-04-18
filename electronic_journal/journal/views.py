@@ -229,14 +229,6 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
     return render(request, 'journal/journal.html', context=context)
 
 
-def example_table(request):
-    return render(request, 'journal/example_table.html', {'title': 'example_table'})
-
-
-def test_table(request):
-    return render(request, 'journal/test_table.html', {'title': 'test_table'})
-
-
 class UserEditView(LoginRequiredMixin, generic.UpdateView):
     login_url = reverse_lazy('login')
 

@@ -4,7 +4,7 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', main, name="main"),
+    path('', own_profile, name="main"),
     path('profile/', own_profile, name="own_profile"),
     path('profile/<int:pk>/', profile, name="profile"),
     path('profile/edit/', UserEditView.as_view(), name="edit_profile"),
@@ -17,6 +17,5 @@ urlpatterns = [
     path('logout/', logout_user, name="logout"),
     path('password/change/', PasswordsChangeView.as_view(), name="password_change"),
 
-    path('example_table/', example_table, name="example_table"),
-    path('test_table/', test_table, name="test_table"),
+    path('main/', main, name="main"),
 ]
