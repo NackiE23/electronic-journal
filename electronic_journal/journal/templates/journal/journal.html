@@ -1,8 +1,29 @@
 {% extends 'journal/base.html' %}
 {% load journal_tags %}
 {% block main %}
+<div>
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label for="teacher-select-input">Викладач: </label>
+            <select id="teacher-select-input" name="teacher-select-input">
+                {% for teacher in other_teachers %}
+                    <option value="{{ teacher.pk }}">{{ teacher }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="up-to-date-input">До: </label>
+            <input id="up-to-date-input" type="date" name="up-to-date-input">
+        </p>
+        <input type="hidden" name="button" value="allow_teacher">
+        <input type="submit" value="Додати доступ">
+    </form>
+</div>
+
 <div class="info">
-    <h1>{{ group_subject }} </h1>
+    <h1>{{ group_subject }}</h1>
 
     <h4>Викладач: {{ teacher_subject.teacher }}</h4>
 </div>
@@ -116,6 +137,14 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+    var yyyy = today.getFullYear();
+    if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
+    today = yyyy+'-'+mm+'-'+dd;
+    $('#up-to-date-input').attr('min', today);
+
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
     $(".activate_lesson_update_form").click(function() {

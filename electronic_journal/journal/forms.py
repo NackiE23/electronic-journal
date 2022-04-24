@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm, AuthenticationForm
 
-from .models import Lesson, LessonType, TeacherSubject
+from .models import Lesson, LessonType, TeacherSubject, Subject, EvaluationSystem, Group, Teacher
 
 User = get_user_model()
 
@@ -15,9 +15,11 @@ class LessonCreateForm(forms.ModelForm):
     topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
     homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
     note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    type = forms.ModelChoiceField(label="Тип", queryset=LessonType.objects.all(),
+    type = forms.ModelChoiceField(label="Тип",
+                                  queryset=LessonType.objects.all(),
                                   widget=forms.Select(attrs={'class': 'form-input'}))
-    teacher_subject = forms.ModelChoiceField(queryset=TeacherSubject.objects.all(), widget=forms.HiddenInput())
+    teacher_subject = forms.ModelChoiceField(queryset=TeacherSubject.objects.all(),
+                                             widget=forms.HiddenInput())
 
     class Meta:
         model = Lesson
@@ -31,12 +33,36 @@ class LessonUpdateForm(forms.ModelForm):
     topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
     homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
     note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    type = forms.ModelChoiceField(label="Тип", queryset=LessonType.objects.all(),
+    type = forms.ModelChoiceField(label="Тип",
+                                  queryset=LessonType.objects.all(),
                                   widget=forms.Select(attrs={'class': 'form-input'}))
 
     class Meta:
         model = Lesson
         fields = ('topic', 'homework', 'note', 'type')
+
+
+class SubjectCreationForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ('name', 'short_name', 'evaluation_system')
+
+
+class SubjectFullCreationForm(forms.Form):
+    name = forms.CharField(label="Назва")
+    short_name = forms.CharField(label="Скорочена назва")
+    evaluation_system = forms.ModelChoiceField(label="Система оцінювання", queryset=EvaluationSystem.objects.all())
+    group = forms.ModelMultipleChoiceField(label="Для груп(и)", queryset=Group.objects.all())
+    amount_of_hours = forms.IntegerField(label="Кількість годин", widget=forms.NumberInput(attrs={'min': 0}))
+    teacher = forms.ModelMultipleChoiceField(label="Викладач(і)", queryset=Teacher.objects.all())
+    semester = forms.IntegerField(label="Семестр", widget=forms.NumberInput(attrs={'min': 0, 'max': 12}))
+    academic_year = forms.IntegerField(label="Навчальний рік",
+                                       widget=forms.NumberInput(attrs={'min': 2020, 'max': 3000}))
+
+    def __init__(self, *args, **kwargs):
+        super(SubjectFullCreationForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-input'
 
 
 class MyUserChangeForm(forms.ModelForm):

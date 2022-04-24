@@ -1,0 +1,39 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+
+<ul>
+    <li>
+        <h1>Replacement teacher</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="replacement">
+            <button type="submit">Поставити заміну</button>
+        </form>
+    </li>
+
+    <li>
+        <h1>Add subject</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            {{ subject_creation_form.as_p }}
+            <input type="hidden" name="action" value="add_subject">
+            <button type="submit">Створити предмет</button>
+        </form>
+    </li>
+
+    <li>
+        <h1>Add subject journal</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            {{ subject_creation_full_form.as_p }}
+            <input type="hidden" name="action" value="add_subject_full_form">
+            <button type="submit">Додати предмет</button>
+        </form>
+    </li>
+</ul>
+
+{% endblock %}

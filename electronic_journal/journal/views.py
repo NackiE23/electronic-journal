@@ -53,7 +53,7 @@ def profile(request, pk):
 def messages(request):
     context = {
         'title': 'Messages',
-        'messages': Message.objects.order_by('-time'),
+        'messages': Message.objects.filter(to_user=request.user).order_by('-time'),
     }
 
     if request.method == "POST":
@@ -77,26 +77,54 @@ def group(request, group_slug):
     return render(request, 'journal/group.html', context=context)
 
 
-def journal_list(request, group_slug="1-mp-9"):
+def teacher_journal_list(request, teacher_pk):
+    teacher_subj_objs = TeacherSubject.objects.filter(teacher__pk=teacher_pk)
+    replacement_objs = Replacement.objects.filter(teacher__pk=teacher_pk)
+
+    context = {
+        'title': 'Teacher journal list',
+        'teacher_subjects': teacher_subj_objs,
+        'replacements': replacement_objs,
+    }
+    return render(request, 'journal/teacher_journals.html', context=context)
+
+
+def group_journal_list(request, group_slug):
     group_obj = Group.objects.get(slug=group_slug)
+    if request.user.is_admin:
+        group_subjects = GroupSubject.objects.all()
+    else:
+        group_subjects = GroupSubject.objects.filter(group=group_obj)
+
     context = {
         'title': 'Journal list',
-        'group_subjects': GroupSubject.objects.filter(group=group_obj),
+        'group_subjects': group_subjects,
     }
     return render(request, 'journal/journals.html', context=context)
 
 
-def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
+def journal(request, group_slug, subject_slug):
+    if request.user.role != "Teacher":
+        # student_pk = request.user.student.pk
+        return redirect('main')
+
     group_obj = Group.objects.get(slug=group_slug)
     subject_obj = Subject.objects.get(slug=subject_slug)
     group_subject_obj = GroupSubject.objects.get(group=group_obj, subject=subject_obj)
-    teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj)
+
+    teacher_obj = Teacher.objects.get(pk=request.user.teacher.pk)
+    teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
+    teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
 
     students_objs = Student.objects.filter(group=group_obj).order_by('-user')
-    condition = (len(teacher_subject_obj.get_students()) != 0)
+    condition = teacher_subject_obj.if_exist()
     students = students_objs.filter(pk__in=teacher_subject_obj.get_students()) if condition \
         else None
-    other_students = students_objs.exclude(pk__in=teacher_subject_obj.get_students()) if condition \
+    other_students = list()
+    for obj in teacher_subject_objs:
+        if obj.if_exist():
+            other_students += obj.get_students()
+    other_students = students_objs.exclude(pk__in=other_students) if len(other_students) > 0 \
         else students_objs
 
     lesson_objs = Lesson.objects.filter(teacher_subject=teacher_subject_obj)
@@ -122,10 +150,9 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         'lesson_update_form': LessonUpdateForm,
         'months': json.dumps(months),
         'student_lesson_list': json.dumps(student_lesson_list),
-        # студенти, які входять вже є у журналі
         'students': students,
-        # інші студенти, які не входять в класс, але тієїж групи
         'other_students': other_students,
+        'other_teachers': Teacher.objects.exclude(pk=teacher_subject_obj.teacher.pk),
     }
 
     if request.method == "POST":
@@ -198,7 +225,7 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')
-            students_list = teacher_subject_obj.get_students()
+            students_list = teacher_subject_obj.get_students() if condition else list()
             for student in selected_students_list:
                 students_list.append(student)
             teacher_subject_obj.set_students(students_list)
@@ -208,6 +235,11 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
             form = LessonCreateForm(request.POST)
             if form.is_valid():
                 form.save()
+        # Add Teacher Allow To Change A Jounal
+        if request.POST['button'] == "allow_teacher":
+            select = request.POST['teacher-select-input']
+            date = request.POST['up-to-date-input']
+            print({'select': select, 'date': date})
         # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
@@ -220,13 +252,23 @@ def journal(request, group_slug="1-mp-9", subject_slug="mathematic"):
         if request.POST['button'] == "delete_lesson":
             try:
                 Lesson.objects.get(pk=request.POST['lesson_pk']).delete()
-                return redirect('journal')
+                return redirect('journal', group_slug, subject_slug)
             except Exception as e:
                 return JsonResponse({'message': f'Error: {e}'}, status=200)
 
-        return redirect('journal')
+        return redirect('journal', group_slug, subject_slug)
 
     return render(request, 'journal/journal.html', context=context)
+
+
+def admin_settings(request):
+    context = {
+        'title': 'Admin Settings',
+        'subject_creation_form': SubjectCreationForm,
+        'subject_creation_full_form': SubjectFullCreationForm,
+    }
+
+    return render(request, 'journal/admin_settings.html', context=context)
 
 
 class UserEditView(LoginRequiredMixin, generic.UpdateView):

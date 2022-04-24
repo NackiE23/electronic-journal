@@ -72,6 +72,13 @@ class CustomUser(AbstractBaseUser):
             return f'{self.surname}  {self.name} {self.patronymic}'
         return self.email.split('@')[0]
 
+    def get_group_slug(self):
+        if self.role == "Teacher":
+            return self.teacher.group.slug
+        elif self.role == "Student":
+            return self.student.group.slug
+        return None
+
     def has_perm(self, perm, obj=None):
         return True
 
@@ -84,9 +91,19 @@ class CustomUser(AbstractBaseUser):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    specializations = models.CharField(max_length=1000, null=True)
 
     def __str__(self):
         return str(self.user)
+
+    def set_specializations(self, students: list) -> None:
+        if type(students) is list:
+            self.specializations = json.dumps(students)
+        else:
+            raise ValueError(f'Received value must be a list. But got {type(students)}')
+
+    def get_specializations(self) -> list:
+        return json.loads(self.specializations)
 
 
 class Group(models.Model):
@@ -149,16 +166,21 @@ class TeacherSubject(models.Model):
     group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE)
     semester = models.PositiveIntegerField(verbose_name="Семестр")
     academic_year = models.CharField(max_length=4, verbose_name="Навчальний рік")
-    students = models.CharField(max_length=200)
+    students = models.CharField(max_length=1000, null=True)
 
     def __str__(self):
         return f"{self.teacher} - {self.group_subject}"
 
-    def set_students(self, students):
+    def set_students(self, students: list) -> None:
         self.students = json.dumps(students)
 
-    def get_students(self):
+    def get_students(self) -> list:
         return json.loads(self.students)
+
+    def if_exist(self) -> bool:
+        if self.students is not None:
+            return True
+        return False
 
 
 class LessonType(models.Model):
@@ -201,3 +223,13 @@ class Message(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
     is_check = models.BooleanField(default=False)
+
+
+class Replacement(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    teacher_subject = models.ForeignKey(TeacherSubject, on_delete=models.CASCADE)
+    date_from = models.DateField(auto_now_add=True)
+    date_to = models.DateField()
+
+    def __str__(self):
+        return str(self.teacher_subject)

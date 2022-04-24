@@ -56,9 +56,17 @@ class UserInAdmin(UserAdmin):
     get_html_photo.short_description = "Miniature"
 
 
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ['user', 'group']
+
+
 class StudentLessonAdmin(admin.ModelAdmin):
     list_display = ['lesson', 'student', 'mark', 'date']
     readonly_fields = ('date', )
+
+
+class TeacherSubjectInAdmin(admin.ModelAdmin):
+    readonly_fields = ('students', )
 
 
 class SlugToName(admin.ModelAdmin):
@@ -67,12 +75,13 @@ class SlugToName(admin.ModelAdmin):
 
 admin.site.register(Teacher)
 admin.site.register(Group, SlugToName)
-admin.site.register(Student)
+admin.site.register(Student, StudentAdmin)
 admin.site.register(Attendance)
 admin.site.register(EvaluationSystem)
 admin.site.register(Subject, SlugToName)
 admin.site.register(GroupSubject)
-admin.site.register(TeacherSubject)
+admin.site.register(TeacherSubject, TeacherSubjectInAdmin)
 admin.site.register(Lesson)
 admin.site.register(LessonType, SlugToName)
 admin.site.register(StudentLesson, StudentLessonAdmin)
+admin.site.register(Replacement)

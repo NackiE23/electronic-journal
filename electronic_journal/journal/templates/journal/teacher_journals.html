@@ -1,0 +1,18 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+<ol>
+{% for teacher_subject in teacher_subjects %}
+    <li>{{ teacher_subject }}
+        <a href="{% url 'journal' teacher_subject.group_subject.group.slug teacher_subject.group_subject.subject.slug %}">Link</a>
+    </li>
+{% endfor %}
+
+{% for replacement in replacements %}
+    <li>{{ replacement.teacher_subject.group_subject }} (до {{ replacement.date_to }})
+        <a href="{% url 'journal' replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Link</a>
+    </li>
+{% endfor %}
+
+</ol>
+{% endblock %}
