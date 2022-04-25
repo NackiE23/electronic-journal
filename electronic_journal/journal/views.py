@@ -89,24 +89,35 @@ def teacher_journal_list(request, teacher_pk):
     return render(request, 'journal/teacher_journals.html', context=context)
 
 
-def group_journal_list(request, group_slug):
-    group_obj = Group.objects.get(slug=group_slug)
-    if request.user.is_admin:
-        group_subjects = GroupSubject.objects.all()
-    else:
-        group_subjects = GroupSubject.objects.filter(group=group_obj)
+def student_journal(request, student_pk):
+    student_obj = Student.objects.get(pk=student_pk)
+    group_subject_objs = GroupSubject.objects.filter(group=student_obj.group)
+    group_teacher_subject_objs = TeacherSubject.objects.filter(group_subject__in=group_subject_objs)
+    st_teacher_subject_objs = [obj for obj in group_teacher_subject_objs if obj.check_student(student_pk)]
+    lesson_objs = Lesson.objects.filter(teacher_subject__in=st_teacher_subject_objs)
+    student_lesson_objs = StudentLesson.objects.filter(lesson__in=lesson_objs, student=student_obj).order_by('lesson__date')
+
+    months = {}
+    for lesson_obj in lesson_objs:
+        month = number_to_month(lesson_obj.date.month)
+        if month not in months.values():
+            months.update({lesson_obj.pk: month})
 
     context = {
-        'title': 'Journal list',
-        'group_subjects': group_subjects,
+        'title': 'Student journal',
+        'student': student_obj,
+        'st_teacher_subjects': st_teacher_subject_objs,
+        'lessons': lesson_objs,
+        'student_lessons': student_lesson_objs,
+        'months': json.dumps(months),
     }
-    return render(request, 'journal/journals.html', context=context)
+
+    return render(request, 'journal/student_journal.html', context=context)
 
 
 def journal(request, group_slug, subject_slug):
     if request.user.role != "Teacher":
-        # student_pk = request.user.student.pk
-        return redirect('main')
+        return redirect('student_journal', request.user.student.pk)
 
     group_obj = Group.objects.get(slug=group_slug)
     subject_obj = Subject.objects.get(slug=subject_slug)

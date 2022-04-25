@@ -1,0 +1,49 @@
+{% extends 'journal/base.html' %}
+
+{% block main %}
+<h1>{{ st_pk }}</h1>
+
+{% for obj in st_teacher_subjects %}
+    <h3>{{ obj }}</h3>
+    <table>
+        <tr>
+            <th>Студент</th>
+            {% for lesson in lessons %}
+                {% if obj == lesson.teacher_subject %}
+                    <th id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                        {{ lesson.date | date:"d" }}
+                    </th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>{{ student }}</td>
+            {% for lesson in lessons %}
+                {% if obj == lesson.teacher_subject %}
+                <td>
+                    {% for student_lesson in student_lessons %}
+                        {% if lesson == student_lesson.lesson %}
+                            {{ student_lesson.mark }}
+                        {% endif %}
+                    {% endfor%}
+                </td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </table>
+<hr>
+{% endfor %}
+
+
+{% endblock %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function(){
+    const months = {{ months|safe }};
+    for (let i in months) {
+        $(`#lesson${i}`).append("<div class='month_on_the_top'>" + " " + months[i] + "</div>");
+    }
+});
+</script>
+{% endblock %}

@@ -17,14 +17,10 @@
 <a type="button" href="{% url 'logout' %}">Вихід</a>
 <a type="button" href="{% url 'own_profile' %}">Мій профіль</a>
 <a type="button" href="{% url 'messages' %}">Повідомлення</a>
-    {% if user.get_group_slug is None %}
-    <a type="button" href="{% url 'group_journal_list' '1-mp-9' %}">Журнали</a>
-    {% else %}
-        {% if user.role == "Teacher" %}
-            <a type="button" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
-        {% elif user.role == "Student" %}
-            <a type="button" href="{% url 'group_journal_list' user.get_group_slug %}">Журнали</a>
-        {% endif %}
+    {% if user.role == "Teacher" %}
+        <a type="button" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
+    {% elif user.role == "Student" %}
+        <a type="button" href="{% url 'student_journal' user.student.pk %}">Журнали</a>
     {% endif %}
 {% endif %}
 {% if user.is_admin %}

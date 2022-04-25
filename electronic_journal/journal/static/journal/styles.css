@@ -27,3 +27,9 @@ th, td {
     padding: 5px 0;
     text-align: center;
 }
+
+.month_on_the_top {
+    color: red;
+    position: absolute;
+    bottom: 35px;
+}

@@ -182,6 +182,13 @@ class TeacherSubject(models.Model):
             return True
         return False
 
+    def check_student(self, student_pk) -> bool:
+        if self.if_exist():
+            if str(student_pk) in self.get_students():
+                return True
+            return False
+        return False
+
 
 class LessonType(models.Model):
     name = models.CharField(max_length=25)
@@ -214,7 +221,7 @@ class StudentLesson(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.student)
+        return f'{self.student} in {self.lesson}: {self.mark}'
 
 
 class Message(models.Model):
