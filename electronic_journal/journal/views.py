@@ -95,20 +95,24 @@ def student_journal(request, student_pk):
     group_teacher_subject_objs = TeacherSubject.objects.filter(group_subject__in=group_subject_objs)
     st_teacher_subject_objs = [obj for obj in group_teacher_subject_objs if obj.check_student(student_pk)]
     lesson_objs = Lesson.objects.filter(teacher_subject__in=st_teacher_subject_objs)
-    student_lesson_objs = StudentLesson.objects.filter(lesson__in=lesson_objs, student=student_obj).order_by('lesson__date')
+    st_lesson_objs = StudentLesson.objects.filter(lesson__in=lesson_objs, student=student_obj).order_by('lesson__date')
 
     months = {}
-    for lesson_obj in lesson_objs:
-        month = number_to_month(lesson_obj.date.month)
-        if month not in months.values():
-            months.update({lesson_obj.pk: month})
+    for st_teacher_subject_obj in st_teacher_subject_objs:
+        l_lesson_objs = Lesson.objects.filter(teacher_subject=st_teacher_subject_obj)
+        l_months = {}
+        for lesson_obj in l_lesson_objs:
+            month = number_to_month(lesson_obj.date.month)
+            if month not in l_months.values():
+                l_months.update({lesson_obj.pk: month})
+                months.update({lesson_obj.pk: month})
 
     context = {
         'title': 'Student journal',
         'student': student_obj,
         'st_teacher_subjects': st_teacher_subject_objs,
         'lessons': lesson_objs,
-        'student_lessons': student_lesson_objs,
+        'student_lessons': st_lesson_objs,
         'months': json.dumps(months),
     }
 
@@ -269,7 +273,7 @@ def journal(request, group_slug, subject_slug):
 
         return redirect('journal', group_slug, subject_slug)
 
-    return render(request, 'journal/journal.html', context=context)
+    return render(request, 'journal/teacher_journal.html', context=context)
 
 
 def admin_settings(request):
