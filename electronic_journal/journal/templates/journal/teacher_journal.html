@@ -148,7 +148,7 @@ $(document).ready(function(){
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
     $(".activate_lesson_update_form").click(function() {
-        $("#lesson_update").toggle();
+        $("#lesson_update").hide();
         let lesson_pk = $(this).parent().attr('data-lesson-pk')
         $.ajax({
             url: '',
@@ -164,6 +164,7 @@ $(document).ready(function(){
                 $('#lesson_update input[name="note"]').val(responce.note);
                 $('#lesson_update input[name="lesson_pk"]').val(lesson_pk);
                 $(`#lesson_update select option[value=${responce.type_pk}]`).prop("selected", true);
+                $("#lesson_update").show();
             }
         });
     });

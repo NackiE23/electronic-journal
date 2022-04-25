@@ -116,6 +116,23 @@ def student_journal(request, student_pk):
         'months': json.dumps(months),
     }
 
+    if request.method == "POST":
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            if request.POST['type'] == "get_lesson_info":
+                lesson_pk = request.POST['lesson_pk']
+                lesson_obj = Lesson.objects.get(pk=lesson_pk)
+                result = {
+                    'teacher': lesson_obj.teacher_subject.teacher.user.get_full_name(),
+                    'subject': lesson_obj.teacher_subject.group_subject.subject.name,
+                    'last_update': lesson_obj.last_update,
+                    'date': lesson_obj.date,
+                    'topic': lesson_obj.topic,
+                    'homework': lesson_obj.homework,
+                    'note': lesson_obj.note,
+                    'type': lesson_obj.type.name,
+                }
+                return JsonResponse(result, status=200)
+
     return render(request, 'journal/student_journal.html', context=context)
 
 

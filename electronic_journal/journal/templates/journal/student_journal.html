@@ -6,11 +6,12 @@
 {% for obj in st_teacher_subjects %}
     <h3>{{ obj }}</h3>
     <table>
+        {% csrf_token %}
         <tr>
             <th>Студент</th>
             {% for lesson in lessons %}
                 {% if obj == lesson.teacher_subject %}
-                    <th id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                    <th class="lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative; cursor: pointer;">
                         {{ lesson.date | date:"d" }}
                     </th>
                 {% endif %}
@@ -34,6 +35,15 @@
 <hr>
 {% endfor %}
 
+<div id="lesson_info" style="background-color: #c4c4c4; border: 1px solid black;">
+    <h1>Info lesson from <span id="lesson-info-teacher_subject">teacher_subject</span></h1>
+    <p>Last_update: <span id="lesson-info-last_update">date</span></p>
+    <p>Date: <span id="lesson-info-date">date</span></p>
+    <p>Topic: <span id="lesson-info-topic">text</span></p>
+    <p>Homework: <span id="lesson-info-homework">text</span></p>
+    <p>Note: <span id="lesson-info-note">text</span></p>
+    <p>Type: <span id="lesson-info-type">text</span></p>
+</div>
 
 {% endblock %}
 {% block script %}
@@ -44,6 +54,31 @@ $(document).ready(function(){
     for (let i in months) {
         $(`#lesson${i}`).append("<div class='month_on_the_top'>" + " " + months[i] + "</div>");
     }
+
+    const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
+    $(".lesson_date").click(function() {
+        $("#lesson_info").hide();
+        let lesson_pk = $(this).attr('data-lesson-pk')
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: table_csrf,
+                type: 'get_lesson_info',
+                lesson_pk: lesson_pk,
+            },
+            success: function(responce) {
+                $('#lesson-info-teacher_subject').html(responce.teacher + " " + responce.subject);
+                $('#lesson-info-last_update').html(responce.last_update);
+                $('#lesson-info-date').html(responce.date);
+                $('#lesson-info-topic').html(responce.topic);
+                $('#lesson-info-homework').html(responce.homework);
+                $('#lesson-info-note').html(responce.note);
+                $('#lesson-info-type').html(responce.type);
+                $("#lesson_info").show();
+            }
+        });
+    });
 });
 </script>
 {% endblock %}
