@@ -41,17 +41,17 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser):
-    name = models.CharField(max_length=15, null=False)
-    surname = models.CharField(max_length=15, null=False)
-    patronymic = models.CharField(max_length=15, blank=True, null=True)
+    name = models.CharField(max_length=15, null=False, verbose_name="Ім'я")
+    surname = models.CharField(max_length=15, null=False, verbose_name="Прізвище")
+    patronymic = models.CharField(max_length=15, blank=True, null=True, verbose_name="По батькові")
 
     email = models.EmailField(unique=True)  # require
-    phone_number = models.CharField(max_length=16, blank=True, null=True)
-    avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True)
-    date_of_birth = models.DateField(null=True)
-    about = models.TextField(null=True)
+    phone_number = models.CharField(max_length=16, blank=True, null=True, verbose_name="Номер телефону")
+    avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True, verbose_name="Аватар")
+    date_of_birth = models.DateField(null=True, verbose_name="День народження")
+    about = models.TextField(null=True, verbose_name="Про себе")
 
-    role = models.CharField(max_length=8, null=False, default="Other")
+    role = models.CharField(max_length=8, null=False, default="Other", verbose_name="Роль")
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -91,7 +91,7 @@ class CustomUser(AbstractBaseUser):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    specializations = models.CharField(max_length=1000, null=True)
+    specializations = models.CharField(max_length=1000, null=True, verbose_name="Спеціалізації")
 
     def __str__(self):
         return str(self.user)
@@ -120,15 +120,15 @@ class Group(models.Model):
 
 class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    group = models.ForeignKey("Group", on_delete=models.CASCADE)
+    group = models.ForeignKey("Group", on_delete=models.CASCADE, verbose_name="Група")
 
     def __str__(self):
         return str(self.user)
 
 
 class Attendance(models.Model):
-    full_name = models.CharField(max_length=45)
-    short_name = models.CharField(max_length=5)
+    full_name = models.CharField(max_length=45, verbose_name="Повна назва")
+    short_name = models.CharField(max_length=5, verbose_name="Скорочена назва")
 
     def __str__(self):
         return self.full_name
@@ -136,7 +136,7 @@ class Attendance(models.Model):
 
 class EvaluationSystem(models.Model):
     name = models.CharField(max_length=45, verbose_name="Система оцінювання")
-    numerical_form = models.PositiveIntegerField()
+    numerical_form = models.PositiveIntegerField(verbose_name="Числова форма")
 
     def __str__(self):
         return self.name
@@ -144,29 +144,29 @@ class EvaluationSystem(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=45, verbose_name="Назва предмету")
-    slug = models.SlugField(max_length=45, unique=True, verbose_name="identificator")
+    slug = models.SlugField(max_length=45, unique=True, verbose_name="Ідентифікатор")
     short_name = models.CharField(max_length=33, verbose_name="Скорочена назва предмету")
-    evaluation_system = models.ForeignKey("EvaluationSystem", on_delete=models.CASCADE)
+    evaluation_system = models.ForeignKey("EvaluationSystem", on_delete=models.CASCADE, verbose_name="Система оцінювання")
 
     def __str__(self):
         return self.name
 
 
 class GroupSubject(models.Model):
-    group = models.ForeignKey('Group', on_delete=models.CASCADE)
-    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
-    amount_of_hours = models.PositiveIntegerField()
+    group = models.ForeignKey('Group', on_delete=models.CASCADE, verbose_name="Група")
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE, verbose_name="Предмет")
+    amount_of_hours = models.PositiveIntegerField(verbose_name="Кількість годин")
 
     def __str__(self):
         return f"{self.subject.name} {self.group.name}"
 
 
 class TeacherSubject(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE)
+    teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE, verbose_name="Викладач")
     group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE)
     semester = models.PositiveIntegerField(verbose_name="Семестр")
     academic_year = models.CharField(max_length=4, verbose_name="Навчальний рік")
-    students = models.CharField(max_length=1000, null=True)
+    students = models.CharField(max_length=1000, null=True, verbose_name="Студенти")
 
     def __str__(self):
         return f"{self.teacher} - {self.group_subject}"
@@ -191,20 +191,20 @@ class TeacherSubject(models.Model):
 
 
 class LessonType(models.Model):
-    name = models.CharField(max_length=25)
-    slug = models.SlugField(max_length=25, unique=True, verbose_name="identificator")
+    name = models.CharField(max_length=25, verbose_name="Назва")
+    slug = models.SlugField(max_length=25, unique=True, verbose_name="Ідентифікатор")
 
     def __str__(self):
         return self.name
 
 
 class Lesson(models.Model):
-    date = models.DateField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
+    date = models.DateField(auto_now_add=True, verbose_name="Дата")
+    last_update = models.DateTimeField(auto_now=True, verbose_name="Останнє оновлення")
     topic = models.CharField(max_length=200, verbose_name="Тема", null=True)
     homework = models.CharField(max_length=200, verbose_name="Домашнє завдання", null=True)
     note = models.CharField(max_length=200, verbose_name="Примітка", null=True)
-    type = models.ForeignKey('LessonType', on_delete=models.CASCADE)
+    type = models.ForeignKey('LessonType', on_delete=models.CASCADE, verbose_name="Тип")
     teacher_subject = models.ForeignKey("TeacherSubject", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -215,10 +215,10 @@ class Lesson(models.Model):
 
 
 class StudentLesson(models.Model):
-    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE)
-    student = models.ForeignKey("Student", on_delete=models.CASCADE)
-    mark = models.CharField(max_length=3, null=True)
-    date = models.DateField(auto_now_add=True)
+    lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, verbose_name="Предмет")
+    student = models.ForeignKey("Student", on_delete=models.CASCADE, verbose_name="Студент")
+    mark = models.CharField(max_length=3, null=True, verbose_name="Оцінка")
+    date = models.DateField(auto_now_add=True, verbose_name="Дата")
 
     def __str__(self):
         return f'{self.student} in {self.lesson}: {self.mark}'
@@ -227,9 +227,9 @@ class StudentLesson(models.Model):
 class Message(models.Model):
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="from_user")
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
-    time = models.DateTimeField(auto_now_add=True)
-    text = models.TextField()
-    is_check = models.BooleanField(default=False)
+    time = models.DateTimeField(auto_now_add=True, verbose_name="Час")
+    text = models.TextField(verbose_name="Текст")
+    is_check = models.BooleanField(default=False, verbose_name="Чи перевірино")
 
 
 class Replacement(models.Model):

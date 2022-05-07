@@ -2,21 +2,21 @@
 
 {% block main %}
 <ul style="list-style: none">
-    <li>avatar
+    <li>Аватар:
         {% if cur_user.avatar %}
             <li><img class="img-article-left" src="{{cur_user.avatar.url}}" width="350"></li>
         {% endif %}
     </li>
-    <li>name - {{ cur_user.name }}</li>
-    <li>surname - {{ cur_user.surname }}</li>
-    <li>patronymic - {{ cur_user.patronymic }}</li>
+    <li>Ім'я - {{ cur_user.name }}</li>
+    <li>Прізвище - {{ cur_user.surname }}</li>
+    <li>По батькові - {{ cur_user.patronymic }}</li>
     <li>email - {{ cur_user.email }}</li>
-    <li>phone number - {{ cur_user.phone_number }}</li>
-    <li>role - {{ cur_user.role }}</li>
-    <li>date of birth - {{ cur_user.date_of_birth }}</li>
-    <li>about - {{ cur_user.about }}</li>
+    <li>Номер телефону - {{ cur_user.phone_number }}</li>
+    <li>Роль у системі - {{ cur_user.role }}</li>
+    <li>День народження - {{ cur_user.date_of_birth }}</li>
+    <li>Про себе - {{ cur_user.about }}</li>
     {% if not guest %}
-        <li><a href="{% url 'edit_profile' %}">Edit profile</a></li>
+        <li><a href="{% url 'edit_profile' %}">Редагувати профіль</a></li>
     {% endif %}
 </ul>
 <hr>

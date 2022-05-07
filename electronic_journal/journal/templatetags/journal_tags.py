@@ -21,5 +21,10 @@ def journal_name(value):
 
 
 @register.filter(name='get_pk')
-def journal_name(value):
+def journal_student_pk(value):
     return value[1].pk
+
+
+@register.filter(name='get_user_pk')
+def journal_student_as_user_pk(value):
+    return value[1].user.pk
