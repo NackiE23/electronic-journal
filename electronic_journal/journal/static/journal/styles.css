@@ -28,8 +28,13 @@ th, td {
     text-align: center;
 }
 
-.month_on_the_top {
+th:before {
+    content: attr(data-content);
     color: red;
     position: absolute;
     bottom: 35px;
+}
+
+th span {
+    cursor: pointer;
 }

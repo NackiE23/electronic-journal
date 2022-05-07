@@ -136,7 +136,7 @@ def student_journal(request, student_pk):
     return render(request, 'journal/student_journal.html', context=context)
 
 
-def journal(request, group_slug, subject_slug):
+def teacher_journal(request, teacher_pk, group_slug, subject_slug):
     if request.user.role != "Teacher":
         return redirect('student_journal', request.user.student.pk)
 
@@ -144,7 +144,7 @@ def journal(request, group_slug, subject_slug):
     subject_obj = Subject.objects.get(slug=subject_slug)
     group_subject_obj = GroupSubject.objects.get(group=group_obj, subject=subject_obj)
 
-    teacher_obj = Teacher.objects.get(pk=request.user.teacher.pk)
+    teacher_obj = Teacher.objects.get(pk=teacher_pk)
     teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
     teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
 
@@ -284,11 +284,11 @@ def journal(request, group_slug, subject_slug):
         if request.POST['button'] == "delete_lesson":
             try:
                 Lesson.objects.get(pk=request.POST['lesson_pk']).delete()
-                return redirect('journal', group_slug, subject_slug)
+                return redirect('teacher_journal', teacher_pk, group_slug, subject_slug)
             except Exception as e:
                 return JsonResponse({'message': f'Error: {e}'}, status=200)
 
-        return redirect('journal', group_slug, subject_slug)
+        return redirect('teacher_journal', teacher_pk, group_slug, subject_slug)
 
     return render(request, 'journal/teacher_journal.html', context=context)
 

@@ -11,8 +11,8 @@
             <th>Студент</th>
             {% for lesson in lessons %}
                 {% if obj == lesson.teacher_subject %}
-                    <th class="lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative; cursor: pointer;">
-                        {{ lesson.date | date:"d" }}
+                    <th class="lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                        <span>{{ lesson.date | date:"d" }}</span>
                     </th>
                 {% endif %}
             {% endfor %}
@@ -52,13 +52,13 @@
 $(document).ready(function(){
     const months = {{ months|safe }};
     for (let i in months) {
-        $(`#lesson${i}`).append("<div class='month_on_the_top'>" + " " + months[i] + "</div>");
+        $(`#lesson${i}`).attr('data-content', months[i]);
     }
 
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
-    $(".lesson_date").click(function() {
+    $(".lesson_date span").click(function() {
         $("#lesson_info").hide();
-        let lesson_pk = $(this).attr('data-lesson-pk')
+        let lesson_pk = $(this).parent().attr('data-lesson-pk')
         $.ajax({
             url: '',
             type: 'post',

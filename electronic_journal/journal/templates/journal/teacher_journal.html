@@ -216,7 +216,7 @@ $(document).ready(function(){
     const months = {{ months|safe }};
     console.log(months, typeof months);
     for (let i in months) {
-        $(`#lesson${i}`).append("<div class='month_on_the_top'>" + " " + months[i] + "</div>");
+        $(`#lesson${i}`).addClass('month').attr('data-content', months[i]);
     }
 
 });
