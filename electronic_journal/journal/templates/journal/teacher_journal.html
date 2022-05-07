@@ -25,6 +25,7 @@
 <div class="info">
     <h1>{{ group_subject }}</h1>
 
+    <h4>Система оцінювання: {{ teacher_subject.group_subject.subject.evaluation_system.name }}</h4>
     <h4>Викладач: {{ teacher_subject.teacher }}</h4>
 </div>
 
@@ -48,7 +49,7 @@
         <td><a href="{% url 'profile' student|get_user_pk %}">{{ student|name }}</a></td>
         {% for lesson in lessons %}
         <td>
-            <input type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
+            <input id="{{ student|get_pk }}{{ lesson.pk }}" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
         </td>
         {% endfor %}
     </tr>
@@ -190,6 +191,7 @@ $(document).ready(function(){
     });
 
     $("td input").change(function() {
+        let input_id = $(this).attr('id');
         $.ajax({
             url: '',
             type: 'post',
@@ -201,7 +203,15 @@ $(document).ready(function(){
                 value: $(this).val(),
             },
             success: function(responce) {
-                $("#additional").append(responce.data + "<br>");
+                if (responce.error === true) {
+                    $("#additional").append(responce.data + "<br>");
+                    $(`#${input_id}`).val("");
+                } else {
+                    $("#additional").append(responce.data + "<br>");
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("Status: " + textStatus); alert("Error: " + errorThrown);
             }
         });
     });

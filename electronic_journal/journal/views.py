@@ -211,20 +211,21 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
                         else:
                             assert isinstance(int(value), int)
                             assert int(value) >= 0
+                            assert int(value) <= subject_obj.evaluation_system.numerical_form
                             stl_obj.mark = value
                             stl_obj.save()
 
                     result = f"Зміни внесені: {created=}; {student_pk=}; {lesson_pk=}; {value=};"
-                    return JsonResponse({'data': result}, status=200)
+                    return JsonResponse({'data': result, 'value': value, 'error': False}, status=200)
                 except ValueError:
                     result = f"{value} - Неприйнятне значення!!!"
-                    return JsonResponse({'data': result}, status=200)
+                    return JsonResponse({'data': result, 'value': value, 'error': True}, status=200)
                 except AssertionError:
                     result = f"{value} - Неприйнятне значення"
-                    return JsonResponse({'data': result}, status=200)
+                    return JsonResponse({'data': result, 'value': value, 'error': True}, status=200)
                 except Exception as e:
                     result = f"Error: {e}"
-                    return JsonResponse({'data': result}, status=200)
+                    return JsonResponse({'data': result, 'value': value, 'error': True}, status=200)
             # Get lesson info
             if request.POST['type'] == "get lesson info":
                 lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
