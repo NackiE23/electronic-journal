@@ -11,16 +11,16 @@
 <body style="text-align: center; padding-top: 50px;">
 
 {% block menu %}
-<a type="button" href="{% url 'register' %}">Реєстрація</a>
-<a type="button" href="{% url 'login' %}">Вхід</a>
+| <a type="button" href="{% url 'register' %}">Реєстрація</a> |
+<a type="button" href="{% url 'login' %}">Вхід</a> |
 {% if user.is_authenticated %}
-<a type="button" href="{% url 'logout' %}">Вихід</a>
-<a type="button" href="{% url 'own_profile' %}">Мій профіль</a>
-<a type="button" href="{% url 'messages' %}">Повідомлення</a>
+<a type="button" href="{% url 'logout' %}">Вихід</a> |
+<a type="button" href="{% url 'own_profile' %}">Мій профіль</a> |
+<a type="button" href="{% url 'messages' %}">Повідомлення</a> |
     {% if user.role == "Teacher" %}
-        <a type="button" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
+        <a type="button" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a> |
     {% elif user.role == "Student" %}
-        <a type="button" href="{% url 'student_journal' user.student.pk %}">Журнали</a>
+        <a type="button" href="{% url 'student_journal' user.student.pk %}">Журнали</a> |
     {% endif %}
 {% endif %}
 {% if user.is_admin %}

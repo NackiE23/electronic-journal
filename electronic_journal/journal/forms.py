@@ -71,9 +71,10 @@ class MyUserChangeForm(forms.ModelForm):
     name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
     patronymic = forms.CharField(label="По батькові", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    phone_number = forms.CharField(label="phone_number", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    date_of_birth = forms.DateField(label="date_of_birth", initial=datetime.date.today(),
-                                    widget=forms.DateInput(attrs={'class': 'form-input'}))
+    phone_number = forms.CharField(label="Номер телефону", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    date_of_birth = forms.DateField(label="Дата народження", initial=datetime.date.today(),
+                                    widget=forms.DateInput(attrs={'class': 'form-input',
+                                                                  'placeholder': 'дд.мм.рррр або рррр-мм-дд'}))
     about = forms.CharField(label="about", widget=forms.Textarea(attrs={'class': 'form-input'}))
 
     def __init__(self, *args, **kwargs):
