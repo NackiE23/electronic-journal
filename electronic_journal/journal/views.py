@@ -148,7 +148,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
     teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
     teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
 
-    students_objs = Student.objects.filter(group=group_obj).order_by('-user')
+    students_objs = Student.objects.filter(group=group_obj).order_by('user')
     condition = teacher_subject_obj.if_exist()
     students = students_objs.filter(pk__in=teacher_subject_obj.get_students()) if condition \
         else None
