@@ -72,6 +72,18 @@ class CustomUser(AbstractBaseUser):
             return f'{self.surname}  {self.name} {self.patronymic}'
         return self.email.split('@')[0]
 
+    def get_short_name(self):
+        if self.name and self.surname:
+            return f'{self.surname}  {self.name}'
+        return self.email.split('@')[0]
+
+    def get_name(self):
+        if self.name and self.surname and self.patronymic:
+            return f'{self.surname}  {self.name} {self.patronymic}'
+        if self.name and self.surname:
+            return f'{self.surname}  {self.name}'
+        return self.email.split('@')[0]
+
     def get_group_slug(self):
         if self.role == "Teacher":
             return self.teacher.group.slug

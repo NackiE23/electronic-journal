@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -66,6 +67,20 @@ def messages(request):
             message_obj.save()
 
     return render(request, 'journal/messages.html', context=context)
+
+
+def find_people(request):
+    context = {
+        'title': 'Find a person',
+    }
+
+    query = request.GET.get('q')
+    if query:
+        # Реєстр враховується, тому що використовується SQLite
+        results = CustomUser.objects.filter(Q(name__icontains=query) | Q(surname__icontains=query) | Q(patronymic__icontains=query))
+        context.update({'results': results})
+
+    return render(request, 'journal/find_people.html', context=context)
 
 
 def group(request, group_slug):
