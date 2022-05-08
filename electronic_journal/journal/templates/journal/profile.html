@@ -19,9 +19,19 @@
         <li><a href="{% url 'edit_profile' %}">Редагувати профіль</a></li>
     {% endif %}
 </ul>
+{% if cur_user != user %}
 <hr>
 
-
+<h1>Надіслати повідомлення</h1>
+<form method="POST">
+    {% csrf_token %}
+    <p><label for="message-input">Повідомлення</label>
+    <textarea id="message-input" name="message-text" placeholder="Повідомлення"></textarea></p>
+    <input type="hidden" name="user_pk" value="{{user.pk}}">
+    <input type="submit" value="Надіслати"/>
+</form>
+{% endif %}
+<hr>
 {% if cur_user.role == "Admin" %}
     <h1>It isn't your page. Your page is 127.0.0.1:8000/admin/</h1>
 

@@ -47,6 +47,11 @@ def profile(request, pk):
         }
         context = dict(list(context.items()) + list(c_def.items()))
 
+    if request.method == "POST":
+        message_text = request.POST['message-text']
+        from_user = get_user_model().objects.get(pk=request.POST['user_pk'])
+        Message.objects.create(from_user=from_user, to_user=cur_user, text=message_text)
+
     return render(request, 'journal/profile.html', context=context)
 
 
