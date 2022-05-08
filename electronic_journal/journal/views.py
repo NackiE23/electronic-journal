@@ -69,7 +69,7 @@ def messages(request):
     return render(request, 'journal/messages.html', context=context)
 
 
-def find_people(request):
+def find_person(request):
     context = {
         'title': 'Find a person',
     }
@@ -80,7 +80,7 @@ def find_people(request):
         results = CustomUser.objects.filter(Q(name__icontains=query) | Q(surname__icontains=query) | Q(patronymic__icontains=query))
         context.update({'results': results})
 
-    return render(request, 'journal/find_people.html', context=context)
+    return render(request, 'journal/find_person.html', context=context)
 
 
 def group(request, group_slug):
