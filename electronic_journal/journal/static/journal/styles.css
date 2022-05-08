@@ -40,6 +40,7 @@ th span {
 }
 
 #pop-up-message {
+    display: none;
     position: absolute;
     top: 50vh;
     left: 50vw;
@@ -47,6 +48,10 @@ th span {
     background-color: rgba(0, 128, 0, .5);
     color: blue;
     padding: 10px 25px;
+}
+#pop-up-message.error {
+    background-color: red;
+    color: black;
 }
 
 .close {

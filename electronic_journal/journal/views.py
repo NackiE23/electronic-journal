@@ -215,7 +215,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
                             stl_obj.mark = value
                             stl_obj.save()
 
-                    result = f"Оцінка успішно занесена"
+                    result = f"Відмітка занесена успішно"
                     return JsonResponse({'data': result, 'value': value, 'error': False}, status=200)
                 except ValueError:
                     result = f"{value} - Неприйнятне значення!"

@@ -206,11 +206,12 @@ $(document).ready(function(){
             },
             success: function(responce) {
                 if (responce.error === true) {
-                    showMessage(responce.data, 5000);
+                    showMessage(responce.data, 'error', 5000);
                     $(`#${input_id}`).css("color", "red");
                     $(`#${input_id}`).parent().css("background-color", "red");
                 } else {
-                    showMessage(responce.data, 500);
+                    $(`#${input_id}`).css("color", "black");
+                    $(`#${input_id}`).parent().css("background-color", "inherit");
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

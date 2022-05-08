@@ -43,8 +43,14 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
-    function showMessage(message, timeOut=3000) {
+    function showMessage(message, type='success', timeOut=3000) {
         $('#pop-up-message .pop-up-message__text').html(message);
+        if (type === 'error') {
+            $('#pop-up-message').addClass('error');
+            setTimeout(function () {
+                $('#pop-up-message').removeClass('error');
+            }, timeOut+100);
+        }
         $('#pop-up-message').fadeIn('fast');
         setTimeout(function () {
             $('#pop-up-message').fadeOut('fast');
