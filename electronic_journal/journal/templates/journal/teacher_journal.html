@@ -61,12 +61,14 @@
 <hr>
 
 <div id="lesson_update" style="display: none; position: absolute; top: 0; left: 0; background-color: gray; padding: 100px;">
+    <div class="close"></div>
     {{ lesson_update_form.as_p }}
     <form id="lesson_update__update_form" method="POST">
         {% csrf_token %}
         <input type="hidden" name="lesson_pk">
         <input type="hidden" name="button" value="delete_lesson">
         <button type="submit" name="delete" style="background-color: black; border-color: black; color: white;">Видалити урок</button>
+        <button type="submit" name="submit">Підтвердити зміни</button>
     </form>
 </div>
 
@@ -134,7 +136,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function(){
     var today = new Date();
@@ -159,6 +160,7 @@ $(document).ready(function(){
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
+                $('#lesson_update input[name="date"]').val(responce.date);
                 $('#lesson_update input[name="topic"]').val(responce.topic);
                 $('#lesson_update input[name="homework"]').val(responce.homework);
                 $('#lesson_update input[name="note"]').val(responce.note);
@@ -177,11 +179,11 @@ $(document).ready(function(){
                 csrfmiddlewaretoken: table_csrf,
                 type: 'change_lesson',
                 lesson_pk: $("#lesson_update form input[name='lesson_pk']").val(),
-                name: $(this).attr('name'),
+                field: $(this).attr('name'),
                 value: $(this).val(),
             },
             success: function(responce) {
-                $("#additional").append(responce.message);
+                showMessage(responce.data);
             }
         });
     });
@@ -204,10 +206,11 @@ $(document).ready(function(){
             },
             success: function(responce) {
                 if (responce.error === true) {
-                    $("#additional").append(responce.data + "<br>");
-                    $(`#${input_id}`).val("");
+                    showMessage(responce.data, 5000);
+                    $(`#${input_id}`).css("color", "red");
+                    $(`#${input_id}`).parent().css("background-color", "red");
                 } else {
-                    $("#additional").append(responce.data + "<br>");
+                    showMessage(responce.data, 500);
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

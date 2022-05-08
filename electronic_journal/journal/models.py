@@ -199,7 +199,7 @@ class LessonType(models.Model):
 
 
 class Lesson(models.Model):
-    date = models.DateField(auto_now_add=True, verbose_name="Дата")
+    date = models.DateField(default=timezone.now, verbose_name="Дата")
     last_update = models.DateTimeField(auto_now=True, verbose_name="Останнє оновлення")
     topic = models.CharField(max_length=200, verbose_name="Тема", null=True)
     homework = models.CharField(max_length=200, verbose_name="Домашнє завдання", null=True)

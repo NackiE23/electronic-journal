@@ -39,7 +39,7 @@ class LessonUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Lesson
-        fields = ('topic', 'homework', 'note', 'type')
+        fields = ('date', 'topic', 'homework', 'note', 'type')
 
 
 class SubjectCreationForm(forms.ModelForm):

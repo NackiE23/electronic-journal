@@ -215,10 +215,10 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
                             stl_obj.mark = value
                             stl_obj.save()
 
-                    result = f"Зміни внесені: {created=}; {student_pk=}; {lesson_pk=}; {value=};"
+                    result = f"Оцінка успішно занесена"
                     return JsonResponse({'data': result, 'value': value, 'error': False}, status=200)
                 except ValueError:
-                    result = f"{value} - Неприйнятне значення!!!"
+                    result = f"{value} - Неприйнятне значення!"
                     return JsonResponse({'data': result, 'value': value, 'error': True}, status=200)
                 except AssertionError:
                     result = f"{value} - Неприйнятне значення"
@@ -230,6 +230,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
             if request.POST['type'] == "get lesson info":
                 lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
                 info = {
+                    'date': lesson_obj.date,
                     'topic': lesson_obj.topic,
                     'homework': lesson_obj.homework,
                     'note': lesson_obj.note,
@@ -240,21 +241,25 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
             if request.POST['type'] == "change_lesson":
                 try:
                     lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
-                    if request.POST['name'] == 'topic':
+                    field = request.POST['field']
+                    if field == 'date':
+                        lesson_obj.date = request.POST['value']
+                        lesson_obj.save()
+                    elif field == 'topic':
                         lesson_obj.topic = request.POST['value']
                         lesson_obj.save()
-                    elif request.POST['name'] == 'homework':
+                    elif field == 'homework':
                         lesson_obj.homework = request.POST['value']
                         lesson_obj.save()
-                    elif request.POST['name'] == 'note':
+                    elif field == 'note':
                         lesson_obj.note = request.POST['value']
                         lesson_obj.save()
-                    elif request.POST['name'] == 'type':
+                    elif field == 'type':
                         lesson_obj.type = LessonType.objects.get(pk=int(request.POST['value']))
                         lesson_obj.save()
-                    return JsonResponse({'message': 'Lesson changed successfuly'}, status=200)
+                    return JsonResponse({'data': 'Поле було успішно змінено'}, status=200)
                 except Exception as e:
-                    return JsonResponse({'message': f"Error: {e}"}, status=200)
+                    return JsonResponse({'data': f"Error: {e}"}, status=200)
         # Add Student
         if request.POST['button'] == "add_student":
             selected_students_list = request.POST.getlist('students')

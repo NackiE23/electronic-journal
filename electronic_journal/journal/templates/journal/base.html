@@ -10,6 +10,13 @@
 </head>
 <body style="text-align: center; padding-top: 50px;">
 
+<div id="pop-up-message">
+    <div class="close"></div>
+    <p class="pop-up-message__text">Some text</p>
+</div>
+
+<button id="show-message">sdd</button>
+
 {% block menu %}
 | <a type="button" href="{% url 'register' %}">Реєстрація</a> |
 <a type="button" href="{% url 'login' %}">Вхід</a> |
@@ -34,6 +41,23 @@
 
 {% endblock %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    function showMessage(message, timeOut=3000) {
+        $('#pop-up-message .pop-up-message__text').html(message);
+        $('#pop-up-message').fadeIn('fast');
+        setTimeout(function () {
+            $('#pop-up-message').fadeOut('fast');
+        }, timeOut);
+    }
+
+    $(".close").click(function() {
+        $(this).parent().fadeOut('fast');
+    });
+    $("#show-message").click(function() {
+        showMessage('Fuck You');
+    });
+</script>
 {% block script %}
 {% endblock %}
 </body>
