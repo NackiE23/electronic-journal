@@ -14,11 +14,11 @@ Edit your profile here, {{ user.name }}
 
     {% for f in form %}
         <p>
-            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
-            {{ f }}
             {% if f.id_for_label == "id_avatar" %}
                 <p>Preview: <img src="{{user.avatar.url}}" id="preview-image" width="300" height="200"/></p>
             {% endif %}
+            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+            {{ f }}
         </p>
         <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
