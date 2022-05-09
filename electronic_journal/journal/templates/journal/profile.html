@@ -47,7 +47,7 @@
 {% elif cur_user.role == "Student" %}
     <h2>I'm a student!</h2>
     <ul>
-        <li>Group - {{ cur_user.student.group }}</li>
+        <li>Group - <a href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a></li>
     </ul>
 
 {% else %}

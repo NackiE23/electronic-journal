@@ -6,7 +6,8 @@
 
 <ol>Members:
 {% for member in members %}
-<li><a href="{{ member.user.get_absolute_url }}">{{ member }}</a></li>
+<li>{% if member.user.avatar %}<img src="{{ member.user.avatar.url }}" class="small-profile-image" >{% endif %}
+    <a href="{{ member.user.get_absolute_url }}">{{ member }}</a></li>
 {% endfor %}
 </ol>
 

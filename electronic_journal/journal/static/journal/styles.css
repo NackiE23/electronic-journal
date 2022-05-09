@@ -64,3 +64,8 @@ th span {
     right: 10px;
     transition: 5s;
 }
+
+.small-profile-image {
+    width: 40px;
+    height: 40px;
+}

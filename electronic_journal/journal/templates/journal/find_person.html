@@ -11,7 +11,7 @@
 {% if results %}
 <ul>
 {% for element in results %}
-    <li>{% if element.avatar %}<img src="{{ element.avatar.url }}" width="40px" height="40px" >{% endif %}
+    <li>{% if element.avatar %}<img src="{{ element.avatar.url }}" class="small-profile-image" >{% endif %}
         {{ element.get_name }} -> <a href="{{ element.get_absolute_url }}">Профіль</a></li>
 {% endfor %}
 </ul>
