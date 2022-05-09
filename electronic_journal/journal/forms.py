@@ -77,7 +77,7 @@ class MyUserChangeForm(forms.ModelForm):
                                                                   'type': 'date',
                                                                   'max': datetime.date.today(),
                                                                   'placeholder': 'дд.мм.рррр'}))
-    about = forms.CharField(label="about", widget=forms.Textarea(attrs={'class': 'form-input'}))
+    about = forms.CharField(label="Про себе", widget=forms.Textarea(attrs={'class': 'form-input'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

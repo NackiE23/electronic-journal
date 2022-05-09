@@ -6,17 +6,19 @@
 
 {% block main %}
 
-Edit your profile here, {{ user.name }}
+Коригуй свій профіль тут, {{ user.name }}
 <hr>
 
 <form class="change-form" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
+    {% if user.avatar %}
+        <p>Попередній перегляд: <img src="{{user.avatar.url}}" id="preview-image" width="300" height="200"/></p>
+    {% else %}
+        <p>Попередній перегляд: <img src="" id="preview-image" alt="Треба загрузити фото" width="300" height="200"/></p>
+    {% endif %}
     {% for f in form %}
         <p>
-            {% if f.id_for_label == "id_avatar" %}
-                <p>Preview: <img src="{{user.avatar.url}}" id="preview-image" width="300" height="200"/></p>
-            {% endif %}
             <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
             {{ f }}
         </p>
@@ -24,11 +26,11 @@ Edit your profile here, {{ user.name }}
     {% endfor %}
 
     <input type="hidden" name="form-action" value="change_user_text_info">
-    <button type="submit">Submit</button>
+    <button type="submit">Підтвердити зміни</button>
 </form>
 
 <hr>
-<p>Change your password <a href="{% url 'password_change' %}">here</a></p>
+<p>Змінювати пароль <a href="{% url 'password_change' %}">тут</a></p>
 
 {% endblock %}
 

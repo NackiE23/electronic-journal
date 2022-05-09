@@ -29,7 +29,7 @@
     {% endif %}
 {% endif %}
 {% if user.is_admin %}
-<a type="button" href="{% url 'admin_settings' %}">Налаштування</a>
+<a type="button" href="{% url 'admin_settings' %}">Налаштування</a> |
 {% endif %}
 <a type="button" href="{% url 'find_person' %}">Пошук</a> |
 <hr>
@@ -43,7 +43,7 @@
 <script>
     function showMessage(message, type='success', timeOut=3000) {
         $('#pop-up-messages').show();
-        $('#pop-up-messages').append(`<div class="pop-up-message">\
+        $('#pop-up-messages').append(`<div class="pop-up-message ${type}">\
                                     <div class="close"></div>\
                                     <p class="pop-up-message__text">${message}</p>\
                                     </div>`);

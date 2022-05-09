@@ -41,15 +41,15 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser):
-    name = models.CharField(max_length=15, null=False, verbose_name="Ім'я")
-    surname = models.CharField(max_length=15, null=False, verbose_name="Прізвище")
-    patronymic = models.CharField(max_length=15, blank=True, null=True, verbose_name="По батькові")
+    name = models.CharField(max_length=45, null=False, verbose_name="Ім'я")
+    surname = models.CharField(max_length=45, null=False, verbose_name="Прізвище")
+    patronymic = models.CharField(max_length=45, blank=True, null=True, verbose_name="По батькові")
 
     email = models.EmailField(unique=True)  # require
     phone_number = models.CharField(max_length=16, blank=True, null=True, verbose_name="Номер телефону")
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True, verbose_name="Аватар")
-    date_of_birth = models.DateField(null=True, verbose_name="День народження")
-    about = models.TextField(null=True, verbose_name="Про себе")
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name="День народження")
+    about = models.TextField(null=True, blank=True, verbose_name="Про себе")
 
     role = models.CharField(max_length=8, null=False, default="Other", verbose_name="Роль")
 
@@ -103,7 +103,7 @@ class CustomUser(AbstractBaseUser):
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    specializations = models.CharField(max_length=1000, null=True, verbose_name="Спеціалізації")
+    specializations = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Спеціалізації")
 
     def __str__(self):
         return str(self.user)
@@ -215,7 +215,7 @@ class Lesson(models.Model):
     last_update = models.DateTimeField(auto_now=True, verbose_name="Останнє оновлення")
     topic = models.CharField(max_length=200, verbose_name="Тема", null=True)
     homework = models.CharField(max_length=200, verbose_name="Домашнє завдання", null=True)
-    note = models.CharField(max_length=200, verbose_name="Примітка", null=True)
+    note = models.CharField(max_length=200, blank=True, verbose_name="Примітка", null=True)
     type = models.ForeignKey('LessonType', on_delete=models.CASCADE, verbose_name="Тип")
     teacher_subject = models.ForeignKey("TeacherSubject", on_delete=models.CASCADE)
 

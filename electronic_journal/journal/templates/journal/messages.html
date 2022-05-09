@@ -4,7 +4,7 @@
 {% for message in messages %}
 <div>
     {% if not message.is_check %}
-    <p>Не перевірино</p>
+    <p>Не перевірено</p>
     {% else %}
     <p>Перевірено</p>
     {% endif %}
@@ -27,7 +27,7 @@
         {% csrf_token %}
         <input type="hidden" name="button" value="check_button">
         <input type="hidden" name="pk-message" value="{{ message.pk }}">
-        <button id="check-message" type="submit">Відмітити як перевірине</button>
+        <button id="check-message" type="submit">Відмітити як перевірене</button>
     </form>
     {% endif %}
 </div>

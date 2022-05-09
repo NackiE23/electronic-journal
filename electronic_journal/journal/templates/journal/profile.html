@@ -12,7 +12,7 @@
     <li>По батькові - {{ cur_user.patronymic }}</li>
     <li>email - {{ cur_user.email }}</li>
     <li>Номер телефону - {{ cur_user.phone_number }}</li>
-    <li>Роль у системі - {{ cur_user.role }}</li>
+    <li>Роль у системі - {% if cur_user.role == "Teacher"%}Викладач{%elif cur_user.role == "Student"%}Студент{%else%}Щось не зрозуміле{% endif %}</li>
     <li>День народження - {{ cur_user.date_of_birth }}</li>
     <li>Про себе - {{ cur_user.about }}</li>
     {% if not guest %}
@@ -36,7 +36,7 @@
     <h1>It isn't your page. Your page is 127.0.0.1:8000/admin/</h1>
 
 {% elif cur_user.role == "Teacher" %}
-    <h1>Teacher</h1>
+    <h1>Викладач</h1>
     <ul>
         <li>Куратор групи - <a href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
         {% for subject in subjects %}
@@ -45,9 +45,9 @@
     </ul>
 
 {% elif cur_user.role == "Student" %}
-    <h2>I'm a student!</h2>
+    <h2>Студент</h2>
     <ul>
-        <li>Group - <a href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a></li>
+        <li>Група - <a href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a></li>
     </ul>
 
 {% else %}

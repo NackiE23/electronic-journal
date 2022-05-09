@@ -50,10 +50,12 @@ th span {
 .pop-up-message {
     position: relative;
     border-radius: 5px;
-    background-color: rgba(0, 128, 0, .5);
-    color: blue;
     margin: 10px 20px;
     padding: 10px 25px;
+}
+.pop-up-message.success {
+    background-color: rgba(0, 128, 0, .5);
+    color: blue;
 }
 .pop-up-message.error {
     background-color: red;

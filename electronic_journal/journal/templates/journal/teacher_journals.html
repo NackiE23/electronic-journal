@@ -3,16 +3,19 @@
 {% block main %}
 <ol>
 {% for teacher_subject in teacher_subjects %}
-    <li>{{ teacher_subject }}
-        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk teacher_subject.group_subject.group.slug teacher_subject.group_subject.subject.slug %}">Link</a>
+    <li>{{ teacher_subject.group_subject }}
+        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk teacher_subject.group_subject.group.slug teacher_subject.group_subject.subject.slug %}">Посилання</a>
     </li>
 {% endfor %}
 
+{% if replacements %}
+<h5>Заміни:</h5>
 {% for replacement in replacements %}
     <li>{{ replacement.teacher_subject.group_subject }} (до {{ replacement.date_to }})
-        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Link</a>
+        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Посилання</a>
     </li>
 {% endfor %}
+{% endif %}
 
 </ol>
 {% endblock %}

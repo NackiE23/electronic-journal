@@ -60,6 +60,11 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ['user', 'group']
 
 
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ['name', 'teacher']
+    prepopulated_fields = {'slug': ("name",)}
+
+
 class StudentLessonAdmin(admin.ModelAdmin):
     list_display = ['lesson', 'student', 'mark', 'date']
     readonly_fields = ('date', )
@@ -74,7 +79,7 @@ class SlugToName(admin.ModelAdmin):
 
 
 admin.site.register(Teacher)
-admin.site.register(Group, SlugToName)
+admin.site.register(Group, GroupAdmin)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Attendance)
 admin.site.register(EvaluationSystem)
