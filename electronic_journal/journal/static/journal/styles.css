@@ -54,6 +54,17 @@ th span {
     color: black;
 }
 
+.confirmation {
+    display: none;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    border-radius: 5px;
+    background-color: red;
+    color: black;
+    padding: 10px 25px;
+}
+
 .close {
     position: absolute;
     background-color: black;

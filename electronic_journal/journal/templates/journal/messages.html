@@ -4,25 +4,30 @@
 {% for message in messages %}
 <div>
     {% if not message.is_check %}
-    <p>Don't checked</p>
+    <p>Не перевірино</p>
     {% else %}
-    <p>Checked</p>
+    <p>Перевірено</p>
     {% endif %}
-    <p>Time: {{ message.time | date:"Y-m-d H:i" }}</p>
-    <p>From: {{ message.from_user }}</p>
-    <p>Text: {{ message.text }}</p>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="button" value="delete_button">
-        <input type="hidden" name="pk-message" value="{{ message.pk }}">
-        <button id="delete-message" type="submit">Delete</button>
-    </form>
+    <p>Коли: {{ message.time | date:"Y-m-d H:i" }}</p>
+    <p>Від кого: {{ message.from_user }}</p>
+    <p>Вміст: {{ message.text }}</p>
+    <button class="showDeleteForm" data-message-pk="{{ message.pk }}">Видалити</button>
+    <div id="message-{{ message.pk }}" class="confirmation">
+        <div class="close"></div>
+        <form method="POST">
+            {% csrf_token %}
+            <p>Ви впевнені, що хочете видалити повідомлення?</p>
+            <input type="hidden" name="button" value="delete_button">
+            <input type="hidden" name="pk-message" value="{{ message.pk }}">
+            <button id="delete-message" type="submit">Підтвердити</button>
+        </form>
+    </div>
     {% if not message.is_check %}
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="button" value="check_button">
         <input type="hidden" name="pk-message" value="{{ message.pk }}">
-        <button id="check-message" type="submit">Check</button>
+        <button id="check-message" type="submit">Відмітити як перевірине</button>
     </form>
     {% endif %}
 </div>
@@ -32,6 +37,11 @@
 {% endblock %}
 {% block script %}
 <script>
+    $('.showDeleteForm').click(function() {
+        messagePk = $(this).attr('data-message-pk')
+        $(`#message-${messagePk}`).fadeIn('fast');
+    });
+
     $('#delete-message').click(function() {
         showMessage('Повідомлення видалено успішно', timeOut=1000);
     });

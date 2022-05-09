@@ -65,11 +65,22 @@
     {{ lesson_update_form.as_p }}
     <form id="lesson_update__update_form" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="lesson_pk">
-        <input type="hidden" name="button" value="delete_lesson">
-        <button type="submit" name="delete" style="background-color: black; border-color: black; color: white;">Видалити урок</button>
-        <button type="submit" name="submit">Підтвердити зміни</button>
+        <input type="hidden" name="button" value="submit_changes">
+        <input type="submit" name="submit" value="Підтвердити зміни">
     </form>
+
+    <button class="showDeleteForm" type="submit" name="delete" style="background-color: black; border-color: black; color: white;">Видалити урок</button>
+
+    <div class="confirmation">
+        <div class="close"></div>
+        <form method="POST">
+            {% csrf_token %}
+            <p>Ви впевнені, що хочете видалити пару?</p>
+            <input type="hidden" name="lesson_pk">
+            <input type="hidden" name="button" value="delete_lesson">
+            <input type="submit" name="submit" value="Видалити">
+        </form>
+    </div>
 </div>
 
 <form id="form" method="POST" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
@@ -169,6 +180,10 @@ $(document).ready(function(){
                 $("#lesson_update").show();
             }
         });
+    });
+
+    $('.showDeleteForm').click(function() {
+        $(this).parent().find('.confirmation').fadeIn('fast');
     });
 
     $("#lesson_update input, #lesson_update select").change(function() {
