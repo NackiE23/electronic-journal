@@ -10,9 +10,7 @@
 </head>
 <body style="text-align: center; padding-top: 50px;">
 
-<div id="pop-up-message">
-    <div class="close"></div>
-    <p class="pop-up-message__text">Some text</p>
+<div id="pop-up-messages">
 </div>
 
 <button id="show-message">sdd</button>
@@ -44,21 +42,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
     function showMessage(message, type='success', timeOut=3000) {
-        $('#pop-up-message .pop-up-message__text').html(message);
-        if (type === 'error') {
-            $('#pop-up-message').addClass('error');
-            setTimeout(function () {
-                $('#pop-up-message').removeClass('error');
-            }, timeOut+100);
-        }
-        $('#pop-up-message').fadeIn('fast');
-        setTimeout(function () {
-            $('#pop-up-message').fadeOut('fast');
-        }, timeOut);
+        $('#pop-up-messages').show();
+        $('#pop-up-messages').append(`<div class="pop-up-message">\
+                                    <div class="close"></div>\
+                                    <p class="pop-up-message__text">${message}</p>\
+                                    </div>`);
+        setTimeout(function() {
+            $('#pop-up-messages .pop-up-message:first-child').slideUp('fast');
+        }, timeOut)
+        setTimeout(function() {$('#pop-up-messages .pop-up-message:first-child').remove();}, timeOut+100)
     }
 
-    $(".close").click(function() {
-        $(this).parent().fadeOut('fast');
+    $('.close').click(function() {
+        $(this).parent().fadeOut();
+    });
+
+    $("#pop-up-messages").on("click", '.close', function() {
+        var el = $(this).parent();
+        el.slideUp('fast');
+        setTimeout(function() {el.remove();}, 600)
     });
     $("#show-message").click(function() {
         showMessage('Fuck You');

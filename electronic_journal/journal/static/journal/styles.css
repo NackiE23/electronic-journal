@@ -39,17 +39,23 @@ th span {
     cursor: pointer;
 }
 
-#pop-up-message {
-    display: none;
+#pop-up-messages {
     position: absolute;
     top: 50vh;
     left: 50vw;
+    dipslay: flex;
+    flex-direction: column;
+}
+
+.pop-up-message {
+    position: relative;
     border-radius: 5px;
     background-color: rgba(0, 128, 0, .5);
     color: blue;
+    margin: 10px 20px;
     padding: 10px 25px;
 }
-#pop-up-message.error {
+.pop-up-message.error {
     background-color: red;
     color: black;
 }
