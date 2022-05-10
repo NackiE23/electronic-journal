@@ -23,7 +23,7 @@ class LessonCreateForm(forms.ModelForm):
 
     class Meta:
         model = Lesson
-        fields = ('topic', 'homework', 'note', 'type', 'teacher_subject')
+        fields = ('date', 'topic', 'homework', 'note', 'type', 'teacher_subject')
 
     def __init__(self, *args, **kwargs):
         super(LessonCreateForm, self).__init__(*args, **kwargs)

@@ -83,24 +83,26 @@
     </div>
 </div>
 
-<form id="form" method="POST" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
-    {% csrf_token %}
+<div id="lesson_create" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
+    <div class="close"></div>
+    <form id="form" method="POST">
+        {% csrf_token %}
 
-    {% for f in lesson_create_form %}
-        <p>
-            {% if f.id_for_label == 'id_teacher_subject' %}
-            {% else %}
-            <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
-            {% endif %}
-            {{ f }}
-        </p>
-        <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}
+        {% for f in lesson_create_form %}
+            <p>
+                {% if f.id_for_label == 'id_teacher_subject' %}
+                {% else %}
+                <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {% endif %}
+                {{ f }}
+            </p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
 
-    <input type="hidden" name="button" value="add_column">
-    <button type="submit">Додати стовпчик</button>
-</form>
-
+        <input type="hidden" name="button" value="add_column">
+        <button type="submit">Додати стовпчик</button>
+    </form>
+</div>
 {% if not other_students %}
 <h1>Наразі немає студентів, яких можна додати</h1>
 {% else %}
@@ -177,7 +179,7 @@ $(document).ready(function(){
                 $('#lesson_update input[name="note"]').val(responce.note);
                 $('#lesson_update input[name="lesson_pk"]').val(lesson_pk);
                 $(`#lesson_update select option[value=${responce.type_pk}]`).prop("selected", true);
-                $("#lesson_update").show();
+                $("#lesson_update").fadeIn('fast');
             }
         });
     });
@@ -204,7 +206,7 @@ $(document).ready(function(){
     });
 
     $("#add_row_button").click(function() {
-        $("#form").toggle();
+        $("#lesson_create").fadeToggle('fast');
     });
 
     $("td input").change(function() {
