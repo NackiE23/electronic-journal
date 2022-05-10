@@ -1,4 +1,5 @@
 {% extends 'journal/base.html' %}
+{% load search_filters %}
 {% block main %}
 
 <h1>Знайти людину</h1>
@@ -7,15 +8,23 @@
     <input type="text" name="q" placeholder="Регістр не враховується">
     <input type="submit" value="Пошук">
 </form>
-
-{% if results %}
-<ul>
-{% for element in results %}
-    <li>{% if element.avatar %}<img src="{{ element.avatar.url }}" class="small-profile-image" >{% endif %}
-        {{ element.get_name }} -> <a href="{{ element.get_absolute_url }}">Профіль</a></li>
-{% endfor %}
-</ul>
+{% with results|classname as results_type %}
+{% if results_type == "QuerySet" %}
+    {% if results %}
+    <ul>
+    {% for element in results %}
+        <li>{% if element.avatar %}<img src="{{ element.avatar.url }}" class="small-profile-image" >{% endif %}
+            {{ element.get_name }} -> <a href="{{ element.get_absolute_url }}">Профіль</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+{% else %}
+    {% if results %}
+    <p>{{ results }}</p>
+    {% endif %}
 {% endif %}
+{% endwith %}
+
 
 
 {% endblock %}

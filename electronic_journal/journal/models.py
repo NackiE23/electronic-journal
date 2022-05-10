@@ -41,6 +41,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser):
+    class Meta:
+        ordering = ['surname', 'name', 'patronymic']
+
     name = models.CharField(max_length=45, null=False, verbose_name="Ім'я")
     surname = models.CharField(max_length=45, null=False, verbose_name="Прізвище")
     patronymic = models.CharField(max_length=45, blank=True, null=True, verbose_name="По батькові")
@@ -102,20 +105,28 @@ class CustomUser(AbstractBaseUser):
 
 
 class Teacher(models.Model):
+    class Meta:
+        ordering = ['user']
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    specializations = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Спеціалізації")
 
     def __str__(self):
         return str(self.user)
 
-    def set_specializations(self, students: list) -> None:
-        if type(students) is list:
-            self.specializations = json.dumps(students)
-        else:
-            raise ValueError(f'Received value must be a list. But got {type(students)}')
 
-    def get_specializations(self) -> list:
-        return json.loads(self.specializations)
+class Specialization:
+    name = models.CharField(max_length=45, verbose_name="Назва")
+
+    def __str__(self):
+        return self.name
+
+
+class TeacherSpecialization:
+    teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
+    specialization = models.ForeignKey('Specialization', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{str(self.teacher)} {str(self.specialization)}'
 
 
 class Group(models.Model):
@@ -131,6 +142,9 @@ class Group(models.Model):
 
 
 class Student(models.Model):
+    class Meta:
+        ordering = ['user']
+
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     group = models.ForeignKey("Group", on_delete=models.CASCADE, verbose_name="Група")
 

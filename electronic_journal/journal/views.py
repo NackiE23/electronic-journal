@@ -82,7 +82,15 @@ def find_person(request):
     query = request.GET.get('q')
     if query:
         # Реєстр враховується, тому що використовується SQLite
-        results = CustomUser.objects.filter(Q(name__icontains=query) | Q(surname__icontains=query) | Q(patronymic__icontains=query))
+        results = CustomUser.objects.filter(Q(name__icontains=query) |
+                                            Q(surname__icontains=query) |
+                                            Q(patronymic__icontains=query))
+        if results:
+            context.update({'results': results})
+        else:
+            context.update({'results': 'Не знайдено жодної подібності'})
+    else:
+        results = CustomUser.objects.all().exclude(role="Admin")
         context.update({'results': results})
 
     return render(request, 'journal/find_person.html', context=context)
@@ -168,7 +176,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
     teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
     teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
 
-    students_objs = Student.objects.filter(group=group_obj).order_by('user')
+    students_objs = Student.objects.filter(group=group_obj)
     condition = teacher_subject_obj.if_exist()
     students = students_objs.filter(pk__in=teacher_subject_obj.get_students()) if condition \
         else None
