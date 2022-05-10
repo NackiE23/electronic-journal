@@ -225,6 +225,9 @@ class LessonType(models.Model):
 
 
 class Lesson(models.Model):
+    class Meta:
+        ordering = ['date']
+
     date = models.DateField(default=timezone.now, verbose_name="Дата")
     last_update = models.DateTimeField(auto_now=True, verbose_name="Останнє оновлення")
     topic = models.CharField(max_length=200, verbose_name="Тема", null=True)

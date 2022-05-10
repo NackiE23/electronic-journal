@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm, AuthenticationForm
@@ -12,9 +13,12 @@ User = get_user_model()
 
 
 class LessonCreateForm(forms.ModelForm):
+    date = forms.DateField(label="Дата", widget=forms.DateInput(attrs={'class': 'form-input',
+                                                                       'type': 'date',
+                                                                       'value': localtime(now()).date()}))
     topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    homework = forms.CharField(label="Домашнє завдання", required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
+    note = forms.CharField(label="Примітка", required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
     type = forms.ModelChoiceField(label="Тип",
                                   queryset=LessonType.objects.all(),
                                   widget=forms.Select(attrs={'class': 'form-input'}))
@@ -30,6 +34,8 @@ class LessonCreateForm(forms.ModelForm):
 
 
 class LessonUpdateForm(forms.ModelForm):
+    date = forms.DateField(label="Дата", widget=forms.DateInput(attrs={'class': 'form-input',
+                                                                       'type': 'date'}))
     topic = forms.CharField(label="Тема", widget=forms.TextInput(attrs={'class': 'form-input'}))
     homework = forms.CharField(label="Домашнє завдання", widget=forms.TextInput(attrs={'class': 'form-input'}))
     note = forms.CharField(label="Примітка", widget=forms.TextInput(attrs={'class': 'form-input'}))
