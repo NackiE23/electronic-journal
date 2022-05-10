@@ -136,6 +136,7 @@ def student_journal(request, student_pk):
     st_teacher_subject_objs = [obj for obj in group_teacher_subject_objs if obj.check_student(student_pk)]
     lesson_objs = Lesson.objects.filter(teacher_subject__in=st_teacher_subject_objs)
     st_lesson_objs = StudentLesson.objects.filter(lesson__in=lesson_objs, student=student_obj).order_by('lesson__date')
+    sequence_numbers = {obj.pk: obj.get_students().index(str(student_pk))+1 for obj in st_teacher_subject_objs}
 
     months = {}
     for st_teacher_subject_obj in st_teacher_subject_objs:
@@ -154,6 +155,7 @@ def student_journal(request, student_pk):
         'lessons': lesson_objs,
         'student_lessons': st_lesson_objs,
         'months': json.dumps(months),
+        'sequence_numbers': sequence_numbers,
     }
 
     if request.method == "POST":

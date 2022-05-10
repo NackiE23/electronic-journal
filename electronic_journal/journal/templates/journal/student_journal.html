@@ -1,16 +1,17 @@
 {% extends 'journal/base.html' %}
-
+{% load dict_filters %}
 {% block main %}
 <h1>{{ st_pk }}</h1>
 
-{% for obj in st_teacher_subjects %}
-    <h3>{{ obj }}</h3>
+{% for teacher_subject in st_teacher_subjects %}
+    <h3>{{ teacher_subject }}</h3>
     <table>
         {% csrf_token %}
         <tr>
+            <th>№</th>
             <th>Студент</th>
             {% for lesson in lessons %}
-                {% if obj == lesson.teacher_subject %}
+                {% if teacher_subject == lesson.teacher_subject %}
                     <th class="lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
                         <span>{{ lesson.date | date:"d" }}</span>
                     </th>
@@ -18,9 +19,10 @@
             {% endfor %}
         </tr>
         <tr>
+            <td>{{ sequence_numbers |get_value:teacher_subject.pk }}</td>
             <td>{{ student }}</td>
             {% for lesson in lessons %}
-                {% if obj == lesson.teacher_subject %}
+                {% if teacher_subject == lesson.teacher_subject %}
                 <td>
                     {% for student_lesson in student_lessons %}
                         {% if lesson == student_lesson.lesson %}
@@ -47,7 +49,6 @@
 
 {% endblock %}
 {% block script %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function(){
     const months = {{ months|safe }};
