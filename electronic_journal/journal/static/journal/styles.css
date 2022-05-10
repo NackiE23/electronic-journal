@@ -66,9 +66,9 @@ th span {
     display: none;
     position: absolute;
     top: 50vh;
-    left: 50vw;
+    left: 30vw;
     border-radius: 5px;
-    background-color: red;
+    background-color: gray;
     color: black;
     padding: 10px 25px;
 }

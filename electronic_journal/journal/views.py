@@ -48,9 +48,21 @@ def profile(request, pk):
         context = dict(list(context.items()) + list(c_def.items()))
 
     if request.method == "POST":
-        message_text = request.POST['message-text']
-        from_user = get_user_model().objects.get(pk=request.POST['user_pk'])
-        Message.objects.create(from_user=from_user, to_user=cur_user, text=message_text)
+        # Send Message
+        if request.POST['action'] == 'send_message':
+            message_text = request.POST['message-text']
+            from_user = get_user_model().objects.get(pk=request.POST['user_pk'])
+            Message.objects.create(from_user=from_user, to_user=cur_user, text=message_text)
+        # Change profile picture
+        if request.POST['action'] == 'change_avatar':
+            if cur_user == request.user:
+                cur_user.avatar = request.FILES['file']
+                cur_user.save()
+        # Delete profile picture
+        if request.POST['action'] == 'delete_avatar':
+            if cur_user == request.user:
+                cur_user.avatar = None
+                cur_user.save()
 
     return render(request, 'journal/profile.html', context=context)
 

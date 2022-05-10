@@ -5,7 +5,37 @@
     <li>Аватар:
         {% if cur_user.avatar %}
             <li><img class="img-article-left" src="{{cur_user.avatar.url}}" width="350"></li>
+            <div id="delete_avatar_form">
+                <div class="confirmation">
+                    <div class="close"></div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <h2>Ви впевнені, що хочете видалити фото профілю?</h2>
+                        <input type="hidden" name="action" value="delete_avatar">
+                        <input type="submit" value="Видалити">
+                    </form>
+                </div>
+
+                <button class="showDeleteForm">Видалити фото профілю</button>
+            </div>
         {% endif %}
+            <div id="change_avatar_form">
+                <div class="confirmation">
+                    <div class="close"></div>
+                    <div class="preview">
+                        Попередній перегляд: <br/>
+                        <img id="avatar-preview" src="" alt="Завантажте фото" width="100px" height="50px"/>
+                    </div>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <p><input type="file" id="input_avatar_file" name="file"></p>
+                        <input type="hidden" name="action" value="change_avatar">
+                        <input type="submit" value="Змінити фото">
+                    </form>
+                </div>
+
+                <button class="showChangeForm">Змінити фото</button>
+            </div>
     </li>
     <li>Ім'я - {{ cur_user.name }}</li>
     <li>Прізвище - {{ cur_user.surname }}</li>
@@ -27,6 +57,7 @@
     {% csrf_token %}
     <p><label for="message-input">Повідомлення</label>
     <textarea id="message-input" name="message-text" placeholder="Повідомлення"></textarea></p>
+    <input type="hidden" name="action" value="send_message">
     <input type="hidden" name="user_pk" value="{{user.pk}}">
     <input type="submit" value="Надіслати"/>
 </form>
@@ -57,4 +88,16 @@
 {% endif %}
 
 
+{% endblock %}
+{% block script %}
+<script>
+    $('.showDeleteForm, .showChangeForm').click(function() {
+        $(this).parent().find('.confirmation').fadeIn('fast');
+    });
+
+    $('form').on('change', '#input_avatar_file', function() {
+        var src = URL.createObjectURL(this.files[0]);
+        $('#avatar-preview').attr('src', src);
+    });
+</script>
 {% endblock %}
