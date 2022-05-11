@@ -88,3 +88,27 @@ th span {
     width: 40px;
     height: 40px;
 }
+
+.lekciya {
+    background-color: rgba(117, 187, 0, .5);
+}
+
+.kontrolna {
+    background-color: rgba(117, 187, 0, .5);
+}
+
+.pidsumkova {
+    background-color: rgba(117, 0, 0, .5);
+}
+
+.praktichna {
+    background-color: rgba(117, 187, 214, .5);
+}
+
+.laboratorna {
+    background-color: rgba(235, 222, 73, .5);
+}
+
+.samostijna {
+    background-color: rgba(25, 22, 173, .5);
+}

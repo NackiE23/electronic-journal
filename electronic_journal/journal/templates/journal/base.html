@@ -41,16 +41,22 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script>
+    let messagesPk = 0
+
     function showMessage(message, type='success', timeOut=3000) {
         $('#pop-up-messages').show();
-        $('#pop-up-messages').append(`<div class="pop-up-message ${type}">\
+        let messagePk = messagesPk + 1;
+        messagesPk = messagePk;
+        $('#pop-up-messages').append(`<div id="pop-up-${messagePk}" class="pop-up-message ${type}">\
                                     <div class="close"></div>\
                                     <p class="pop-up-message__text">${message}</p>\
                                     </div>`);
         setTimeout(function() {
-            $('#pop-up-messages .pop-up-message:first-child').slideUp('fast');
+            $(`#pop-up-${messagePk}`).slideUp('fast');
         }, timeOut)
-        setTimeout(function() {$('#pop-up-messages .pop-up-message:first-child').remove();}, timeOut+100)
+        setTimeout(function() {
+            $(`#pop-up-${messagePk}`).remove();
+        }, timeOut+100)
     }
 
     $('.close').click(function() {

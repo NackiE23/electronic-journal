@@ -202,6 +202,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
         else students_objs
 
     lesson_objs = Lesson.objects.filter(teacher_subject=teacher_subject_obj)
+    lesson_objs = list(lesson_objs)
     months = {}
     for lesson_obj in lesson_objs:
         month = number_to_month(lesson_obj.date.month)
@@ -210,9 +211,7 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
 
     student_lesson_objects = StudentLesson.objects.filter(lesson__in=lesson_objs)
     student_lesson_list = [
-        {'student_pk': obj.student.pk,
-         'lesson_pk': obj.lesson.pk,
-         'mark': obj.mark} for obj in student_lesson_objects
+        {'input_id': str(obj.student.pk) + str(obj.lesson.pk), 'mark': obj.mark} for obj in student_lesson_objects
     ]
 
     context = {

@@ -38,7 +38,7 @@
         <th>№</th>
         <th>Студент</th>
         {% for lesson in lessons %}
-        <th id="lesson{{ lesson.pk }}" class="lesson" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+        <th id="lesson{{ lesson.pk }}" class="lesson {{ lesson.type.slug }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
             <span>{{ lesson.date | date:"d" }}</span>
         </th>
         {% endfor %}
@@ -48,8 +48,8 @@
         <td>{{ student|id }}</td>
         <td><a href="{% url 'profile' student|get_user_pk %}">{{ student|name }}</a></td>
         {% for lesson in lessons %}
-        <td>
-            <input id="{{ student|get_pk }}{{ lesson.pk }}" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
+        <td class="{{ lesson.type.slug }}">
+            <input id="input-{{ student|get_pk }}{{ lesson.pk }}" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
         </td>
         {% endfor %}
     </tr>
@@ -238,9 +238,9 @@ $(document).ready(function(){
     });
 
     const stl_list = {{ student_lesson_list|safe }};
-    console.log(stl_list, typeof stl_list);
+    console.log(stl_list.length, stl_list, typeof stl_list);
     for (let i in stl_list) {
-        $(`input[data-student-pk=${stl_list[i].student_pk}][data-lesson-pk=${stl_list[i].lesson_pk}]`).val(stl_list[i].mark);
+        $(`#input-${stl_list[i].input_id}`).val(stl_list[i].mark);
     }
 
     const months = {{ months|safe }};

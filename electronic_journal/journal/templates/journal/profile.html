@@ -5,6 +5,7 @@
     <li>Аватар:
         {% if cur_user.avatar %}
             <li><img class="img-article-left" src="{{cur_user.avatar.url}}" width="350"></li>
+            {% if cur_user == user %}
             <div id="delete_avatar_form">
                 <div class="confirmation">
                     <div class="close"></div>
@@ -18,7 +19,9 @@
 
                 <button class="showDeleteForm">Видалити фото профілю</button>
             </div>
+            {% endif %}
         {% endif %}
+            {% if cur_user == user %}
             <div id="change_avatar_form">
                 <div class="confirmation">
                     <div class="close"></div>
@@ -36,6 +39,7 @@
 
                 <button class="showChangeForm">Змінити фото</button>
             </div>
+            {% endif %}
     </li>
     <li>Ім'я - {{ cur_user.name }}</li>
     <li>Прізвище - {{ cur_user.surname }}</li>
