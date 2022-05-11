@@ -35,11 +35,18 @@
 
 <table>
     {% csrf_token %}
+    <colgroup>
+        <col>
+        <col>
+        {% for lesson in lessons %}
+            <col class="{{ lesson.type.slug }}">
+        {% endfor %}
+    </colgroup>
     <tr>
         <th>№</th>
         <th>Студент</th>
         {% for lesson in lessons %}
-        <th id="lesson{{ lesson.pk }}" class="lesson {{ lesson.type.slug }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+        <th id="lesson{{ lesson.pk }}" class="lesson" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
             <span>{{ lesson.date | date:"d" }}</span>
         </th>
         {% endfor %}
@@ -49,7 +56,7 @@
         <td>{{ student|id }}</td>
         <td><a href="{% url 'profile' student|get_user_pk %}">{{ student|name }}</a></td>
         {% for lesson in lessons %}
-        <td class="{{ lesson.type.slug }}">
+        <td>
             <input id="input-{{ student|get_pk }}{{ lesson.pk }}" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
         </td>
         {% endfor %}

@@ -90,27 +90,27 @@ th span {
 }
 
 .lekciya {
-    background-color: rgba(117, 187, 0, .5);
+    background-color: rgba(117, 187, 0, .7);
 }
 
 .kontrolna {
-    background-color: rgba(17, 87, 10, .5);
+    background-color: rgba(17, 87, 10, .7);
 }
 
 .pidsumkova {
-    background-color: rgba(117, 0, 0, .5);
+    background-color: rgba(117, 0, 0, .7);
 }
 
 .praktichna {
-    background-color: rgba(117, 187, 214, .5);
+    background-color: rgba(117, 187, 214, .7);
 }
 
 .laboratorna {
-    background-color: rgba(235, 222, 73, .5);
+    background-color: rgba(235, 222, 73, .7);
 }
 
 .samostijna {
-    background-color: rgba(25, 22, 173, .5);
+    background-color: rgba(25, 22, 173, .7);
 }
 
 .incorrect_input {
