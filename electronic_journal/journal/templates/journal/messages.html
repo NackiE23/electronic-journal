@@ -42,12 +42,8 @@
         $(`#message-${messagePk}`).fadeIn('fast');
     });
 
-    $('#delete-message').click(function() {
-        showMessage('Повідомлення видалено успішно', timeOut=1000);
-    });
-
     $('#check-message').click(function() {
-        showMessage('Повідомлення позначилося як прочитане', timeOut=1000);
+        showMessage('Повідомлення позначилося як прочитане', undefined, 1000);
     });
 </script>
 {% endblock %}

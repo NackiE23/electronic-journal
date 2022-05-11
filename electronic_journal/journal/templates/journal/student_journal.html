@@ -3,40 +3,6 @@
 {% block main %}
 <h1>{{ st_pk }}</h1>
 
-{% for teacher_subject in st_teacher_subjects %}
-    <h3><a href="{{ teacher_subject.teacher.user.get_absolute_url }}">{{ teacher_subject.teacher.user.get_name }}</a> - {{ teacher_subject.group_subject.subject }}</h3>
-    <table>
-        {% csrf_token %}
-        <tr>
-            <th>№</th>
-            <th>Студент</th>
-            {% for lesson in lessons %}
-                {% if teacher_subject == lesson.teacher_subject %}
-                    <th class="lesson_date {{ lesson.type.slug }}" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-                        <span>{{ lesson.date | date:"d" }}</span>
-                    </th>
-                {% endif %}
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>{{ sequence_numbers |get_value:teacher_subject.pk }}</td>
-            <td>{{ student }}</td>
-            {% for lesson in lessons %}
-                {% if teacher_subject == lesson.teacher_subject %}
-                <td class="{{ lesson.type.slug }}">
-                    {% for student_lesson in student_lessons %}
-                        {% if lesson == student_lesson.lesson %}
-                            {{ student_lesson.mark }}
-                        {% endif %}
-                    {% endfor%}
-                </td>
-                {% endif %}
-            {% endfor %}
-        </tr>
-    </table>
-<hr>
-{% endfor %}
-
 <div id="lesson_info" style="background-color: #c4c4c4; border: 1px solid black;">
     <h1><span id="lesson-info-teacher_subject">Предмет</span></h1>
     <p>Останнє оновлення: <span id="lesson-info-last_update">-</span></p>
@@ -46,6 +12,54 @@
     <p>Примітка: <span id="lesson-info-note">-</span></p>
     <p>Тип: <span id="lesson-info-type">-</span></p>
 </div>
+
+{% for subject in subjects %}
+<h3><a href="{{ subject.teacher_subject.teacher.user.get_absolute_url }}">{{ subject.teacher_subject.teacher.user.get_name }}</a> - {{ subject.teacher_subject.group_subject.subject }}</h3>
+    <table>
+        {% csrf_token %}
+        <tr>
+            <th>№</th>
+            <th>Студент</th>
+            {% for lesson in subject.lessons %}
+                <th class="lesson_date {{ lesson.type.slug }}" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                    <span>{{ lesson.date | date:"d" }}</span>
+                </th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>{{ subject.sequence_number }}</td>
+            <td>{{ student }}</td>
+            {% for lesson in subject.lessons %}
+                <td class="{{ lesson.type.slug }}">
+                    {% for student_lesson in subject.student_lessons %}
+                        {% if lesson.pk == student_lesson.lesson.pk %}
+                            {{ student_lesson.mark }}
+                        {% endif %}
+                    {% endfor%}
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+    <div class="pagination">
+        <nav>
+            <ul>
+                |
+                {% for p in subject.lessons.paginator.page_range %}
+                    {% if subject.lessons.number == p %}
+                        <li style="display: inline">
+                            {{ p }} |
+                        </li>
+                    {% else %}
+                        <li style="display: inline">
+                            <a href="?{{ subject.page }}={{ p }}">{{ p }}</a> |
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+<hr>
+{% endfor %}
 
 {% endblock %}
 {% block script %}
@@ -58,7 +72,6 @@ $(document).ready(function(){
 
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
     $(".lesson_date span").click(function() {
-        $("#lesson_info").hide();
         let lesson_pk = $(this).parent().attr('data-lesson-pk')
         $.ajax({
             url: '',

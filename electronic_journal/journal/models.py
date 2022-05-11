@@ -244,6 +244,9 @@ class Lesson(models.Model):
 
 
 class StudentLesson(models.Model):
+    class Meta:
+        ordering = ['lesson__date']
+
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, verbose_name="Предмет")
     student = models.ForeignKey("Student", on_delete=models.CASCADE, verbose_name="Студент")
     mark = models.CharField(max_length=3, null=True, verbose_name="Оцінка")
@@ -260,6 +263,9 @@ class Message(models.Model):
     text = models.TextField(verbose_name="Текст")
     is_check = models.BooleanField(default=False, verbose_name="Чи перевірино")
 
+    def __str__(self):
+        return f'{self.from_user} to {self.to_user}'
+
 
 class Replacement(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
@@ -268,4 +274,4 @@ class Replacement(models.Model):
     date_to = models.DateField()
 
     def __str__(self):
-        return str(self.teacher_subject)
+        return f"{self.teacher} {str(self.teacher_subject.group_subject)}"

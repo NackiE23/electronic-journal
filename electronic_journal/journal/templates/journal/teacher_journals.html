@@ -12,7 +12,7 @@
 <h5>Заміни:</h5>
 {% for replacement in replacements %}
     <li>{{ replacement.teacher_subject.group_subject }} (до {{ replacement.date_to }})
-        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Посилання</a>
+        <a href="{% url 'teacher_journal' replacement.teacher_subject.teacher.pk replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Посилання</a>
     </li>
 {% endfor %}
 {% endif %}

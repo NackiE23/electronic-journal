@@ -1,20 +1,19 @@
-import datetime
-from time import time
-
-from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import CreateView
 
-from .models import *
+from . import services
 from .forms import *
+from .models import *
 
 
 def main(request):
@@ -50,9 +49,9 @@ def profile(request, pk):
     if request.method == "POST":
         # Send Message
         if request.POST['action'] == 'send_message':
-            message_text = request.POST['message-text']
-            from_user = get_user_model().objects.get(pk=request.POST['user_pk'])
-            Message.objects.create(from_user=from_user, to_user=cur_user, text=message_text)
+            services.send_message(from_user=get_user_model().objects.get(pk=request.POST['user_pk']),
+                                  to_user=cur_user,
+                                  text=request.POST['message-text'])
         # Change profile picture
         if request.POST['action'] == 'change_avatar':
             if cur_user == request.user:
@@ -134,28 +133,40 @@ def student_journal(request, student_pk):
     group_subject_objs = GroupSubject.objects.filter(group=student_obj.group)
     group_teacher_subject_objs = TeacherSubject.objects.filter(group_subject__in=group_subject_objs)
     st_teacher_subject_objs = [obj for obj in group_teacher_subject_objs if obj.check_student(student_pk)]
-    lesson_objs = Lesson.objects.filter(teacher_subject__in=st_teacher_subject_objs)
-    st_lesson_objs = StudentLesson.objects.filter(lesson__in=lesson_objs, student=student_obj).order_by('lesson__date')
-    sequence_numbers = {obj.pk: obj.get_students().index(str(student_pk))+1 for obj in st_teacher_subject_objs}
 
-    months = {}
-    for st_teacher_subject_obj in st_teacher_subject_objs:
-        l_lesson_objs = Lesson.objects.filter(teacher_subject=st_teacher_subject_obj)
-        l_months = {}
-        for lesson_obj in l_lesson_objs:
+    subjects = list()
+    global_months = {}
+    for pk, st_teacher_subject_obj in enumerate(st_teacher_subject_objs):
+        lessons = Lesson.objects.filter(teacher_subject=st_teacher_subject_obj)
+        st_lessons = StudentLesson.objects.filter(lesson__in=lessons, student=student_obj)
+
+        paginate_by = 20
+        lessons_pag = Paginator(lessons, paginate_by)
+        st_lessons_pag = Paginator(st_lessons, paginate_by)
+        page_number = int(request.GET.get(f'page{pk}')) if request.GET.get(f'page{pk}') else 1
+        pag_lessons = lessons_pag.get_page(page_number)
+        pag_st_lessons = st_lessons_pag.get_page(page_number)
+
+        subjects.append({
+            'page': f'page{pk}',
+            'teacher_subject': st_teacher_subject_obj,
+            'student_lessons': pag_st_lessons,
+            'lessons': pag_lessons,
+            'sequence_number': st_teacher_subject_obj.get_students().index(str(student_pk)) + 1,
+        })
+
+        months = {}
+        for lesson_obj in list(lessons[(page_number - 1) * paginate_by:page_number * paginate_by]):
             month = number_to_month(lesson_obj.date.month)
-            if month not in l_months.values():
-                l_months.update({lesson_obj.pk: month})
+            if month not in months.values():
                 months.update({lesson_obj.pk: month})
+        global_months.update(months)
 
     context = {
         'title': 'Student journal',
         'student': student_obj,
-        'st_teacher_subjects': st_teacher_subject_objs,
-        'lessons': lesson_objs,
-        'student_lessons': st_lesson_objs,
-        'months': json.dumps(months),
-        'sequence_numbers': sequence_numbers,
+        'months': json.dumps(global_months),
+        'subjects': subjects,
     }
 
     if request.method == "POST":
@@ -164,7 +175,7 @@ def student_journal(request, student_pk):
                 lesson_pk = request.POST['lesson_pk']
                 lesson_obj = Lesson.objects.get(pk=lesson_pk)
                 result = {
-                    'teacher': lesson_obj.teacher_subject.teacher.user.get_full_name(),
+                    'teacher': lesson_obj.teacher_subject.teacher.user.get_name(),
                     'subject': lesson_obj.teacher_subject.group_subject.subject.name,
                     'last_update': lesson_obj.last_update,
                     'date': lesson_obj.date,
@@ -189,6 +200,8 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
     teacher_obj = Teacher.objects.get(pk=teacher_pk)
     teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
     teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
+    replacement_teachers = Replacement.objects.filter(teacher_subject=teacher_subject_obj)
+    other_teachers = Teacher.objects.exclude(pk__in=[obj.teacher.pk for obj in replacement_teachers] + [teacher_subject_obj.teacher.pk])
 
     students_objs = Student.objects.filter(group=group_obj)
     condition = teacher_subject_obj.if_exist()
@@ -202,14 +215,22 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
         else students_objs
 
     lesson_objs = Lesson.objects.filter(teacher_subject=teacher_subject_obj)
-    lesson_objs = list(lesson_objs)
+    paginate_by = 20
+    paginator = Paginator(lesson_objs, paginate_by)
+    if request.GET.get('page'):
+        page_number = int(request.GET.get('page'))
+    else:
+        page_number = 1
+    page_objs = paginator.get_page(page_number)
+    json_lesson_objs = list(lesson_objs[(page_number - 1) * paginate_by:page_number * paginate_by])
+
     months = {}
-    for lesson_obj in lesson_objs:
+    for lesson_obj in json_lesson_objs:
         month = number_to_month(lesson_obj.date.month)
         if month not in months.values():
             months.update({lesson_obj.pk: month})
 
-    student_lesson_objects = StudentLesson.objects.filter(lesson__in=lesson_objs)
+    student_lesson_objects = StudentLesson.objects.filter(lesson__in=json_lesson_objs)
     student_lesson_list = [
         {'input_id': str(obj.student.pk) + str(obj.lesson.pk), 'mark': obj.mark} for obj in student_lesson_objects
     ]
@@ -219,13 +240,13 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
         'lesson_create_form': LessonCreateForm(initial={'teacher_subject': teacher_subject_obj}),
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
-        'lessons': lesson_objs,
+        'lessons': page_objs,
         'lesson_update_form': LessonUpdateForm,
         'months': json.dumps(months),
         'student_lesson_list': json.dumps(student_lesson_list),
         'students': students,
         'other_students': other_students,
-        'other_teachers': Teacher.objects.exclude(pk=teacher_subject_obj.teacher.pk),
+        'other_teachers': other_teachers,
     }
 
     if request.method == "POST":
@@ -316,9 +337,14 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
                 form.save()
         # Add Teacher Allow To Change A Jounal
         if request.POST['button'] == "allow_teacher":
-            select = request.POST['teacher-select-input']
-            date = request.POST['up-to-date-input']
-            print({'select': select, 'date': date})
+            teacher_pk = request.POST['teacher-select-input']
+            date_to = request.POST['up-to-date-input']
+            Replacement.objects.create(
+                teacher=Teacher.objects.get(pk=teacher_pk),
+                teacher_subject=teacher_subject_obj,
+                date_to=date_to
+            )
+            print({'select': teacher_pk, 'date': date_to})
         # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')

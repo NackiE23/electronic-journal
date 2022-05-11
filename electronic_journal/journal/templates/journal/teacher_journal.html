@@ -32,6 +32,7 @@
 {% if not students %}
 <h1>You don't have any stundent</h1>
 {% else %}
+
 <table>
     {% csrf_token %}
     <tr>
@@ -55,6 +56,24 @@
     </tr>
     {% endfor %}
 </table>
+<div class="pagination">
+    <nav>
+        <ul>
+            |
+            {% for p in lessons.paginator.page_range %}
+                {% if lessons.number == p %}
+                    <li style="display: inline">
+                        {{ p }} |
+                    </li>
+                {% else %}
+                    <li style="display: inline">
+                        <a href="?page={{ p }}">{{ p }}</a> |
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
 <br>
 <button id="add_row_button">Додати пару</button>
 {% endif %}
@@ -144,8 +163,6 @@
     <button type="submit">Видалити студента(ів)</button>
 </form>
 {% endif %}
-
-<p id="additional">{{ lesson_date }}</p>
 {% endblock %}
 
 {% block script %}
@@ -224,11 +241,11 @@ $(document).ready(function(){
             success: function(responce) {
                 if (responce.error === true) {
                     showMessage(responce.data, 'error', 5000);
-                    $(`#${input_id}`).css("color", "red");
-                    $(`#${input_id}`).parent().css("background-color", "red");
+                    $(`#${input_id}`).addClass("incorrect_input");
+                    $(`#${input_id}`).parent().addClass("incorrect_td");
                 } else {
-                    $(`#${input_id}`).css("color", "black");
-                    $(`#${input_id}`).parent().css("background-color", "inherit");
+                    $(`#${input_id}`).removeClass("incorrect_input");
+                    $(`#${input_id}`).parent().removeClass("incorrect_td");
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

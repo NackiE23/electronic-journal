@@ -94,7 +94,7 @@ th span {
 }
 
 .kontrolna {
-    background-color: rgba(117, 187, 0, .5);
+    background-color: rgba(17, 87, 10, .5);
 }
 
 .pidsumkova {
@@ -111,4 +111,12 @@ th span {
 
 .samostijna {
     background-color: rgba(25, 22, 173, .5);
+}
+
+.incorrect_input {
+    color: red;
+}
+
+.incorrect_td {
+    background-color: red;
 }
