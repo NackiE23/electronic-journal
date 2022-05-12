@@ -1,0 +1,88 @@
+1652353011332	geckodriver	INFO	Listening on 127.0.0.1:37001
+1652353011354	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "46439" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilexFK1BF"
+1652353014119	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilexFK1BF/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:46439/devtools/browser/9f4a8446-153b-44d2-8eaa-56be96c4d771
+1652353019795	Marionette	INFO	Listening on port 43097
+Read port: 43097
+1652353020125	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652353023362	Marionette	INFO	Stopped listening on port 43097
+JavaScript error: resource://gre/modules/UrlClassifierListManager.jsm, line 691: TypeError: this.tablesData[table] is undefined
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+1652353204839	geckodriver	INFO	Listening on 127.0.0.1:48213
+1652353204847	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "39743" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilev1zv2h"
+1652353207322	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilev1zv2h/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:39743/devtools/browser/7a1a4f51-84e7-4fa5-ac2d-97c1831f9919
+1652353211810	Marionette	INFO	Listening on port 41833
+Read port: 41833
+1652353211891	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652353345761	Marionette	INFO	Stopped listening on port 41833
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1652354471156	geckodriver	INFO	Listening on 127.0.0.1:55859
+1652354471166	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "41631" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileo3ga7A"
+1652354473935	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileo3ga7A/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:41631/devtools/browser/875091e2-b7e4-475a-b6e7-0f4d09bc78d1
+1652354480597	Marionette	INFO	Listening on port 34617
+Read port: 34617
+1652354480713	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652354521488	Marionette	INFO	Stopped listening on port 34617
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1652355069763	geckodriver	INFO	Listening on 127.0.0.1:49661
+1652355070271	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "35627" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileCDWAPm"
+1652355072948	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileCDWAPm/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:35627/devtools/browser/53dec5c8-e188-48b1-b42a-562865656846
+1652355078485	Marionette	INFO	Listening on port 39555
+Read port: 39555
+1652355078611	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652355101568	Marionette	INFO	Stopped listening on port 39555
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1652355247958	geckodriver	INFO	Listening on 127.0.0.1:43447
+1652355247968	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "59641" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile7hCVim"
+1652355250517	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile7hCVim/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:59641/devtools/browser/f4760a2e-e9c3-4b02-aae9-15ddf0b902ec
+1652355256475	Marionette	INFO	Listening on port 35353
+Read port: 35353
+1652355256611	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652355264256	Marionette	INFO	Stopped listening on port 35353
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1652355838411	geckodriver	INFO	Listening on 127.0.0.1:57339
+1652355838418	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "54625" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileppy9mt"
+1652355841235	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileppy9mt/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:54625/devtools/browser/30790992-ab26-4ee0-9e17-1819e89d40a0
+1652355847220	Marionette	INFO	Listening on port 38613
+Read port: 38613
+1652355847268	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652355851170	Marionette	INFO	Stopped listening on port 38613
+console.warn: SearchService: "_init: abandoning init due to shutting down"
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+JavaScript error: , line 0: uncaught exception: 2147500036
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1652355856265	geckodriver	INFO	Listening on 127.0.0.1:50677
+1652355856778	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "51301" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileib8AfF"
+1652355861475	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileib8AfF/search.json.mozlz4", (void 0)))
+console.error: Region.jsm: "Error fetching region" (new AbortError("The operation was aborted. ", (void 0), 770))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+DevTools listening on ws://localhost:51301/devtools/browser/ef54b2ff-50ac-40a2-9ac9-11e21890400a
+1652355873100	Marionette	INFO	Listening on port 43187
+Read port: 43187
+1652355873201	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1652355877258	Marionette	INFO	Stopped listening on port 43187
+JavaScript error: resource://gre/modules/UrlClassifierListManager.jsm, line 691: TypeError: this.tablesData[table] is undefined
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: resource://gre/modules/CrashManager.jsm, line 898: AbortError: IOUtils: Shutting down and refusing additional I/O tasks
+RunWatchdog: Mainthread nested event loops during hang: 
+ --- (no nested event loop active)
+ExceptionHandler::GenerateDump cloned child 43408
+ExceptionHandler::SendContinueSignalToChild sent continue signal to child
+ExceptionHandler::WaitForContinueSignal waiting for continue signal...

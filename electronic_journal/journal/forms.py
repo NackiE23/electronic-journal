@@ -79,7 +79,8 @@ class MyUserChangeForm(forms.ModelForm):
     patronymic = forms.CharField(label="По батькові", widget=forms.TextInput(attrs={'class': 'form-input'}))
     phone_number = forms.CharField(label="Номер телефону", widget=forms.TextInput(attrs={'class': 'form-input'}))
     date_of_birth = forms.DateField(label="Дата народження",
-                                    widget=forms.DateInput(attrs={'class': 'form-input',
+                                    widget=forms.DateInput(format='%Y-%m-%d',
+                                                           attrs={'class': 'form-input',
                                                                   'type': 'date',
                                                                   'max': datetime.date.today(),
                                                                   'placeholder': 'дд.мм.рррр'}))

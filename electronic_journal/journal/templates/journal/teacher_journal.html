@@ -7,16 +7,18 @@
 
         <p>
             <label for="teacher-select-input">Викладач: </label>
-            <select id="teacher-select-input" name="teacher-select-input">
+            <input type="text" id="teacher-select-input" name="teacher-select-input" list="teachers">
+            <datalist id="teachers">
                 {% for teacher in other_teachers %}
-                    <option value="{{ teacher.pk }}">{{ teacher }}</option>
+                <option value="{{ teacher }}" data-pk="{{ teacher.pk }}">{{ teacher }}</option>
                 {% endfor %}
-            </select>
+            </datalist>
         </p>
         <p>
             <label for="up-to-date-input">До: </label>
             <input id="up-to-date-input" type="date" name="up-to-date-input">
         </p>
+        <input type="hidden" id="selected_teacher" name="selected_teacher" value="">
         <input type="hidden" name="button" value="allow_teacher">
         <input type="submit" value="Додати доступ">
     </form>
@@ -30,7 +32,7 @@
 </div>
 
 {% if not students %}
-<h1>You don't have any stundent</h1>
+<h1>Не додано жодного студента</h1>
 {% else %}
 
 <table>
@@ -259,6 +261,11 @@ $(document).ready(function(){
                 alert("Status: " + textStatus); alert("Error: " + errorThrown);
             }
         });
+    });
+
+    $('#teacher-select-input').focusout(function(){
+        let pk = $(`#teachers option[value='${$(this).val()}']`).attr('data-pk');
+        $('#selected_teacher').val(pk);
     });
 
     const stl_list = {{ student_lesson_list|safe }};

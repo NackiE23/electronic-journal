@@ -92,7 +92,6 @@ def find_person(request):
 
     query = request.GET.get('q')
     if query:
-        # Реєстр враховується, тому що використовується SQLite
         results = CustomUser.objects.filter(Q(name__icontains=query) |
                                             Q(surname__icontains=query) |
                                             Q(patronymic__icontains=query))
@@ -337,14 +336,13 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
                 form.save()
         # Add Teacher Allow To Change A Jounal
         if request.POST['button'] == "allow_teacher":
-            teacher_pk = request.POST['teacher-select-input']
+            teacher_selected_pk = int(request.POST['selected_teacher'])
             date_to = request.POST['up-to-date-input']
             Replacement.objects.create(
-                teacher=Teacher.objects.get(pk=teacher_pk),
+                teacher=Teacher.objects.get(pk=teacher_selected_pk),
                 teacher_subject=teacher_subject_obj,
                 date_to=date_to
             )
-            print({'select': teacher_pk, 'date': date_to})
         # Delete Student
         if request.POST['button'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
