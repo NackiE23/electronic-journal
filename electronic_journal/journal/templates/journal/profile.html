@@ -1,102 +1,121 @@
 {% extends 'journal/base.html' %}
 
 {% block main %}
-<ul style="list-style: none">
-    <li>Аватар:
-        {% if cur_user.avatar %}
-            <li><img class="img-article-left" src="{{cur_user.avatar.url}}" width="350"></li>
-            {% if cur_user == user %}
-            <div id="delete_avatar_form">
-                <div class="confirmation">
-                    <div class="close"></div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <h2>Ви впевнені, що хочете видалити фото профілю?</h2>
-                        <input type="hidden" name="action" value="delete_avatar">
-                        <input type="submit" value="Видалити">
-                    </form>
-                </div>
-
-                <button class="showDeleteForm">Видалити фото профілю</button>
-            </div>
-            {% endif %}
-        {% endif %}
-            {% if cur_user == user %}
-            <div id="change_avatar_form">
-                <div class="confirmation">
-                    <div class="close"></div>
-                    <div class="preview">
-                        Попередній перегляд: <br/>
-                        <img id="avatar-preview" src="" alt="Завантажте фото" width="100px" height="50px"/>
-                    </div>
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <p><input type="file" id="input_avatar_file" name="file"></p>
-                        <input type="hidden" name="action" value="change_avatar">
-                        <input type="submit" value="Змінити фото">
-                    </form>
-                </div>
-
-                <button class="showChangeForm">Змінити фото</button>
-            </div>
-            {% endif %}
-    </li>
-    <li>Ім'я - {{ cur_user.name }}</li>
-    <li>Прізвище - {{ cur_user.surname }}</li>
-    <li>По батькові - {{ cur_user.patronymic }}</li>
-    <li>email - {{ cur_user.email }}</li>
-    <li>Номер телефону - {{ cur_user.phone_number }}</li>
-    <li>Роль у системі - {% if cur_user.role == "Teacher"%}Викладач{%elif cur_user.role == "Student"%}Студент{%else%}Щось не зрозуміле{% endif %}</li>
-    <li>День народження - {{ cur_user.date_of_birth }}</li>
-    <li>Про себе - {{ cur_user.about }}</li>
-    {% if not guest %}
-        <li><a href="{% url 'edit_profile' %}">Редагувати профіль</a></li>
-    {% endif %}
-</ul>
-{% if cur_user != user %}
-<hr>
-
-<h1>Надіслати повідомлення</h1>
-<form method="POST">
-    {% csrf_token %}
-    <p><label for="message-input">Повідомлення</label>
-    <textarea id="message-input" name="message-text" placeholder="Повідомлення"></textarea></p>
-    <input type="hidden" name="action" value="send_message">
-    <input type="hidden" name="user_pk" value="{{user.pk}}">
-    <input type="submit" value="Надіслати"/>
-</form>
-{% endif %}
-<hr>
-{% if cur_user.role == "Admin" %}
-    <h1>It isn't your page. Your page is 127.0.0.1:8000/admin/</h1>
-
-{% elif cur_user.role == "Teacher" %}
-    <h1>Викладач</h1>
-    <ul>
-        <li>Куратор групи - <a href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
-        {% for subject in subjects %}
-            <li>{{ subject.group_subject.subject }} {{ subject.group_subject.group }}</li>
-        {% endfor %}
-    </ul>
-
-{% elif cur_user.role == "Student" %}
-    <h2>Студент</h2>
-    <ul>
-        <li>Група - <a href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a></li>
-    </ul>
-
-{% else %}
-    <h1>{{ cur_user }}</h1>
-    <h2>Who am I?</h2>
-
+{% if not guest %}
+<div id="delete_avatar_form">
+    <div class="confirmation">
+        <div class="close"></div>
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Ви впевнені, що хочете видалити фото профілю?</h2>
+            <input type="hidden" name="action" value="delete_avatar">
+            <input type="submit" value="Видалити">
+        </form>
+    </div>
+</div>
+                
+<div id="change_avatar_form">
+    <div class="confirmation">
+        <div class="close"></div>
+        <div class="preview">
+            Попередній перегляд: <br/>
+            <img id="avatar-preview" src="" alt="Завантажте фото"/>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p><input class="customize_input" type="file" id="input_avatar_file" name="file"></p>
+            <input type="hidden" name="action" value="change_avatar">
+            <input type="submit" value="Змінити фото">
+        </form>
+    </div>
+</div>
 {% endif %}
 
+<div class="profile">
+    <div class="profile__main">
+        <div class="profile__main_avatar">
+            <img class="profile__main_avatar_img" src="{{cur_user.avatar.url}}" alt="Щось пішло не так">            
+            {% if not guest %}
+            <div class="profile__main_avatar_options">
+                <button id="showDeleteForm" class="profile__main_avatar_options_button">Видалити фото профілю</button>
+                <button id="showChangeForm" class="profile__main_avatar_options_button">Змінити фото</button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="profile__main_name">
+            <p class="profile__main_name_text">
+                {{ cur_user.get_name }}
+            </p>
+        </div>
+    </div>
 
+    <div class="profile__additional">
+        <ul class="profile__additional_list">
+            <li class="profile__additional_list_item">
+                Email: {{ cur_user.email }}
+            </li>
+            <li class="profile__additional_list_item">
+                Роль у системі: {% if cur_user.role == "Teacher"%}Викладач{%elif cur_user.role == "Student"%}Студент{%else%}Щось не зрозуміле{% endif %}
+            </li>
+            <li class="profile__additional_list_item">
+                Дата народження: {{ cur_user.date_of_birth }}
+            </li>
+            {% if cur_user.role == "Teacher" %}
+                <li class="profile__additional_list_item">
+                    Куратор групи - 
+                        <a class="profile__additional_list_item_link" href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
+                </li>
+                <li class="profile__additional_list_item">
+                    <ol class="profile__additional_list_item_sublist">Предмети, які викладає:
+                        {% for subject in subjects %}
+                            <li class="profile__additional_list_item_sublist_item">{{ subject.group_subject.subject }} {{ subject.group_subject.group }}</li>
+                        {% endfor %}
+                    </ol>
+                </li>             
+            {% elif cur_user.role == "Student" %}
+                <li class="profile__additional_list_item">
+                    Група - 
+                        <a class="profile__additional_list_item_link" href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a>
+                </li>
+                <li class="profile__additional_list_item">
+                    Форма навчання: 
+                </li>
+            {% endif %}
+            {% if guest %}
+                <li class="profile__additional_list_item">
+                    <textarea type="text" class="profile__additional_list_item_textarea" readonly>{{ cur_user.about }}</textarea>
+                </li>
+            {% else %}
+                <li class="profile__additional_list_item">
+                    <textarea type="text" class="profile__additional_list_item_textarea" placeholder="Додаткова інформація">{{ cur_user.about }}</textarea>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% if guest %}
+<div class="send_message">
+    <h1 class="send_message__header">Надіслати повідомлення</h1>
+    <form method="POST" class="send_message__form">
+        {% csrf_token %}
+        <textarea id="message-input" name="message-text" placeholder="Повідомлення"></textarea></p>
+        <input type="hidden" name="action" value="send_message">
+        <input type="hidden" name="user_pk" value="{{user.pk}}">
+        <input class="send_message__form_submit" type="submit" value="Надіслати"/>
+    </form>
+</div>
+{% endif %}
 {% endblock %}
+
 {% block script %}
 <script>
-    $('.showDeleteForm, .showChangeForm').click(function() {
-        $(this).parent().find('.confirmation').fadeIn('fast');
+    $('#showDeleteForm').click(function() {
+        $('#delete_avatar_form .confirmation').fadeIn('fast');
+    });
+
+    $('#showChangeForm').click(function() {
+        $('#change_avatar_form .confirmation').fadeIn('fast');
     });
 
     $('form').on('change', '#input_avatar_file', function() {

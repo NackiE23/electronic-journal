@@ -1,22 +1,31 @@
-a {
-    text-decoration: none;
-    color: blue;
+* {
+  padding: 0;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
-table, td, th {
-  border: 1px solid #ddd;
-  text-align: left;
+html, body {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  background-color: #E5E3DA;
 }
 
-table {
-  border-collapse: collapse;
+header {
+  position: relative;
+  top: 0;
+  left: 0;
   width: 100%;
+  padding: 20px;
+  background-color: #E8D58C;
 }
 
-th, td {
-  padding: 15px;
+header .elements {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
 }
-
-input {
-    border: none;
-}
+/*# sourceMappingURL=styles.css.map */
