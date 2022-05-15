@@ -2,29 +2,38 @@
 {% load search_tags %}
 {% block main %}
 
-<h1>Знайти людину</h1>
+<div class="find_person">
+    <h1>Знайти людину</h1>
 
-<form method="GET">
-    <input type="text" name="q" placeholder="Регістр не враховується">
-    <input type="submit" value="Пошук">
-</form>
+    <form method="GET">
+        <input type="text" name="q" placeholder="Регістр не враховується">
+        <input type="submit" value="Пошук">
+    </form>
+</div>
+
+<div class="results">
 {% with results|classname as results_type %}
 {% if results_type == "QuerySet" %}
     {% if results %}
-    <ul>
+    <ul class="results__list">
     {% for element in results %}
-        <li>{% if element.avatar %}<img src="{{ element.avatar.url }}" class="small-profile-image" >{% endif %}
-            {{ element.get_name }} -> <a href="{{ element.get_absolute_url }}">Профіль</a></li>
+        <li class="results__list_item">
+            {% if element.avatar %}<img class="results__list_item_img" src="{{ element.avatar.url }}">{% endif %}
+            <p>
+                <b>{% if element.role == "Teacher"%}Викладач{%elif element.role == "Student"%}Студент{% endif %}</b><br><br>
+                {{ element.get_name }}<br/> <a class="results__list_item_link" href="{{ element.get_absolute_url }}">Профіль</a>
+            </p>
+        </li>
     {% endfor %}
     </ul>
     {% endif %}
 {% else %}
     {% if results %}
-    <p>{{ results }}</p>
+    <p class="results__none">{{ results }}</p>
     {% endif %}
 {% endif %}
 {% endwith %}
-
+</div>
 
 
 {% endblock %}

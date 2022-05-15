@@ -448,28 +448,28 @@ def logout_user(request):
 
 def number_to_month(number):
     if number == 1:
-        return "Січень"
+        return "Січ."
     elif number == 2:
-        return "Лютий"
+        return "Лют."
     elif number == 3:
-        return "Березень"
+        return "Бер."
     elif number == 4:
-        return "Квітень"
+        return "Квіт."
     elif number == 5:
-        return "Травень"
+        return "Трав."
     elif number == 6:
-        return "Червень"
+        return "Черв."
     elif number == 7:
-        return "Липень"
+        return "Лип."
     elif number == 8:
-        return "Серпень"
+        return "Серп."
     elif number == 9:
-        return "Вересень"
+        return "Вер."
     elif number == 10:
-        return "Жовтень"
+        return "Жовт."
     elif number == 11:
-        return "Листопад"
+        return "Лист."
     elif number == 12:
-        return "Грудень"
+        return "Груд."
     else:
         return "Undefind"

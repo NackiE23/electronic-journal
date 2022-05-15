@@ -1,78 +1,96 @@
 {% extends 'journal/base.html' %}
 {% load dict_filters %}
 {% block main %}
-<h1>{{ st_pk }}</h1>
 
-<div id="lesson_info" style="background-color: #c4c4c4; border: 1px solid black;">
-    <h1><span id="lesson-info-teacher_subject">Предмет</span></h1>
-    <p>Останнє оновлення: <span id="lesson-info-last_update">-</span></p>
-    <p>Дата проведення пари: <span id="lesson-info-date">-</span></p>
-    <p>Тема: <span id="lesson-info-topic">-</span></p>
-    <p>Домашнє завдання: <span id="lesson-info-homework">-</span></p>
-    <p>Примітка: <span id="lesson-info-note">-</span></p>
-    <p>Тип: <span id="lesson-info-type">-</span></p>
+<div class="filters">
+    <p>В майбутньому тут мають бути фільтри</p>
+</div>
+
+<div id="lesson_info">
+    <div class="lesson_info">
+        <div class="close"></div>
+
+        <h1 class="lesson_info_h">
+            <span id="lesson_info_teacher">Викладач</span>
+        </h1>
+        <h3 class="lesson_info_h">
+            <span id="lesson_info_subject">Предмет</span>
+        </h3>
+        <p class="lesson_info_p">Останнє оновлення: <span id="lesson_info_last_update">-</span></p>
+        <p class="lesson_info_p">Дата проведення пари: <span id="lesson_info_date">-</span></p>
+        <p class="lesson_info_p">Тема: <span id="lesson_info_topic">-</span></p>
+        <p class="lesson_info_p">Домашнє завдання: <span id="lesson_info_homework">-</span></p>
+        <p class="lesson_info_p">Примітка: <span id="lesson_info_note">-</span></p>
+        <p class="lesson_info_p">Тип: <span id="lesson_info_type">-</span></p>
+    </div>
 </div>
 
 {% for subject in subjects %}
-<h3><a href="{{ subject.teacher_subject.teacher.user.get_absolute_url }}">{{ subject.teacher_subject.teacher.user.get_name }}</a> - {{ subject.teacher_subject.group_subject.subject }}</h3>
-    <table>
-        {% csrf_token %}
-        <colgroup>
-            <col>
-            <col>
-            {% for lesson in subject.lessons %}
-                <col class="{{ lesson.type.slug }}">
-            {% endfor %}
-        </colgroup>
-        <tr>
-            <th>№</th>
-            <th>Студент</th>
-            {% for lesson in subject.lessons %}
-                <th class="lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-                    <span>{{ lesson.date | date:"d" }}</span>
-                </th>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>{{ subject.sequence_number }}</td>
-            <td>{{ student }}</td>
-            {% for lesson in subject.lessons %}
-                <td>
-                    {% for student_lesson in subject.student_lessons %}
-                        {% if lesson.pk == student_lesson.lesson.pk %}
-                            {{ student_lesson.mark }}
-                        {% endif %}
-                    {% endfor%}
-                </td>
-            {% endfor %}
-        </tr>
-    </table>
-    <div class="pagination">
-        <nav>
-            <ul>
-                |
-                {% for p in subject.lessons.paginator.page_range %}
-                    {% if subject.lessons.number == p %}
-                        <li style="display: inline">
-                            {{ p }} |
-                        </li>
-                    {% else %}
-                        <li style="display: inline">
-                            <a href="?{{ subject.page }}={{ p }}">{{ p }}</a> |
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </nav>
+<div class="st_journal">
+    <div class="st_journal__info">
+        <h1><a href="{{ subject.teacher_subject.teacher.user.get_absolute_url }}">{{ subject.teacher_subject.teacher.user.get_name }}</a> - {{ subject.teacher_subject.group_subject.subject }}</h1>
+        <p>Система оцінювання: {{subject.teacher_subject.group_subject.subject.evaluation_system}}</p>
     </div>
-<hr>
+    <div class="st_journal__journal_wrapper">
+        <table class="st_journal__journal">
+            {% csrf_token %}
+            <colgroup>
+                <col>
+                <col>
+                {% for lesson in subject.lessons %}
+                    <col class="{{ lesson.type.slug }}">
+                {% endfor %}
+            </colgroup>
+            <tr class="st_journal__journal_row journal_row">
+                <th class="journal_cell journal_header">№</th>
+                <th class="journal_cell journal_header journal_cell_name">Студент</th>
+                {% for lesson in subject.lessons %}
+                    <th class="journal_cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                        <span journal_cell_month>{{ lesson.date | date:"d" }}</span>
+                    </th>
+                {% endfor %}
+            </tr>
+            <tr class="st_journal__journal_row journal_row">
+                <td class="journal_cell">{{ subject.sequence_number }}</td>
+                <td class="journal_cell journal_cell_name">{{ student }}</td>
+                {% for lesson in subject.lessons %}
+                    <td class="journal_cell">
+                        {% for student_lesson in subject.student_lessons %}
+                            {% if lesson.pk == student_lesson.lesson.pk %}
+                                {{ student_lesson.mark }}
+                            {% endif %}
+                        {% endfor%}
+                    </td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+    <div class="st_journal__pages">
+        <ul class="st_journal__pages_list">
+        {% for p in subject.lessons.paginator.page_range %}
+            {% if subject.lessons.number == p %}
+                <li class="st_journal__pages_list_item st_journal__pages_list_item_current">
+                    {{ p }}
+                </li>
+            {% else %}
+                <a class="st_journal__pages_list_item_link" href="?{{ subject.page }}={{ p }}">
+                    <li class="st_journal__pages_list_item">
+                        {{ p }}
+                    </li>
+                </a>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endfor %}
-
 {% endblock %}
+
 {% block script %}
 <script>
 $(document).ready(function(){
     const months = {{ months|safe }};
+    console.log(months);
     for (let i in months) {
         $(`#lesson${i}`).attr('data-content', months[i]);
     }
@@ -89,14 +107,16 @@ $(document).ready(function(){
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
-                $('#lesson-info-teacher_subject').html(responce.teacher + " " + responce.subject);
-                $('#lesson-info-last_update').html(responce.last_update);
-                $('#lesson-info-date').html(responce.date);
-                $('#lesson-info-topic').html(responce.topic);
-                $('#lesson-info-homework').html(responce.homework);
-                $('#lesson-info-note').html(responce.note);
-                $('#lesson-info-type').html(responce.type);
-                $("#lesson_info").show();
+                $('#lesson_info_teacher').html(responce.teacher);
+                $('#lesson_info_subject').html(responce.subject);
+                $('#lesson_info_last_update').html(responce.last_update);
+                $('#lesson_info_date').html(responce.date);
+                $('#lesson_info_topic').html(responce.topic);
+                $('#lesson_info_homework').html(responce.homework);
+                $('#lesson_info_note').html(responce.note);
+                $('#lesson_info_type').html(responce.type);
+                $('#blur').fadeIn('fast');
+                $("#lesson_info .lesson_info").fadeIn("fast");
             }
         });
     });

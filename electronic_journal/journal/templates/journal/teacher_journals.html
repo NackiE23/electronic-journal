@@ -1,6 +1,32 @@
 {% extends 'journal/base.html' %}
 
 {% block main %}
+
+
+<div class="journal_list">
+    <div class="journal_list__item">
+        <div class="journal_list__item_name">
+            <b>Предмет</b>
+        </div>
+        <ul class="journal_list__item_groups">
+            <li class="journal_list__item_groups_group">
+                <a class="journal_list__item_groups_group_name" href="#">Група 1</a>
+            </li>
+            <li class="journal_list__item_groups_group">
+                <a class="journal_list__item_groups_group_name" href="#">Група 2</a>
+            </li>
+            <li class="journal_list__item_groups_group">
+                <a class="journal_list__item_groups_group_name" href="#">Група 3</a>
+            </li>
+            <li class="journal_list__item_groups_group">
+                <a class="journal_list__item_groups_group_name" href="#">Група 4</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<br>
+<hr>
+<br>
 <ol>
 {% for teacher_subject in teacher_subjects %}
     <li>{{ teacher_subject.group_subject }}
@@ -16,6 +42,5 @@
     </li>
 {% endfor %}
 {% endif %}
-
 </ol>
 {% endblock %}

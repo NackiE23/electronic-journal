@@ -1,40 +1,45 @@
 {% extends 'journal/base.html' %}
 {% block main %}
 
+<div class="filters">
+    <p>В майбутньому тут мають бути фільтри</p>
+</div>
+
 {% for message in messages %}
-<div>
+<div class="message">
     {% if not message.is_check %}
-    <p>Не перевірено</p>
+    <p class="message__p"><b>Не перевірено</b></p>
     {% else %}
-    <p>Перевірено</p>
+    <p class="message__p"><b>Перевірено</b></p>
     {% endif %}
-    <p>Коли: {{ message.time | date:"Y-m-d H:i" }}</p>
-    <p>Від кого: {{ message.from_user }}</p>
-    <p>Вміст: {{ message.text }}</p>
-    <button class="showDeleteForm" data-message-pk="{{ message.pk }}">Видалити</button>
-    <div id="message-{{ message.pk }}" class="confirmation">
-        <div class="close"></div>
-        <form method="POST">
-            {% csrf_token %}
-            <p>Ви впевнені, що хочете видалити повідомлення?</p>
-            <input type="hidden" name="button" value="delete_button">
-            <input type="hidden" name="pk-message" value="{{ message.pk }}">
-            <button id="delete-message" type="submit">Підтвердити</button>
-        </form>
+    <p class="message__p"><b>Коли:</b> {{ message.time | date:"Y-m-d H:i" }}</p>
+    <p class="message__p"><b>Від кого:</b> {{ message.from_user }}</p>
+    <p class="message__p"><b>Вміст:</b> {{ message.text }}</p>
+    <button class="message__button showDeleteForm" data-message-pk="{{ message.pk }}">Видалити</button>
+    <div id="confirmation">
+        <div id="message-{{ message.pk }}" class="confirmation">
+            <div class="close"></div>
+            <form method="POST">
+                {% csrf_token %}
+                <p>Ви впевнені, що хочете видалити повідомлення?</p>
+                <input type="hidden" name="button" value="delete_button">
+                <input type="hidden" name="pk-message" value="{{ message.pk }}">
+                <button id="message__button delete-message" type="submit">Підтвердити</button>
+            </form>
+        </div>
     </div>
     {% if not message.is_check %}
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="button" value="check_button">
         <input type="hidden" name="pk-message" value="{{ message.pk }}">
-        <button id="check-message" type="submit">Відмітити як перевірене</button>
+        <button id="message__button check-message" type="submit">Відмітити як перевірене</button>
     </form>
     {% endif %}
 </div>
-<hr>
 {% endfor %}
-
 {% endblock %}
+
 {% block script %}
 <script>
     $('.showDeleteForm').click(function() {

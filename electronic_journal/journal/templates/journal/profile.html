@@ -34,12 +34,15 @@
 <div class="profile">
     <div class="profile__main">
         <div class="profile__main_avatar">
-            <img class="profile__main_avatar_img" src="{{cur_user.avatar.url}}" alt="Щось пішло не так">            
-            {% if not guest %}
-            <div class="profile__main_avatar_options">
-                <button id="showDeleteForm" class="profile__main_avatar_options_button">Видалити фото профілю</button>
-                <button id="showChangeForm" class="profile__main_avatar_options_button">Змінити фото</button>
-            </div>
+            {% if cur_user.avatar %}
+                <img class="profile__main_avatar_img" src="{{cur_user.avatar.url}}" alt="Щось пішло не так">            
+                {% if not guest %}
+                <div class="profile__main_avatar_options">
+                    <button id="showChangeForm" class="profile__main_avatar_options_button">Змінити фото</button>
+                    <button id="showDeleteForm" class="profile__main_avatar_options_button">Видалити фото профілю</button>
+                </div>
+                {% endif %}
+            {% else %}
             {% endif %}
         </div>
         <div class="profile__main_name">
@@ -83,7 +86,7 @@
             {% endif %}
             {% if guest %}
                 <li class="profile__additional_list_item">
-                    <textarea type="text" class="profile__additional_list_item_textarea" readonly>{{ cur_user.about }}</textarea>
+                    <textarea type="text" class="profile__additional_list_item_textarea" disabled>{{ cur_user.about }}</textarea>
                 </li>
             {% else %}
                 <li class="profile__additional_list_item">

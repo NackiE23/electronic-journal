@@ -14,7 +14,7 @@ header .elements__button_link {
 
 a {
   background-color: transparent;
-  color: #212121;
+  color: inherit;
   text-decoration: none;
   font-weight: 600;
 }
@@ -43,12 +43,38 @@ textarea {
   outline-color: #E8D58C;
 }
 
+table, td, th {
+  border: 1px solid #212121;
+  text-align: left;
+}
+
+img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center center;
+     object-position: center center;
+}
+
 html, body {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   color: #212121;
   background-color: #E5E3DA;
+}
+
+body {
+  text-align: center;
+}
+
+#blur {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #212121;
+  opacity: .2;
+  z-index: 998;
 }
 
 .close {
@@ -73,41 +99,6 @@ html, body {
   font-weight: bold;
 }
 
-header {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px;
-  margin-bottom: 30px;
-  background-color: #E8D58C;
-}
-
-header .elements {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-header .elements__logo {
-  padding: 10px 0;
-}
-
-header .elements_menu__list {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-header .elements_menu__list_item {
-  margin: 0 20px;
-}
-
 input[type=submit], .customize_input, button, input {
   margin: 5px auto 0 auto;
   padding: 10px 15px;
@@ -115,10 +106,22 @@ input[type=submit], .customize_input, button, input {
   border-color: #484746;
   border-radius: 25px;
   color: #E8D58C;
+  -webkit-transition: .3s;
+  transition: .3s;
 }
 
 input {
   background-color: #484746;
+  border-color: #212121;
+}
+
+input[type=submit], button {
+  cursor: pointer;
+}
+
+input[type=submit]:hover, button:hover {
+  background-color: #E8D58C;
+  color: #212121;
   border-color: #212121;
 }
 
@@ -133,6 +136,7 @@ input:-webkit-autofill:active {
 }
 
 input[type=file]::file-selector-button {
+  cursor: pointer;
   color: #E8D58C;
   border-radius: 25px;
   background-color: inherit;
@@ -145,7 +149,7 @@ input[type=file]::file-selector-button {
   margin: 0 auto;
 }
 
-#delete_avatar_form, #change_avatar_form, #pop-up-messages {
+#delete_avatar_form, #change_avatar_form, #pop-up-messages, #confirmation {
   position: fixed;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -188,7 +192,48 @@ input[type=file]::file-selector-button {
 }
 
 .error {
-  background-color: #EF8883;
+  background-color: #f03329;
+}
+
+header {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  margin-bottom: 30px;
+  background-color: #E8D58C;
+}
+
+header .elements {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+header .elements__logo {
+  padding: 10px 0;
+}
+
+header .elements_menu__list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+header .elements_menu__list_item {
+  margin: 0 20px;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+header .elements_menu__list_item:hover {
+  text-shadow: 0px 4px 4px #484746;
 }
 
 .profile {
@@ -337,6 +382,232 @@ input[type=file]::file-selector-button {
 }
 
 .login__form_case input {
-  margin-left: 80px;
+  margin-left: 130px;
+}
+
+.filters {
+  background-color: #F4F1E1;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.lekciya {
+  background-color: #e8f6ee;
+}
+
+.pidsumkova {
+  background-color: #a84343b3;
+}
+
+.kontrolna {
+  background-color: #75bbd6b3;
+}
+
+.praktichna {
+  background-color: #ece366b3;
+}
+
+.laboratorna {
+  background-color: #ebde49b3;
+}
+
+.samostijna {
+  background-color: #6b69ddb3;
+}
+
+.journal_header:before {
+  content: attr(data-content);
+  color: #212121;
+  text-shadow: 0 0 4px #E8D58C;
+  position: absolute;
+  bottom: 38px;
+  left: -2px;
+}
+
+.journal_cell {
+  padding: 10px 15px;
+  text-align: center;
+  max-width: 54px;
+}
+
+.journal_cell_name {
+  max-width: none;
+}
+
+.journal_cell_month {
+  cursor: pointer;
+}
+
+.st_journal {
+  background-color: #F4F1E1;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.st_journal__journal_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 25px 0;
+}
+
+.st_journal__journal {
+  border-collapse: collapse;
+}
+
+.st_journal__journal_row:last-child .journal_cell:nth-of-type(1),
+.st_journal__journal_row:last-child .journal_cell:nth-of-type(2) {
+  background-color: #E8D58C;
+}
+
+.st_journal__pages_list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.st_journal__pages_list_item {
+  padding: 2px 7px;
+  margin: 3px;
+  font-weight: bold;
+  background-color: #E8D58C;
+  color: #212121;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+.st_journal__pages_list_item:hover, .st_journal__pages_list_item_current {
+  background-color: #212121;
+  color: #E8D58C;
+}
+
+#lesson_info {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 998;
+}
+
+#lesson_info .lesson_info {
+  display: none;
+  position: relative;
+  background-color: #E8D58C;
+  border: 2px solid #212121;
+  text-align: center;
+  border-radius: 25px;
+  padding: 25px 20px;
+  margin: 0 auto;
+  z-index: 999;
+}
+
+.message {
+  text-align: center;
+  background-color: #E8D58C;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.find_person, .group_info {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.results {
+  text-align: center;
+}
+
+.results__list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100vw;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.results__list_item {
+  -webkit-box-flex: 2;
+      -ms-flex: 2 0 21%;
+          flex: 2 0 21%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #E8D58C;
+  padding: 10px;
+  margin: 10px 20px;
+  border: 1px solid #212121;
+}
+
+.results__list_item_img {
+  width: 100px;
+  height: 120px;
+  margin-right: 20px;
+  -webkit-box-shadow: 0px 0px 5px 0px #212121;
+          box-shadow: 0px 0px 5px 0px #212121;
+}
+
+.journal_list__item {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.journal_list__item_name {
+  padding: 10px;
+  background-color: #E8D58C;
+}
+
+.journal_list__item_groups {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 20px;
+  border-left: 2px solid #212121;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.journal_list__item_groups_group {
+  padding: 5px;
+  margin: 0 10px;
+  background-color: #E8D58C;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+.journal_list__item_groups_group:hover {
+  background-color: #212121;
+  color: #E8D58C;
+}
+
+.journal_list__item_groups_group_name {
+  cursor: pointer;
 }
 /*# sourceMappingURL=styles.css.map */

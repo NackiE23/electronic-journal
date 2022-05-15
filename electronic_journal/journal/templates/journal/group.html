@@ -1,14 +1,25 @@
 {% extends 'journal/base.html' %}
 
 {% block main %}
-<h1>Група {{ curator.group }}</h1>
-<h2>Куратор - {{ curator }}</h2>
 
-<ol>Студенти:
-{% for member in members %}
-<li>{% if member.user.avatar %}<img src="{{ member.user.avatar.url }}" class="small-profile-image" >{% endif %}
-    <a href="{{ member.user.get_absolute_url }}">{{ member }}</a></li>
-{% endfor %}
-</ol>
+<div class="group_info">
+    <h1>Група {{ curator.group }}</h1>
+    <h2>Куратор - {{ curator }}</h2>
+</div>
+
+<div class="results">
+    <h3>Студенти:</h3>
+    <ul class="results__list">
+        {% for member in members %}
+            <li class="results__list_item">
+                {% if member.user.avatar %}<img class="results__list_item_img" src="{{ member.user.avatar.url }}" class="small-profile-image" >{% endif %}
+                <p>
+                    {{ member }}<br>
+                    <a class="results__list_item_link" href="{{ member.user.get_absolute_url }}">Профіль</a>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
 
 {% endblock %}

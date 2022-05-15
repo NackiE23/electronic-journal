@@ -11,6 +11,8 @@
 </head>
 <body>
 
+<div id="blur"></div>
+
 <div id="pop-up-messages">
 </div>
 
@@ -18,7 +20,9 @@
 <header>
     <div class="elements">
         <div class="elements__logo">
-            <img class="elements__logo_img" src="{% static 'journal/images/Лого.png' %}" alt="Electro journal">
+            <a href="{% url 'main' %}">
+                <img class="elements__logo_img" src="{% static 'journal/images/Лого.png' %}" alt="Electro journal">
+            </a>
         </div>
         <div class="elements_menu">
             <ul class="elements_menu__list">
@@ -78,6 +82,7 @@
 
     $('.close').click(function() {
         $(this).parent().fadeOut('fast');
+        $("#blur").fadeOut('fast');
     });
 
     $("#pop-up-messages").on("click", '.close', function() {
@@ -85,8 +90,19 @@
         el.slideUp('fast');
         setTimeout(function() {el.remove();}, 600)
     });
+
+    
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async function demo() {
+        for (let i = 0; i < 50; i++) {
+            showMessage('Fuck You!!!', 'error');
+            await sleep(100);
+        }
+    }
     $("#show-message").click(function() {
-        showMessage('Fuck You', 'error');
+        demo()
     });
 </script>
 {% block script %}
