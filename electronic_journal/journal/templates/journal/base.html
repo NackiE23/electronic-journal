@@ -22,6 +22,7 @@
         </div>
         <div class="elements_menu">
             <ul class="elements_menu__list">
+                <li id="show-message" style="cursor: pointer"><b>Check</b></li>
                 <li class="elements_menu__list_item elements-menu__list_item1">
                     <a class="elements_menu__list_item_link" href="{% url 'own_profile' %}">Мій профіль</a>
                 </li>
@@ -85,7 +86,7 @@
         setTimeout(function() {el.remove();}, 600)
     });
     $("#show-message").click(function() {
-        showMessage('Fuck You');
+        showMessage('Fuck You', 'error');
     });
 </script>
 {% block script %}

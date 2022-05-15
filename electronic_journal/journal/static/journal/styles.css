@@ -51,6 +51,28 @@ html, body {
   background-color: #E5E3DA;
 }
 
+.close {
+  position: absolute;
+  background-color: #212121;
+  cursor: pointer;
+  width: 0px;
+  height: 0px;
+  top: 10px;
+  right: 15px;
+  -webkit-transition: 5s;
+  transition: 5s;
+}
+
+.close:before {
+  display: inline-block;
+  content: "\00d7";
+  /* This will render the 'X' */
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  font-weight: bold;
+}
+
 header {
   position: relative;
   top: 0;
@@ -86,18 +108,6 @@ header .elements_menu__list_item {
   margin: 0 20px;
 }
 
-.close {
-  position: absolute;
-  background-color: black;
-  cursor: pointer;
-  width: 10px;
-  height: 10px;
-  top: 10px;
-  right: 15px;
-  -webkit-transition: 5s;
-  transition: 5s;
-}
-
 input[type=submit], .customize_input, button {
   margin: 5px auto 0 auto;
   padding: 10px 15px;
@@ -121,7 +131,7 @@ input[type=file]::file-selector-button {
   margin: 0 auto;
 }
 
-#delete_avatar_form, #change_avatar_form {
+#delete_avatar_form, #change_avatar_form, #pop-up-messages {
   position: fixed;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -133,10 +143,19 @@ input[type=file]::file-selector-button {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  z-index: 998;
+}
+
+#pop-up-messages {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   z-index: 999;
 }
 
-.confirmation {
+.confirmation, .pop-up-message {
+  position: relative;
   display: none;
   margin: 0 auto;
   text-align: center;
@@ -146,6 +165,16 @@ input[type=file]::file-selector-button {
   padding: 20px 35px;
   border-radius: 25px;
   background-color: #E8D58C;
+}
+
+.pop-up-message {
+  display: block;
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.error {
+  background-color: #EF8883;
 }
 
 .profile {
