@@ -429,7 +429,7 @@ class PasswordsChangeView(PasswordChangeView):
 
 
 class LoginUser(LoginView):
-    form_class = LoginUserForm
+    authentication_form = LoginUserForm
     template_name = 'journal/login.html'
 
     def get_context_data(self, **kwargs):

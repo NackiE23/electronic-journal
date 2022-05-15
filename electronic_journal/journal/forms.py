@@ -159,3 +159,9 @@ class LoginUserForm(AuthenticationForm):
                 _("This account is inactive."),
                 code='inactive',
             )
+    
+    class Meta:
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'login_form_case_input'}),
+            'password': forms.PasswordInput(attrs={'class': 'login_form_case_input'})
+        }

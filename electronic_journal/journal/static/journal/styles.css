@@ -108,14 +108,28 @@ header .elements_menu__list_item {
   margin: 0 20px;
 }
 
-input[type=submit], .customize_input, button {
+input[type=submit], .customize_input, button, input {
   margin: 5px auto 0 auto;
   padding: 10px 15px;
   background-color: #212121;
   border-color: #484746;
   border-radius: 25px;
   color: #E8D58C;
-  cursor: pointer;
+}
+
+input {
+  background-color: #484746;
+  border-color: #212121;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+  border-color: #212121;
+  color: #212121;
 }
 
 input[type=file]::file-selector-button {
@@ -279,5 +293,50 @@ input[type=file]::file-selector-button {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+}
+
+.login {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.login__header {
+  margin: 12px auto;
+}
+
+.login__form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.login__form_case {
+  position: relative;
+}
+
+.login__form_case_label {
+  position: absolute;
+  width: 150px;
+  left: 0;
+  top: 16px;
+}
+
+.login__form_case input {
+  margin-left: 80px;
 }
 /*# sourceMappingURL=styles.css.map */

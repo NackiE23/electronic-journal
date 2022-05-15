@@ -112,14 +112,27 @@ header {
     }
 }
 
-input[type=submit], .customize_input, button {
+input[type=submit], .customize_input, button, input {
     margin: 5px auto 0 auto;
     padding: 10px 15px;
     background-color: $text-color;
     border-color: $bg-input-color;
     border-radius: 25px;
     color: $primary-color;
-    cursor: pointer;
+}
+
+input {
+    background-color: $bg-input-color;
+    border-color: $text-color;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    border-color: $text-color;
+    color: $text-color;
 }
 
 input[type=file]::file-selector-button {
@@ -254,5 +267,35 @@ input[type=file]::file-selector-button {
         display: flex;
         flex-direction: column;
         justify-content: center;
+    }
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__header {
+        margin: 12px auto;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        &_case {
+            position: relative;
+
+            &_label {
+                position: absolute;
+                width: 150px;
+                left: 0;
+                top: 16px;
+            }
+            input {
+                margin-left: 80px;
+            }
+        }
     }
 }

@@ -1,19 +1,23 @@
 {% extends "journal/base.html" %}
 
 {% block main %}
-<h1>{{title}}</h1>
+<div class="login">
+    <h1 class="login__header">Автентифікація</h1>
+ 
+    <form class="login__form" method="post">
+        {% csrf_token %}
 
-<form method="post">
-    {% csrf_token %}
+        <div class="login__form_error">{{ form.non_field_errors }}</div>
 
-    <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+            <p class="login__form_case">
+                <label class="login__form_case_label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {{ f }}
+            </p>
+            <div class="login__form_error">{{ f.errors }}</div>
+        {% endfor %}
 
-    {% for f in form %}
-        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
-        <div class="form-error">{{ f.errors }}</div>
-    {% endfor %}
-
-    <button type="submit">Войти</button>
-</form>
-
+        <button type="submit">Войти</button>
+    </form>
+</div>
 {% endblock %}
