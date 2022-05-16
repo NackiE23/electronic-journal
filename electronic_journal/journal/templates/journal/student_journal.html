@@ -42,19 +42,19 @@
                 {% endfor %}
             </colgroup>
             <tr class="st_journal__journal_row journal_row">
-                <th class="journal_cell journal_header">№</th>
-                <th class="journal_cell journal_header journal_cell_name">Студент</th>
+                <th class="journal__cell journal_header journal__cell_number">№</th>
+                <th class="journal__cell journal_header journal__cell_name">Студент</th>
                 {% for lesson in subject.lessons %}
-                    <th class="journal_cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-                        <span journal_cell_month>{{ lesson.date | date:"d" }}</span>
+                    <th class="journal__cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                        <span class="journal__cell_month">{{ lesson.date | date:"d" }}</span>
                     </th>
                 {% endfor %}
             </tr>
             <tr class="st_journal__journal_row journal_row">
-                <td class="journal_cell">{{ subject.sequence_number }}</td>
-                <td class="journal_cell journal_cell_name">{{ student }}</td>
+                <td class="journal__cell journal__cell_number">{{ subject.sequence_number }}</td>
+                <td class="journal__cell journal__cell_name">{{ student }}</td>
                 {% for lesson in subject.lessons %}
-                    <td class="journal_cell">
+                    <td class="journal__cell">
                         {% for student_lesson in subject.student_lessons %}
                             {% if lesson.pk == student_lesson.lesson.pk %}
                                 {{ student_lesson.mark }}
@@ -65,16 +65,16 @@
             </tr>
         </table>
     </div>
-    <div class="st_journal__pages">
-        <ul class="st_journal__pages_list">
+    <div class="journal__pages">
+        <ul class="journal__pages_list">
         {% for p in subject.lessons.paginator.page_range %}
             {% if subject.lessons.number == p %}
-                <li class="st_journal__pages_list_item st_journal__pages_list_item_current">
+                <li class="journal__pages_list_item journal__pages_list_item_current">
                     {{ p }}
                 </li>
             {% else %}
-                <a class="st_journal__pages_list_item_link" href="?{{ subject.page }}={{ p }}">
-                    <li class="st_journal__pages_list_item">
+                <a class="journal__pages_list_item_link" href="?{{ subject.page }}={{ p }}">
+                    <li class="journal__pages_list_item">
                         {{ p }}
                     </li>
                 </a>

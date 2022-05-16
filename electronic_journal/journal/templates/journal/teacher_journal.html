@@ -1,94 +1,105 @@
 {% extends 'journal/base.html' %}
 {% load journal_tags %}
 {% block main %}
-<div>
-    <form method="post">
-        {% csrf_token %}
-
-        <p>
-            <label for="teacher-select-input">Викладач: </label>
-            <input type="text" id="teacher-select-input" name="teacher-select-input" list="teachers">
-            <datalist id="teachers">
-                {% for teacher in other_teachers %}
-                <option value="{{ teacher }}" data-pk="{{ teacher.pk }}">{{ teacher }}</option>
-                {% endfor %}
-            </datalist>
-        </p>
-        <p>
-            <label for="up-to-date-input">До: </label>
-            <input id="up-to-date-input" type="date" name="up-to-date-input">
-        </p>
-        <input type="hidden" id="selected_teacher" name="selected_teacher" value="">
-        <input type="hidden" name="button" value="allow_teacher">
-        <input type="submit" value="Додати доступ">
-    </form>
+<div class="filters">
+    <button class="openForm" data-class="delete_students_form">Видалити студента(ів) зі списку</button>
+    <button class="openForm" data-class="add_students_form">Додати студента(ів) до списку</button>
+    <button class="openForm" data-class="permission_form">Додати доступ до журналу</button>
 </div>
 
-<div class="info">
-    <h1>{{ group_subject }}</h1>
-
-    <h4>Система оцінювання: {{ teacher_subject.group_subject.subject.evaluation_system.name }}</h4>
-    <h4>Викладач: {{ teacher_subject.teacher }}</h4>
+<div class="form_wrapper">
+    <div class="permission_form form">
+        <div class="close"></div>
+        <form method="post">
+            {% csrf_token %}
+            <h3>
+                Доступ до журналу
+            </h3>
+            <p>
+                <label for="teacher-select-input">Викладач: </label>
+                <input type="text" id="teacher-select-input" name="teacher-select-input" list="teachers">
+                <datalist id="teachers">
+                    {% for teacher in other_teachers %}
+                    <option value="{{ teacher }}" data-pk="{{ teacher.pk }}">{{ teacher }}</option>
+                    {% endfor %}
+                </datalist>
+            </p>
+            <p>
+                <label for="up-to-date-input">До: </label>
+                <input id="up-to-date-input" type="date" name="up-to-date-input">
+            </p>
+            <input type="hidden" id="selected_teacher" name="selected_teacher" value="">
+            <input type="hidden" name="button" value="allow_teacher">
+            <input type="submit" value="Додати доступ">
+        </form>
+    </div>
 </div>
 
 {% if not students %}
 <h1>Не додано жодного студента</h1>
 {% else %}
-
-<table>
-    {% csrf_token %}
-    <colgroup>
-        <col>
-        <col>
-        {% for lesson in lessons %}
-            <col class="{{ lesson.type.slug }}">
-        {% endfor %}
-    </colgroup>
-    <tr>
-        <th>№</th>
-        <th>Студент</th>
-        {% for lesson in lessons %}
-        <th id="lesson{{ lesson.pk }}" class="lesson" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-            <span>{{ lesson.date | date:"d" }}</span>
-        </th>
-        {% endfor %}
-    </tr>
-    {% for student in students|enum %}
-    <tr>
-        <td>{{ student|id }}</td>
-        <td><a href="{% url 'profile' student|get_user_pk %}">{{ student|name }}</a></td>
-        {% for lesson in lessons %}
-        <td>
-            <input id="input-{{ student|get_pk }}{{ lesson.pk }}" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
-        </td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
-<div class="pagination">
-    <nav>
-        <ul>
-            |
-            {% for p in lessons.paginator.page_range %}
-                {% if lessons.number == p %}
-                    <li style="display: inline">
-                        {{ p }} |
-                    </li>
-                {% else %}
-                    <li style="display: inline">
-                        <a href="?page={{ p }}">{{ p }}</a> |
-                    </li>
-                {% endif %}
+<div class="tr_journal">
+    <div class="info">
+        <h1>{{ group_subject }}</h1>
+        <h4>Система оцінювання: {{ teacher_subject.group_subject.subject.evaluation_system.name }}</h4>
+    </div>
+    
+    <div class="tr_journal__journal_wrapper">
+        <table class="tr_journal__journal">
+            {% csrf_token %}
+            <colgroup>
+                <col>
+                <col>
+                {% for lesson in lessons %}
+                    <col class="{{ lesson.type.slug }}">
+                {% endfor %}
+            </colgroup>
+            <tr class="tr_journal__journal_row journal_row">
+                <th class="journal__cell journal_header">№</th>
+                <th class="journal__cell journal_header journal__cell_name">Студент</th>
+                {% for lesson in lessons %}
+                    <th class="journal__cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
+                        <span class='journal__cell_month'>{{ lesson.date | date:"d" }}</span>
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for student in students|enum %}
+            <tr class="tr_journal__journal_row journal_row">
+                <td class="journal__cell journal__cell">{{ student|id }}</td>
+                <td class="journal__cell journal__cell_name">{{ student|name }}</td>
+                {% for lesson in lessons %}
+                    <td class="journal__cell">
+                        <input id="input-{{ student|get_pk }}{{ lesson.pk }}" class="journal__cell_input" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
+                    </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
+        </table>
+    </div>
+    <div class="journal__pages">
+        <ul class="journal__pages_list">
+        {% for p in lessons.paginator.page_range %}
+            {% if lessons.number == p %}
+                <li class="journal__pages_list_item journal__pages_list_item_current">
+                    {{ p }}
+                </li>
+            {% else %}
+                <a class="journal__pages_list_item_link" href="?{{ subject.page }}={{ p }}">
+                    <li class="journal__pages_list_item">
+                        {{ p }}
+                    </li>
+                </a>
+            {% endif %}
+        {% endfor %}
         </ul>
-    </nav>
-</div>
-<br>
-<button id="add_row_button">Додати пару</button>
-{% endif %}
-<hr>
+    </div>
 
-<div id="lesson_update" style="display: none; position: absolute; top: 0; left: 0; background-color: gray; padding: 100px;">
+    <button id="add_row_button">Додати стовпчик</button>
+</div>
+{% endif %}
+
+<div class="lesson_update_wrapper">
+<div id="lesson_update" class="form lesson_update">
     <div class="close"></div>
     {{ lesson_update_form.as_p }}
     <form id="lesson_update__update_form" method="POST">
@@ -97,7 +108,7 @@
         <input type="submit" name="submit" value="Підтвердити зміни">
     </form>
 
-    <button class="showDeleteForm" type="submit" name="delete" style="background-color: black; border-color: black; color: white;">Видалити урок</button>
+    <button class="showDeleteForm" type="submit" name="delete">Видалити урок</button>
 
     <div class="confirmation">
         <div class="close"></div>
@@ -110,8 +121,10 @@
         </form>
     </div>
 </div>
+</div>
 
-<div id="lesson_create" style="display: none; position: absolute; top: 0; right: 0; width: 33vw; background-color: gray; padding: 100px;">
+<div class="lesson_create_wrapper">
+<div id="lesson_create" class="form lesson_create">
     <div class="close"></div>
     <form id="form" method="POST">
         {% csrf_token %}
@@ -131,47 +144,59 @@
         <button type="submit">Додати стовпчик</button>
     </form>
 </div>
-{% if not other_students %}
-<h1>Наразі немає студентів, яких можна додати</h1>
-{% else %}
-<form method="POST" style="float: left">
-    {% csrf_token %}
+</div>
 
-    <div id="id_students">
-        {% for student in other_students|enum %}
-        <div>
-            <label for="id_students_{{ student|id }}">
-                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="id_students_{{ student|id }}">
-                {{ student|name }}
-            </label>
-        </div>
-        {% endfor %}
+<div class="form_wrapper">
+    <div class="form add_students_form">
+        <div class="close"></div>
+        {% if not other_students %}
+            <h1>Наразі немає студентів, яких можна додати</h1>
+        {% else %}
+            <form method="POST">
+                {% csrf_token %}
+
+                <div id="id_students">
+                    {% for student in other_students|enum %}
+                    <div>
+                        <label for="id_students_{{ student|id }}">
+                            <input type="checkbox" name="students" value="{{ student|get_pk }}" id="id_students_{{ student|id }}">
+                            {{ student|name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <input type="hidden" name="button" value="add_student">
+                <button type="submit">Додати студента(ів)</button>
+            </form>
+        {% endif %}
     </div>
+</div>
 
-    <input type="hidden" name="button" value="add_student">
-    <button type="submit">Додати студента(ів)</button>
-</form>
-{% endif %}
+<div class="form_wrapper">
+    <div class="form delete_students_form">
+        <div class="close"></div>
+        {% if students %}
+            <form method="POST">
+                {% csrf_token %}
 
-{% if students %}
-<form method="POST" style="float: right">
-    {% csrf_token %}
+                <div id="id_student">
+                    {% for student in students|enum %}
+                    <div>
+                        <label for="pk_students_{{ student|id }}">
+                            <input type="checkbox" name="students" value="{{ student|get_pk }}" id="pk_students_{{ student|id }}">
+                            {{ student|name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
 
-    <div id="id_student">
-        {% for student in students|enum %}
-        <div>
-            <label for="pk_students_{{ student|id }}">
-                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="pk_students_{{ student|id }}">
-                {{ student|name }}
-            </label>
-        </div>
-        {% endfor %}
+                <input type="hidden" name="button" value="delete_student">
+                <button type="submit">Видалити студента(ів)</button>
+            </form>
+        {% endif %}
     </div>
-
-    <input type="hidden" name="button" value="delete_student">
-    <button type="submit">Видалити студента(ів)</button>
-</form>
-{% endif %}
+</div>
 {% endblock %}
 
 {% block script %}
@@ -187,7 +212,7 @@ $(document).ready(function(){
 
     const table_csrf = $("table").find("input[name=csrfmiddlewaretoken]").val();
 
-    $(".lesson span").click(function() {
+    $(".lesson_date span").click(function() {
         $("#lesson_update").hide();
         let lesson_pk = $(this).parent().attr('data-lesson-pk')
         $.ajax({
@@ -280,6 +305,15 @@ $(document).ready(function(){
         $(`#lesson${i}`).addClass('month').attr('data-content', months[i]);
     }
 
+
+    $('.journal__cell').hover(function() {
+        var t = parseInt($(this).index()) + 1;
+        $(`td:nth-child(${t}), th:nth-child(${t})`).addClass('highlighted');
+    },
+    function() {
+        var t = parseInt($(this).index()) + 1;
+        $(`td:nth-child(${t}), th:nth-child(${t})`).removeClass('highlighted');
+    });
 });
 </script>
 {% endblock %}

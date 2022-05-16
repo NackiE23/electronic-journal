@@ -99,7 +99,7 @@ body {
   font-weight: bold;
 }
 
-input[type=submit], .customize_input, button, input {
+input[type=submit], .customize_input, button, input, select {
   margin: 5px auto 0 auto;
   padding: 10px 15px;
   background-color: #212121;
@@ -115,11 +115,11 @@ input {
   border-color: #212121;
 }
 
-input[type=submit], button {
+input[type=submit], button, select {
   cursor: pointer;
 }
 
-input[type=submit]:hover, button:hover {
+input[type=submit]:hover, button:hover, select:hover {
   background-color: #E8D58C;
   color: #212121;
   border-color: #212121;
@@ -149,7 +149,9 @@ input[type=file]::file-selector-button {
   margin: 0 auto;
 }
 
-#delete_avatar_form, #change_avatar_form, #pop-up-messages, #confirmation {
+#delete_avatar_form, #change_avatar_form, #pop-up-messages,
+#confirmation, .lesson_update_wrapper, .lesson_create_wrapper,
+.form_wrapper {
   position: fixed;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -162,6 +164,14 @@ input[type=file]::file-selector-button {
       -ms-flex-pack: center;
           justify-content: center;
   z-index: 998;
+}
+
+.form {
+  display: none;
+  background-color: #484746;
+  color: #E8D58C;
+  border-radius: 25px;
+  padding: 100px;
 }
 
 #pop-up-messages {
@@ -425,46 +435,39 @@ header .elements_menu__list_item:hover {
   left: -2px;
 }
 
-.journal_cell {
+.journal__cell {
+  position: relative;
   padding: 10px 15px;
   text-align: center;
   max-width: 54px;
 }
 
-.journal_cell_name {
+.journal__cell_name, .journal__cell_number {
   max-width: none;
 }
 
-.journal_cell_month {
+.journal__cell_month {
   cursor: pointer;
 }
 
-.st_journal {
-  background-color: #F4F1E1;
-  margin: 10px 0;
+.journal__cell_input {
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  color: #212121;
   text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 5px 0;
+  -webkit-transition: 0;
+  transition: 0;
 }
 
-.st_journal__journal_wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin: 25px 0;
+.journal__cell.incorrect_input, .journal__cell.incorrect_td {
+  background-color: #f03329;
 }
 
-.st_journal__journal {
-  border-collapse: collapse;
-}
-
-.st_journal__journal_row:last-child .journal_cell:nth-of-type(1),
-.st_journal__journal_row:last-child .journal_cell:nth-of-type(2) {
-  background-color: #E8D58C;
-}
-
-.st_journal__pages_list {
+.journal__pages_list {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -473,7 +476,7 @@ header .elements_menu__list_item:hover {
           justify-content: center;
 }
 
-.st_journal__pages_list_item {
+.journal__pages_list_item {
   padding: 2px 7px;
   margin: 3px;
   font-weight: bold;
@@ -483,9 +486,62 @@ header .elements_menu__list_item:hover {
   transition: .3s;
 }
 
-.st_journal__pages_list_item:hover, .st_journal__pages_list_item_current {
+.journal__pages_list_item:hover, .journal__pages_list_item_current {
   background-color: #212121;
   color: #E8D58C;
+}
+
+.st_journal, .tr_journal {
+  background-color: #F4F1E1;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.st_journal__journal_wrapper, .tr_journal__journal_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 25px 0;
+}
+
+.st_journal__journal, .tr_journal__journal {
+  border-collapse: collapse;
+}
+
+.st_journal__journal_row:last-child .journal__cell:nth-of-type(1),
+.st_journal__journal_row:last-child .journal__cell:nth-of-type(2) {
+  background-clip: padding-box;
+  background-color: #E8D58C;
+}
+
+.tr_journal {
+  padding: 10px 0;
+}
+
+.tr_journal .journal__cell {
+  padding: 1px;
+}
+
+.tr_journal .journal__cell_name, .tr_journal .journal__cell_number, .tr_journal .journal__cell_header {
+  padding: 10px 15px;
+}
+
+.tr_journal .journal__cell:hover {
+  background-clip: padding-box;
+  background-color: #484746;
+  color: #E8D58C;
+}
+
+.tr_journal .journal__cell:hover input {
+  color: #E8D58C;
+}
+
+.tr_journal__journal tr:hover, .tr_journal__journal .highlighted {
+  background-clip: padding-box;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 #lesson_info {
@@ -516,6 +572,45 @@ header .elements_menu__list_item:hover {
   padding: 25px 20px;
   margin: 0 auto;
   z-index: 999;
+}
+
+.journal_list__item {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.journal_list__item_name {
+  padding: 10px;
+  background-color: #E8D58C;
+}
+
+.journal_list__item_groups {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 20px;
+  border-left: 2px solid #212121;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.journal_list__item_groups_group {
+  padding: 5px;
+  margin: 0 10px;
+  background-color: #E8D58C;
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+.journal_list__item_groups_group:hover {
+  background-color: #212121;
+  color: #E8D58C;
+}
+
+.journal_list__item_groups_group_name {
+  cursor: pointer;
 }
 
 .message {
@@ -570,44 +665,5 @@ header .elements_menu__list_item:hover {
   margin-right: 20px;
   -webkit-box-shadow: 0px 0px 5px 0px #212121;
           box-shadow: 0px 0px 5px 0px #212121;
-}
-
-.journal_list__item {
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-}
-
-.journal_list__item_name {
-  padding: 10px;
-  background-color: #E8D58C;
-}
-
-.journal_list__item_groups {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  margin-left: 20px;
-  border-left: 2px solid #212121;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.journal_list__item_groups_group {
-  padding: 5px;
-  margin: 0 10px;
-  background-color: #E8D58C;
-  -webkit-transition: .3s;
-  transition: .3s;
-}
-
-.journal_list__item_groups_group:hover {
-  background-color: #212121;
-  color: #E8D58C;
-}
-
-.journal_list__item_groups_group_name {
-  cursor: pointer;
 }
 /*# sourceMappingURL=styles.css.map */

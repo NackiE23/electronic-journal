@@ -100,7 +100,7 @@ body {
     }
 }
 
-input[type=submit], .customize_input, button, input {
+input[type=submit], .customize_input, button, input, select {
     margin: 5px auto 0 auto;
     padding: 10px 15px;
     background-color: $text-color;
@@ -115,7 +115,7 @@ input {
     border-color: $text-color;
 }
 
-input[type=submit], button {
+input[type=submit], button, select {
     cursor: pointer;
 
     &:hover {
@@ -148,13 +148,23 @@ input[type=file]::file-selector-button {
     margin: 0 auto;
 }
 
-#delete_avatar_form, #change_avatar_form, #pop-up-messages, #confirmation {
+#delete_avatar_form, #change_avatar_form, #pop-up-messages, 
+#confirmation, .lesson_update_wrapper, .lesson_create_wrapper, 
+.form_wrapper {
     position: fixed;
     display: flex;
     top: 0; left: 0;
     transform: translate(calc(50vw - 50%), calc(50vh - 50%));
     justify-content: center;
     z-index: 998;
+}
+
+.form {
+    display: none;
+    background-color: $bg-input-color;
+    color: $primary-color;
+    border-radius: 25px; 
+    padding: 100px;
 }
 
 #pop-up-messages {
@@ -378,40 +388,34 @@ header {
         left: -2px;  
     }
 
-    &_cell {
+    &__cell {
+        position: relative;
         padding: 10px 15px;
         text-align: center;
         max-width: 54px;
         
-        &_name {
+        &_name, &_number {
             max-width: none;
         }
 
         &_month {
             cursor: pointer;
         }
-    }
-}
 
-.st_journal {
-    background-color: $light-primary-color;
-    margin: 10px 0;
-    text-align: center;
+        &_input {
+            background-color: transparent;
+            border-radius: 0;
+            border: none;
+            color: $text-color;
+            text-align: center;
+            width: 100%;
+            margin: 0;
+            padding: 5px 0;
+            transition: 0;
+        }
 
-    &__journal_wrapper {
-        display: flex;
-        justify-content: center;
-        margin: 25px 0;
-    }
-
-    &__journal {
-        border-collapse: collapse;
-
-        &_row:last-child {
-            & .journal_cell:nth-of-type(1),
-            & .journal_cell:nth-of-type(2) {
-                background-color: $primary-color;
-            }
+        &.incorrect_input, &.incorrect_td {
+            background-color: $error-color;
         }
     }
 
@@ -437,6 +441,59 @@ header {
     }
 }
 
+.st_journal, .tr_journal {
+    background-color: $light-primary-color;
+    margin: 10px 0;
+    text-align: center;
+
+    &__journal_wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 25px 0;
+    }
+
+    &__journal {
+        border-collapse: collapse;
+    }
+}
+
+.st_journal__journal_row:last-child {
+    & .journal__cell:nth-of-type(1),
+    & .journal__cell:nth-of-type(2) {
+        background-clip: padding-box;
+        background-color: $primary-color;
+    }
+}
+
+.tr_journal {
+    padding: 10px 0;
+    
+    .journal__cell {
+        padding: 1px;
+
+        &_name, &_number, &_header {
+            padding: 10px 15px;
+        }
+
+        &:hover {
+            background-clip: padding-box;
+            background-color: $bg-input-color;
+            color: $primary-color;
+
+            input {
+                color: $primary-color;
+            }
+        }
+    }
+
+    &__journal {
+        tr:hover, .highlighted {
+            background-clip: padding-box;
+            background-color: rgba($color: #fff, $alpha: .8);
+        }
+    }
+}
+
 #lesson_info {
     position: absolute;
     display: flex;
@@ -455,6 +512,40 @@ header {
         padding: 25px 20px;
         margin: 0 auto;
         z-index: 999;
+    }
+}
+
+.journal_list {
+    &__item {
+        display: inline-flex;
+
+        &_name {
+            padding: 10px;
+            background-color: $primary-color;
+        }
+
+        &_groups {
+            display: flex;
+            margin-left: 20px;
+            border-left: 2px solid $text-color;
+            align-items: center;
+
+            &_group {
+                padding: 5px;
+                margin: 0 10px;
+                background-color: $primary-color;
+                transition: .3s;
+
+                &:hover {
+                    background-color: $text-color;
+                    color: $primary-color;
+                }
+
+                &_name {
+                    cursor: pointer;
+                }
+            }
+        }
     }
 }
 
@@ -494,40 +585,6 @@ header {
                 height: 120px;
                 margin-right: 20px;
                 box-shadow: 0px 0px 5px 0px $text-color;
-            }
-        }
-    }
-}
-
-.journal_list {
-    &__item {
-        display: inline-flex;
-
-        &_name {
-            padding: 10px;
-            background-color: $primary-color;
-        }
-
-        &_groups {
-            display: flex;
-            margin-left: 20px;
-            border-left: 2px solid $text-color;
-            align-items: center;
-
-            &_group {
-                padding: 5px;
-                margin: 0 10px;
-                background-color: $primary-color;
-                transition: .3s;
-
-                &:hover {
-                    background-color: $text-color;
-                    color: $primary-color;
-                }
-
-                &_name {
-                    cursor: pointer;
-                }
             }
         }
     }

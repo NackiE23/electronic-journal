@@ -85,6 +85,10 @@
         $("#blur").fadeOut('fast');
     });
 
+    $('.openForm').click(function() {
+        $(`.${$(this).attr('data-class')}`).fadeIn('fast');
+    });
+
     $("#pop-up-messages").on("click", '.close', function() {
         var el = $(this).parent();
         el.slideUp('fast');
