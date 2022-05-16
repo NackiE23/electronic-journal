@@ -77,7 +77,6 @@ class MyUserChangeForm(forms.ModelForm):
     name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
     patronymic = forms.CharField(label="По батькові", widget=forms.TextInput(attrs={'class': 'form-input'}))
-    phone_number = forms.CharField(label="Номер телефону", widget=forms.TextInput(attrs={'class': 'form-input'}))
     date_of_birth = forms.DateField(label="Дата народження",
                                     widget=forms.DateInput(format='%Y-%m-%d',
                                                            attrs={'class': 'form-input',
@@ -89,13 +88,12 @@ class MyUserChangeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['patronymic'].required = False
-        self.fields['phone_number'].required = False
         self.fields['date_of_birth'].required = False
         self.fields['about'].required = False
 
     class Meta:
         model = User
-        fields = ('avatar', 'email', 'name', 'surname', 'patronymic', 'phone_number', 'date_of_birth', 'about')
+        fields = ('avatar', 'email', 'name', 'surname', 'patronymic', 'date_of_birth', 'about')
 
 
 class UserAdminCreationForm(forms.ModelForm):

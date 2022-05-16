@@ -1,46 +1,43 @@
 {% extends 'journal/base.html' %}
-
+{% load journal_tags %}
 {% block main %}
 
 
 <div class="journal_list">
+    {% for subj, info in subjects %}
     <div class="journal_list__item">
-        <div class="journal_list__item_name">
-            <b>Предмет</b>
-        </div>
-        <ul class="journal_list__item_groups">
-            <li class="journal_list__item_groups_group">
-                <a class="journal_list__item_groups_group_name" href="#">Група 1</a>
-            </li>
-            <li class="journal_list__item_groups_group">
-                <a class="journal_list__item_groups_group_name" href="#">Група 2</a>
-            </li>
-            <li class="journal_list__item_groups_group">
-                <a class="journal_list__item_groups_group_name" href="#">Група 3</a>
-            </li>
-            <li class="journal_list__item_groups_group">
-                <a class="journal_list__item_groups_group_name" href="#">Група 4</a>
-            </li>
-        </ul>
+            <div class="journal_list__item_name">
+                <b>{{ subj }}</b>
+            </div>
+            <ul class="journal_list__item_groups">
+                {% for el in info %}
+                    <li class="journal_list__item_groups_group">
+                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.teacher_pk el.group_subject.group.slug el.group_subject.subject.slug %}">{{ el.group_subject.group }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
     </div>
+    {% endfor %}
 </div>
-<br>
-<hr>
-<br>
-<ol>
-{% for teacher_subject in teacher_subjects %}
-    <li>{{ teacher_subject.group_subject }}
-        <a href="{% url 'teacher_journal' teacher_subject.teacher.pk teacher_subject.group_subject.group.slug teacher_subject.group_subject.subject.slug %}">Посилання</a>
-    </li>
-{% endfor %}
 
 {% if replacements %}
-<h5>Заміни:</h5>
-{% for replacement in replacements %}
-    <li>{{ replacement.teacher_subject.group_subject }} (до {{ replacement.date_to }})
-        <a href="{% url 'teacher_journal' replacement.teacher_subject.teacher.pk replacement.teacher_subject.group_subject.group.slug replacement.teacher_subject.group_subject.subject.slug %}">Посилання</a>
-    </li>
-{% endfor %}
+<h3>Заміни</h3>
+<div class="journal_list">
+    {% for subj, info in replacements %}
+    <div class="journal_list__item">
+            <div class="journal_list__item_name">
+                <b>{{ subj }}</b>
+            </div>
+            <ul class="journal_list__item_groups">
+                {% for el in info %}
+                    <li class="journal_list__item_groups_group">
+                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.teacher_pk el.group_subject.group.slug el.group_subject.subject.slug %}">{{ el.group_subject.group }}({{ el.time }})</a>
+                    </li>
+                {% endfor %}
+            </ul>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
-</ol>
+
 {% endblock %}

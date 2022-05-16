@@ -86,11 +86,12 @@
             {% endif %}
             {% if guest %}
                 <li class="profile__additional_list_item">
-                    <textarea type="text" class="profile__additional_list_item_textarea" disabled>{{ cur_user.about }}</textarea>
+                    <textarea class="profile__additional_list_item_textarea" disabled>{{ cur_user.about }}</textarea>
                 </li>
             {% else %}
                 <li class="profile__additional_list_item">
-                    <textarea type="text" class="profile__additional_list_item_textarea" placeholder="Додаткова інформація">{{ cur_user.about }}</textarea>
+                    {% csrf_token %}
+                    <textarea id="about_field" class="profile__additional_list_item_textarea" placeholder="Додаткова інформація">{{ cur_user.about }}</textarea>
                 </li>
             {% endif %}
         </ul>
@@ -124,6 +125,24 @@
     $('form').on('change', '#input_avatar_file', function() {
         var src = URL.createObjectURL(this.files[0]);
         $('#avatar-preview').attr('src', src);
+    });
+
+    $("#about_field").change(function() {
+        let csrf = $(this).parent().find("input[name=csrfmiddlewaretoken]").val();
+        let input_text = $(this).val();
+
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: csrf,
+                action: 'change_additional_field',
+                input_text: input_text,
+            },
+            success: function(responce) {
+                showMessage("Поле було успішно змінено");
+            }
+        });
     });
 </script>
 {% endblock %}

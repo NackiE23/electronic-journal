@@ -10,6 +10,7 @@
 <div class="form_wrapper">
     <div class="permission_form form">
         <div class="close"></div>
+        {% if other_teachers %}
         <form method="post">
             {% csrf_token %}
             <h3>
@@ -32,6 +33,9 @@
             <input type="hidden" name="button" value="allow_teacher">
             <input type="submit" value="Додати доступ">
         </form>
+        {% else %}
+        <p><b>Немає вчителів, якім ви б могли надати доступ</b></p>
+        {% endif %}
     </div>
 </div>
 
@@ -110,7 +114,7 @@
 
     <button class="showDeleteForm" type="submit" name="delete">Видалити урок</button>
 
-    <div class="confirmation">
+    <div class="confirmation" style="color: #212121;">
         <div class="close"></div>
         <form method="POST">
             {% csrf_token %}
@@ -156,14 +160,22 @@
                 {% csrf_token %}
 
                 <div id="id_students">
+                    <ul class="student_list">
+                        <li>
+                            <label for="select_all">
+                                <input type="checkbox" id="select_all">
+                                Обрати всіх
+                            </label>
+                        </li>
                     {% for student in other_students|enum %}
-                    <div>
-                        <label for="id_students_{{ student|id }}">
-                            <input type="checkbox" name="students" value="{{ student|get_pk }}" id="id_students_{{ student|id }}">
-                            {{ student|name }}
-                        </label>
-                    </div>
+                        <li>
+                            <label for="id_students_{{ student|id }}">
+                                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="id_students_{{ student|id }}">
+                                {{ student|name }}
+                            </label>
+                        </li>
                     {% endfor %}
+                    </ul>
                 </div>
 
                 <input type="hidden" name="button" value="add_student">
@@ -181,14 +193,22 @@
                 {% csrf_token %}
 
                 <div id="id_student">
+                    <ul class="student_list">
+                        <li>
+                            <label for="all">
+                                <input type="checkbox" id="all">
+                                Обрати всіх
+                            </label>
+                        </li>
                     {% for student in students|enum %}
-                    <div>
-                        <label for="pk_students_{{ student|id }}">
-                            <input type="checkbox" name="students" value="{{ student|get_pk }}" id="pk_students_{{ student|id }}">
-                            {{ student|name }}
-                        </label>
-                    </div>
+                        <li>
+                            <label for="pk_students_{{ student|id }}">
+                                <input type="checkbox" name="students" value="{{ student|get_pk }}" id="pk_students_{{ student|id }}">
+                                {{ student|name }}
+                            </label>
+                        </li>
                     {% endfor %}
+                    </ul>
                 </div>
 
                 <input type="hidden" name="button" value="delete_student">
@@ -257,6 +277,7 @@ $(document).ready(function(){
     });
 
     $("#add_row_button").click(function() {
+        closeAllForms();
         $("#lesson_create").fadeToggle('fast');
     });
 
@@ -291,6 +312,10 @@ $(document).ready(function(){
     $('#teacher-select-input').focusout(function(){
         let pk = $(`#teachers option[value='${$(this).val()}']`).attr('data-pk');
         $('#selected_teacher').val(pk);
+    });
+
+    $('#select_all, #all').click(function() {
+        $(this).parents('.student_list').find('input[type="checkbox"]').prop('checked', this.checked);
     });
 
     const stl_list = {{ student_lesson_list|safe }};

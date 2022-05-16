@@ -47,11 +47,17 @@ def profile(request, pk):
         context = dict(list(context.items()) + list(c_def.items()))
 
     if request.method == "POST":
+        # AJAX
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            text = request.POST['input_text']
+            cur_user.about = text
+            cur_user.save()
         # Send Message
         if request.POST['action'] == 'send_message':
-            services.send_message(from_user=get_user_model().objects.get(pk=request.POST['user_pk']),
-                                  to_user=cur_user,
-                                  text=request.POST['message-text'])
+            if request.POST['message-text']:
+                services.send_message(from_user=get_user_model().objects.get(pk=request.POST['user_pk']),
+                                      to_user=cur_user,
+                                      text=request.POST['message-text'])
         # Change profile picture
         if request.POST['action'] == 'change_avatar':
             if cur_user == request.user:
@@ -119,10 +125,30 @@ def teacher_journal_list(request, teacher_pk):
     teacher_subj_objs = TeacherSubject.objects.filter(teacher__pk=teacher_pk)
     replacement_objs = Replacement.objects.filter(teacher__pk=teacher_pk)
 
+    subjects = dict()
+    for obj in teacher_subj_objs:
+        obj_subject = obj.group_subject.subject
+        obj_group_subj = obj.group_subject
+        if obj_subject in subjects:
+            subjects[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk})
+        else:
+            subjects.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk}]})
+
+    replacements = dict()
+    for obj in replacement_objs:
+        obj_subject = obj.teacher_subject.group_subject.subject
+        obj_group_subj = obj.teacher_subject.group_subject
+        if obj_subject in replacements:
+            replacements[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk, 'time': obj.date_to})
+        else:
+            replacements.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk, 'time': obj.date_to}]})
+
     context = {
         'title': 'Teacher journal list',
-        'teacher_subjects': teacher_subj_objs,
-        'replacements': replacement_objs,
+        # 'teacher_subjects': teacher_subj_objs,
+        # 'replacements': replacement_objs,
+        'replacements': replacements.items(),
+        'subjects': subjects.items()
     }
     return render(request, 'journal/teacher_journals.html', context=context)
 
@@ -326,7 +352,8 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students() if condition else list()
             for student in selected_students_list:
-                students_list.append(student)
+                if student:
+                    students_list.append(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
         # Add Column
@@ -348,7 +375,8 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students()
             for student in selected_students_list:
-                students_list.remove(student)
+                if student:
+                    students_list.remove(student)
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
         # Delete lesson

@@ -49,7 +49,6 @@ class CustomUser(AbstractBaseUser):
     patronymic = models.CharField(max_length=45, blank=True, null=True, verbose_name="По батькові")
 
     email = models.EmailField(unique=True)  # require
-    phone_number = models.CharField(max_length=16, blank=True, null=True, verbose_name="Номер телефону")
     avatar = models.ImageField(upload_to='user/avatar/', blank=True, null=True, verbose_name="Аватар")
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="День народження")
     about = models.TextField(null=True, blank=True, verbose_name="Про себе")

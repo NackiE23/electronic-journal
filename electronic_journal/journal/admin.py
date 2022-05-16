@@ -24,10 +24,6 @@ class UserInAdmin(UserAdmin):
         (None, {
             'fields': ('email', 'password', ('name', 'surname', 'patronymic'), 'role', 'about',)
         }),
-        ('Contact', {
-            # 'classes': ('collapse',),
-            'fields': ('phone_number',)
-        }),
         ('Biographical Details', {
             # 'classes': ('collapse',),
             'fields': ('avatar', 'get_html_photo', 'date_of_birth')

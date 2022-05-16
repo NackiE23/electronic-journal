@@ -80,12 +80,17 @@
         }, timeOut+100)
     }
 
+    function closeAllForms() {
+        $('.form').fadeOut('fast');
+    };
+
     $('.close').click(function() {
         $(this).parent().fadeOut('fast');
         $("#blur").fadeOut('fast');
     });
 
     $('.openForm').click(function() {
+        closeAllForms();
         $(`.${$(this).attr('data-class')}`).fadeIn('fast');
     });
 
