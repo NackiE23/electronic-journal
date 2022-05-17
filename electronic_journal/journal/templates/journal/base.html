@@ -26,25 +26,36 @@
         </div>
         <div class="elements_menu">
             <ul class="elements_menu__list">
-                <li id="show-message" style="cursor: pointer"><b>Check</b></li>
-                <li class="elements_menu__list_item elements-menu__list_item1">
-                    <a class="elements_menu__list_item_link" href="{% url 'own_profile' %}">Мій профіль</a>
-                </li>
-                <li class="elements_menu__list_item elements-menu__list_item2">
-                    <a class="elements_menu__list_item_link" href="{% url 'messages' %}">Повідомлення</a>
-                </li>
-                {% if user.role == "Teacher" %}
-                    <li class="elements_menu__list_item elements-menu__list_item3">
-                        <a class="elements_menu__list_item_link" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
+                {% if not user.is_authenticated %}
+                    <li class="elements_menu__list_item elements-menu__list_item1">
+                        <a class="elements_menu__list_item_link" href="{% url 'main' %}">Головна</a>
                     </li>
-                {% elif user.role == "Student" %}                    
-                    <li class="elements_menu__list_item elements-menu__list_item3">
-                        <a class="elements_menu__list_item_link" href="{% url 'student_journal' user.student.pk %}">Журнали</a>
+                    <li class="elements_menu__list_item elements-menu__list_item4">
+                        <a class="elements_menu__list_item_link" href="{% url 'find_person' %}">Пошук</a>
+                    </li>
+                {% else %}
+                    <li class="elements_menu__list_item elements-menu__list_item1">
+                        <a class="elements_menu__list_item_link" href="{% url 'main' %}">Головна</a>
+                    </li>
+                    <li class="elements_menu__list_item elements-menu__list_item1">
+                        <a class="elements_menu__list_item_link" href="{% url 'own_profile' %}">Мій профіль</a>
+                    </li>
+                    <li class="elements_menu__list_item elements-menu__list_item2">
+                        <a class="elements_menu__list_item_link" href="{% url 'messages' %}">Повідомлення</a>
+                    </li>
+                    {% if user.role == "Teacher" %}
+                        <li class="elements_menu__list_item elements-menu__list_item3">
+                            <a class="elements_menu__list_item_link" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
+                        </li>
+                    {% elif user.role == "Student" %}
+                        <li class="elements_menu__list_item elements-menu__list_item3">
+                            <a class="elements_menu__list_item_link" href="{% url 'student_journal' user.student.pk %}">Журнали</a>
+                        </li>
+                    {% endif %}
+                    <li class="elements_menu__list_item elements-menu__list_item4">
+                        <a class="elements_menu__list_item_link" href="{% url 'find_person' %}">Пошук</a>
                     </li>
                 {% endif %}
-                <li class="elements_menu__list_item elements-menu__list_item4">
-                    <a class="elements_menu__list_item_link" href="{% url 'find_person' %}">Пошук</a>
-                </li>
             </ul>
         </div>
         <div class="elements__button">

@@ -4,7 +4,7 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', own_profile, name="main"),
+    path('', main, name="main"),
     path('profile/', own_profile, name="own_profile"),
     path('profile/<int:pk>/', profile, name="profile"),
     path('profile/edit/', UserEditView.as_view(), name="edit_profile"),

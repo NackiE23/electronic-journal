@@ -17,10 +17,7 @@ from .models import *
 
 
 def main(request):
-    user_model = get_user_model()
-    all_users = user_model.objects.all()
-
-    return render(request, 'journal/main.html', {'all_users': all_users, 'title': "main"})
+    return render(request, 'journal/main.html')
 
 
 @login_required(login_url='login')
@@ -139,9 +136,9 @@ def teacher_journal_list(request, teacher_pk):
         obj_subject = obj.teacher_subject.group_subject.subject
         obj_group_subj = obj.teacher_subject.group_subject
         if obj_subject in replacements:
-            replacements[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk, 'time': obj.date_to})
+            replacements[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher_subject.teacher.pk, 'time': obj.date_to})
         else:
-            replacements.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk, 'time': obj.date_to}]})
+            replacements.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher_subject.teacher.pk, 'time': obj.date_to}]})
 
     context = {
         'title': 'Teacher journal list',

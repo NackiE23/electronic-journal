@@ -2,16 +2,20 @@
 
 {% block main %}
 
-<h1>Current Users: {{ all_users|length }}</h1>
-<hr>
+<h1>Інформація</h1>
 
-{% for user in all_users %}
-
-<h4>email: {{ user.email }}</h4>
-<h4>name: {{ user.name }}</h4>
-<h4>surname: {{ user.surname }}</h4>
-<h4>work since: {{ user.teacher.working_since }}</h4>
-<hr>
-{% endfor %}
+<div style="margin: 0 auto; max-width: 1000px">
+<!--    <b>-->
+    <br>
+    Цей сайт створений для демонстрації моїх навичок в Back-end розробці. Front-end зроблений на скору руку.
+<!--    <br><br>-->
+<!--    Посилання на гітхаб репозиторій цього проекту: <a href="">посиланя</a>-->
+    <br><br>
+    Моделі студентів і викладачів виглядають по шаблону:<br>
+    email - teacher@teacher3.com<br>
+    password - teacher або student<br>
+    через пошук в профілі можна подивитись пошту
+<!--    </b>-->
+</div>
 
 {% endblock %}
