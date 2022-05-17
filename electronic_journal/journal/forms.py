@@ -12,6 +12,15 @@ from .models import Lesson, LessonType, TeacherSubject, Subject, EvaluationSyste
 User = get_user_model()
 
 
+class JournalCreateForm(forms.Form):
+    group = forms.CharField(label="Група", widget=forms.TextInput(attrs={'list': 'group_list'}))
+    subject = forms.CharField(label="Предмет", widget=forms.TextInput(attrs={'list': 'subject_list'}))
+    semester = forms.IntegerField(label="Семестр", widget=forms.NumberInput(attrs={'min': 1}))
+    academic_year = forms.CharField(label="Навчальний рік", max_length=4,
+                                    widget=forms.TextInput(attrs={'value': datetime.datetime.now().year}))
+    amount_of_hours = forms.IntegerField(label="Кількість годин", widget=forms.NumberInput(attrs={'min': 0}))
+
+
 class LessonCreateForm(forms.ModelForm):
     date = forms.DateField(label="Дата", widget=forms.DateInput(attrs={'class': 'form-input',
                                                                        'type': 'date',

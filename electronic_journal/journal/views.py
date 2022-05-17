@@ -1,7 +1,7 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -147,9 +147,38 @@ def teacher_journal_list(request, teacher_pk):
         'title': 'Teacher journal list',
         # 'teacher_subjects': teacher_subj_objs,
         # 'replacements': replacement_objs,
+        'subject_list': Subject.objects.all(),
+        'group_list': Group.objects.all(),
+        'journal_create_form': JournalCreateForm,
         'replacements': replacements.items(),
         'subjects': subjects.items()
     }
+
+    if request.method == "POST":
+        # Create journal
+        if request.POST.get('action') == 'create_journal':
+            teacher_obj = Teacher.objects.get(pk=teacher_pk)
+            group_obj = Group.objects.get(name=request.POST['group'])
+            subject_obj = Subject.objects.get(name=request.POST['subject'])
+            semester = int(request.POST['semester'])
+            academic_year = request.POST['academic_year']
+            amount_of_hours = int(request.POST['amount_of_hours'])
+
+            group_subject_obj, _ = GroupSubject.objects.get_or_create(
+                group=group_obj,
+                subject=subject_obj,
+                amount_of_hours=amount_of_hours
+            )
+
+            TeacherSubject.objects.create(
+                teacher=teacher_obj,
+                group_subject=group_subject_obj,
+                semester=semester,
+                academic_year=academic_year
+            )
+
+            return redirect('teacher_journal_list', teacher_pk)
+
     return render(request, 'journal/teacher_journals.html', context=context)
 
 
@@ -418,7 +447,12 @@ class UserEditView(LoginRequiredMixin, generic.UpdateView):
         return self.request.user
 
 
-class RegisterUser(CreateView):
+class StaffMemberRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class RegisterUser(StaffMemberRequiredMixin, CreateView):
     form_class = RegisterUserForm
     template_name = 'journal/register.html'
     success_url = reverse_lazy('main')

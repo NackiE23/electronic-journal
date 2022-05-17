@@ -53,7 +53,7 @@
     </div>
 
     <div class="profile__additional">
-        <ul class="profile__additional_list">
+        <ul class="profile__additional_list" style="text-align: left">
             <li class="profile__additional_list_item">
                 Email: {{ cur_user.email }}
             </li>
@@ -81,7 +81,7 @@
                         <a class="profile__additional_list_item_link" href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a>
                 </li>
                 <li class="profile__additional_list_item">
-                    Форма навчання: 
+                    Форма навчання: {{ cur_user.student.study_form }}
                 </li>
             {% endif %}
             {% if guest %}

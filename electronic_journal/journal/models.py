@@ -140,11 +140,19 @@ class Group(models.Model):
         return reverse('group', kwargs={'group_slug': self.slug})
 
 
+class StudyForm(models.Model):
+    name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
 class Student(models.Model):
     class Meta:
         ordering = ['user']
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    study_form = models.ForeignKey("StudyForm", on_delete=models.CASCADE, verbose_name="Форма навчання")
     group = models.ForeignKey("Group", on_delete=models.CASCADE, verbose_name="Група")
 
     def __str__(self):
@@ -188,7 +196,7 @@ class GroupSubject(models.Model):
 
 class TeacherSubject(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE, verbose_name="Викладач")
-    group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE)
+    group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE, verbose_name="Предмет")
     semester = models.PositiveIntegerField(verbose_name="Семестр")
     academic_year = models.CharField(max_length=4, verbose_name="Навчальний рік")
     students = models.CharField(max_length=1000, null=True, verbose_name="Студенти")

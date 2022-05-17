@@ -2,6 +2,33 @@
 {% load journal_tags %}
 {% block main %}
 
+<div class="filters">
+    <button class="openForm" data-class="journal_create">Створити новий журнал</button>
+</div>
+
+<div class="form_wrapper">
+    <div class="form journal_create">
+        <div class="close"></div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ journal_create_form.as_p }}
+            <datalist id="group_list">
+                {% for group in group_list %}
+                <option value="{{ group }}">
+                {% endfor %}
+            </datalist>
+            <datalist id="subject_list">
+                {% for subject in subject_list %}
+                <option value="{{ subject }}">
+                {% endfor %}
+            </datalist>
+            <input type="hidden" name="group_name" value="">
+            <input type="hidden" name="subject_name" value="">
+            <input type="hidden" name="action" value="create_journal">
+            <input type="submit" value="Створити журнал">
+        </form>
+    </div>
+</div>
 
 <div class="journal_list">
     {% for subj, info in subjects %}
@@ -39,5 +66,16 @@
     {% endfor %}
 </div>
 {% endif %}
+{% endblock %}
 
+{% block script %}
+<script>
+    $('#id_group').change(function() {
+        $('input[name=group_name]').val($(this).val());
+    });
+
+    $('#id_subject').change(function() {
+        $('input[name=subject_name]').val($(this).val());
+    });
+</script>
 {% endblock %}
