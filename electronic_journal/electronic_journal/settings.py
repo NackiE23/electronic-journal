@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_7h-+y=7hc7%3ey%8r61qj*a9=m)4(b-!4u8t074v+yb*5eo!j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.103', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = ['192.168.0.103', '127.0.0.1', 'testserver', 'nackie23.pythonanywhere.com']
 AUTH_USER_MODEL = 'journal.CustomUser'
 
 # Application definition
@@ -76,14 +76,14 @@ WSGI_APPLICATION = 'electronic_journal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'electronic_journal_v2',
-        'USER': 'root',
-        'PASSWORD': '1111',
-        'HOST': '127.0.0.1',
-        'PORT': '',
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'electronic_journal_v2',
+        # 'USER': 'root',
+        # 'PASSWORD': '1111',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
