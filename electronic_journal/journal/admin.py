@@ -75,6 +75,8 @@ class SlugToName(admin.ModelAdmin):
 
 
 admin.site.register(Teacher)
+admin.site.register(Specialization)
+admin.site.register(TeacherSpecialization)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(StudyForm)
 admin.site.register(Student, StudentAdmin)

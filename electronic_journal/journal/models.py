@@ -113,14 +113,14 @@ class Teacher(models.Model):
         return str(self.user)
 
 
-class Specialization:
+class Specialization(models.Model):
     name = models.CharField(max_length=45, verbose_name="Назва")
 
     def __str__(self):
         return self.name
 
 
-class TeacherSpecialization:
+class TeacherSpecialization(models.Model):
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     specialization = models.ForeignKey('Specialization', on_delete=models.CASCADE)
 
