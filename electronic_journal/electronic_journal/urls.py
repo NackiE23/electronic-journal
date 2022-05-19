@@ -21,7 +21,7 @@ from electronic_journal import settings
 
 urlpatterns = [
     path('', include('journal.urls')),
-    path('api/v1/', include('rest.urls')),
+    path('api/v1/', include('journal_api.urls')),
     path('admin/', admin.site.urls),
 ]
 
