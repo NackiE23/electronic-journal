@@ -258,6 +258,7 @@ class StudentLesson(models.Model):
     student = models.ForeignKey("Student", on_delete=models.CASCADE, verbose_name="Студент")
     mark = models.CharField(max_length=3, null=True, verbose_name="Оцінка")
     date = models.DateField(auto_now_add=True, verbose_name="Дата")
+    read_only = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.student} in {self.lesson}: {self.mark}'

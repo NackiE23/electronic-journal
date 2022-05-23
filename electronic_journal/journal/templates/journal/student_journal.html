@@ -103,7 +103,7 @@ $(document).ready(function(){
             type: 'post',
             data: {
                 csrfmiddlewaretoken: table_csrf,
-                type: 'get_lesson_info',
+                action: 'get_lesson_info',
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {

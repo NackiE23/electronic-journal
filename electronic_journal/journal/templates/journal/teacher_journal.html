@@ -5,6 +5,40 @@
     <button class="openForm" data-class="delete_students_form">Видалити студента(ів) зі списку</button>
     <button class="openForm" data-class="add_students_form">Додати студента(ів) до списку</button>
     <button class="openForm" data-class="permission_form">Додати доступ до журналу</button>
+    <button class="openForm" data-class="theme_list">Переглянути теми</button>
+</div>
+
+<div class="form_wrapper" style="max-height: 70vh;">
+    <div class="theme_list form">
+        <div class="close"></div>
+        <div style="display: flex;">
+            <div style="display: flex; align-items: center;">
+                <div style="display: flex; flex-direction: column;">
+                    {% csrf_token %}
+                    <label for="start_date_list">Від: </label>
+                    <input id="start_date_list" type="date">
+                    <label for="finish_date_list">До: </label>
+                    <input id="finish_date_list" type="date">
+                    <label for="theme_list_is_reverse">
+                        Від новіших до позініших
+                        <input id="theme_list_is_reverse" type="checkbox">
+                    </label>
+                    <input id="theme_list__submit" type="submit" value="Пошук">
+                </div>
+            </div>
+            <div>
+                <h3>Список тем:</h3>
+                <ul id="theme_list" style="overflow: scroll; max-height: 50vh; max-width: 50vw; padding: 10px 30px;">
+                    {% for obj in lesson_objs %}
+                    <li style="border-bottom: 1px solid #212121; padding: 15px 20px;">
+                        {{ obj.date | date:"Y-m-d"}} <br>
+                        {{ obj.topic }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="form_wrapper">
@@ -30,7 +64,7 @@
                 <input id="up-to-date-input" type="date" name="up-to-date-input">
             </p>
             <input type="hidden" id="selected_teacher" name="selected_teacher" value="">
-            <input type="hidden" name="button" value="allow_teacher">
+            <input type="hidden" name="action" value="allow_teacher">
             <input type="submit" value="Додати доступ">
         </form>
         {% else %}
@@ -70,7 +104,7 @@
             {% for student in students|enum %}
             <tr class="tr_journal__journal_row journal_row">
                 <td class="journal__cell journal__cell">{{ student|id }}</td>
-                <td class="journal__cell journal__cell_name">{{ student|name }}</td>
+                <td class="journal__cell journal__cell_name"><a href="{% url 'profile' student|get_user_pk %}">{{ student|name }}</a></td>
                 {% for lesson in lessons %}
                     <td class="journal__cell">
                         <input id="input-{{ student|get_pk }}{{ lesson.pk }}" class="journal__cell_input" type="text" data-student-pk="{{ student|get_pk }}" data-lesson-pk="{{ lesson.pk }}">
@@ -108,7 +142,7 @@
     {{ lesson_update_form.as_p }}
     <form id="lesson_update__update_form" method="POST">
         {% csrf_token %}
-        <input type="hidden" name="button" value="submit_changes">
+        <input type="hidden" name="action" value="submit_changes">
         <input type="submit" name="submit" value="Підтвердити зміни">
     </form>
 
@@ -120,7 +154,7 @@
             {% csrf_token %}
             <p>Ви впевнені, що хочете видалити пару?</p>
             <input type="hidden" name="lesson_pk">
-            <input type="hidden" name="button" value="delete_lesson">
+            <input type="hidden" name="action" value="delete_lesson">
             <input type="submit" name="submit" value="Видалити">
         </form>
     </div>
@@ -144,7 +178,7 @@
             <div class="form-error">{{ f.errors }}</div>
         {% endfor %}
 
-        <input type="hidden" name="button" value="add_column">
+        <input type="hidden" name="action" value="add_column">
         <button type="submit">Додати стовпчик</button>
     </form>
 </div>
@@ -178,7 +212,7 @@
                     </ul>
                 </div>
 
-                <input type="hidden" name="button" value="add_student">
+                <input type="hidden" name="action" value="add_student">
                 <button type="submit">Додати студента(ів)</button>
             </form>
         {% endif %}
@@ -211,7 +245,7 @@
                     </ul>
                 </div>
 
-                <input type="hidden" name="button" value="delete_student">
+                <input type="hidden" name="action" value="delete_student">
                 <button type="submit">Видалити студента(ів)</button>
             </form>
         {% endif %}
@@ -240,7 +274,7 @@ $(document).ready(function(){
             type: 'post',
             data: {
                 csrfmiddlewaretoken: table_csrf,
-                type: 'get lesson info',
+                action: 'get lesson info',
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
@@ -255,6 +289,34 @@ $(document).ready(function(){
         });
     });
 
+    $("#theme_list__submit").click(function() {
+        const start_date = $('#start_date_list').val();
+        const finish_date = $('#finish_date_list').val();
+        const reverse = $('#theme_list_is_reverse').prop('checked');
+        const csrf = $(this).parent().find("input[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: '',
+            type: 'post',
+            data: {
+                csrfmiddlewaretoken: csrf,
+                action: 'create_lesson_list',
+                start_date: start_date,
+                finish_date: finish_date,
+                reverse: reverse,
+            },
+            success: function(responce) {
+                $('#theme_list').html('');
+                console.log(responce.data)
+                for (let obj in responce.data) {
+                    $('#theme_list').append(`<li style="border-bottom: 1px solid #212121; padding: 15px 20px;">
+                                                ${responce.data[obj].date} <br>
+                                                ${responce.data[obj].topic}
+                                             </li>`);
+                }
+            }
+        });
+    });
+
     $('.showDeleteForm').click(function() {
         $(this).parent().find('.confirmation').fadeIn('fast');
     });
@@ -265,7 +327,7 @@ $(document).ready(function(){
             type: 'post',
             data: {
                 csrfmiddlewaretoken: table_csrf,
-                type: 'change_lesson',
+                action: 'change_lesson',
                 lesson_pk: $("#lesson_update form input[name='lesson_pk']").val(),
                 field: $(this).attr('name'),
                 value: $(this).val(),
@@ -288,16 +350,19 @@ $(document).ready(function(){
             type: 'post',
             data: {
                 csrfmiddlewaretoken: table_csrf,
-                type: 'write down a mark',
+                action: 'write down a mark',
                 student_pk: $(this).attr('data-student-pk'),
                 lesson_pk: $(this).attr('data-lesson-pk'),
                 value: $(this).val(),
             },
             success: function(responce) {
                 if (responce.error === true) {
-                    showMessage(responce.data, 'error', 5000);
+                    showMessage(responce.data, 'error', 15000);
                     $(`#${input_id}`).addClass("incorrect_input");
                     $(`#${input_id}`).parent().addClass("incorrect_td");
+                } else if (responce.error === 'warning') {
+                    showMessage(responce.data, 'error', 10000);
+                    $(`#${input_id}`).val('');
                 } else {
                     $(`#${input_id}`).removeClass("incorrect_input");
                     $(`#${input_id}`).parent().removeClass("incorrect_td");

@@ -43,6 +43,9 @@
                 </div>
                 {% endif %}
             {% else %}
+                {% if not guest %}
+                    <button id="showChangeForm" class="profile__main_avatar_options_button">Додати фото</button>
+                {% endif %}
             {% endif %}
         </div>
         <div class="profile__main_name">

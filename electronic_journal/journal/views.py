@@ -222,7 +222,7 @@ def student_journal(request, student_pk):
 
     if request.method == "POST":
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            if request.POST['type'] == "get_lesson_info":
+            if request.POST['action'] == "get_lesson_info":
                 lesson_pk = request.POST['lesson_pk']
                 lesson_obj = Lesson.objects.get(pk=lesson_pk)
                 result = {
@@ -272,7 +272,7 @@ def teacher_journal(request, journal_pk):
     if request.GET.get('page'):
         page_number = int(request.GET.get('page'))
     else:
-        page_number = 1
+        page_number = paginator.num_pages
     page_objs = paginator.get_page(page_number)
     json_lesson_objs = list(lesson_objs[(page_number - 1) * paginate_by:page_number * paginate_by])
 
@@ -292,6 +292,7 @@ def teacher_journal(request, journal_pk):
         'lesson_create_form': LessonCreateForm(initial={'teacher_subject': teacher_subject_obj}),
         'group_subject': group_subject_obj,
         'teacher_subject': teacher_subject_obj,
+        'lesson_objs': lesson_objs.reverse()[:30],
         'lessons': page_objs,
         'lesson_update_form': LessonUpdateForm,
         'months': json.dumps(months),
@@ -305,7 +306,7 @@ def teacher_journal(request, journal_pk):
         # AJAX
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             # Write down a mark
-            if request.POST['type'] == "write down a mark":
+            if request.POST['action'] == "write down a mark":
                 student_pk = request.POST['student_pk']
                 lesson_pk = request.POST['lesson_pk']
                 value = request.POST['value']
@@ -314,6 +315,13 @@ def teacher_journal(request, journal_pk):
                     lesson_obj = Lesson.objects.get(pk=lesson_pk)
                     student_obj = Student.objects.get(pk=student_pk)
                     stl_obj, created = StudentLesson.objects.get_or_create(lesson=lesson_obj, student=student_obj)
+
+                    if StudentLesson.objects.filter(lesson__date__gt=lesson_obj.date,
+                                                    lesson__type__slug="tematichna",
+                                                    student=student_obj):
+                        result = f"У студента {student_obj} вже виставлена тематична. " \
+                                 f"Корегувати ти виставляти оцінки заборонено"
+                        return JsonResponse({'data': result, 'value': value, 'error': 'warning'}, status=200)
 
                     if value == "":
                         stl_obj.mark = None
@@ -326,8 +334,10 @@ def teacher_journal(request, journal_pk):
                             assert isinstance(int(value), int)
                             assert int(value) >= 0
                             assert int(value) <= subject_obj.evaluation_system.numerical_form
-                            stl_obj.mark = value
-                            stl_obj.save()
+
+                            if not stl_obj.read_only:
+                                stl_obj.mark = value
+                                stl_obj.save()
 
                     result = f"Відмітка занесена успішно"
                     return JsonResponse({'data': result, 'value': value, 'error': False}, status=200)
@@ -341,7 +351,7 @@ def teacher_journal(request, journal_pk):
                     result = f"Error: {e}"
                     return JsonResponse({'data': result, 'value': value, 'error': True}, status=200)
             # Get lesson info
-            if request.POST['type'] == "get lesson info":
+            if request.POST['action'] == "get lesson info":
                 lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
                 info = {
                     'date': lesson_obj.date,
@@ -352,7 +362,7 @@ def teacher_journal(request, journal_pk):
                 }
                 return JsonResponse(info, status=200)
             # Change lesson
-            if request.POST['type'] == "change_lesson":
+            if request.POST['action'] == "change_lesson":
                 try:
                     lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
                     field = request.POST['field']
@@ -374,8 +384,19 @@ def teacher_journal(request, journal_pk):
                     return JsonResponse({'data': 'Поле було успішно змінено'}, status=200)
                 except Exception as e:
                     return JsonResponse({'data': f"Error: {e}"}, status=200)
+            # Create lesson theme list
+            if request.POST['action'] == "create_lesson_list":
+                start_date = request.POST['start_date'] or '2000-01-01'
+                finish_date = request.POST['finish_date'] or '2222-12-31'
+                list_reverse = True if request.POST['reverse'] == 'true' else False
+
+                responce = lesson_objs.filter(date__gt=start_date, date__lt=finish_date).values('date', 'topic')
+                responce = responce.reverse() if list_reverse else responce
+                responce = {str(obj['date']): obj for obj in responce}
+
+                return JsonResponse({'data': responce}, status=200)
         # Add Student
-        if request.POST['button'] == "add_student":
+        if request.POST['action'] == "add_student":
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students() if condition else list()
             for student in selected_students_list:
@@ -384,12 +405,12 @@ def teacher_journal(request, journal_pk):
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
         # Add Column
-        if request.POST['button'] == "add_column":
+        if request.POST['action'] == "add_column":
             form = LessonCreateForm(request.POST)
             if form.is_valid():
                 form.save()
         # Add Teacher Allow To Change A Jounal
-        if request.POST['button'] == "allow_teacher":
+        if request.POST['action'] == "allow_teacher":
             teacher_selected_pk = int(request.POST['selected_teacher'])
             date_to = request.POST['up-to-date-input']
             Replacement.objects.create(
@@ -398,7 +419,7 @@ def teacher_journal(request, journal_pk):
                 date_to=date_to
             )
         # Delete Student
-        if request.POST['button'] == "delete_student":
+        if request.POST['action'] == "delete_student":
             selected_students_list = request.POST.getlist('students')
             students_list = teacher_subject_obj.get_students()
             for student in selected_students_list:
@@ -407,7 +428,7 @@ def teacher_journal(request, journal_pk):
             teacher_subject_obj.set_students(students_list)
             teacher_subject_obj.save()
         # Delete lesson
-        if request.POST['button'] == "delete_lesson":
+        if request.POST['action'] == "delete_lesson":
             try:
                 Lesson.objects.get(pk=request.POST['lesson_pk']).delete()
                 return redirect('teacher_journal', journal_pk)
