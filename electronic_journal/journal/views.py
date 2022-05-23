@@ -127,18 +127,18 @@ def teacher_journal_list(request, teacher_pk):
         obj_subject = obj.group_subject.subject
         obj_group_subj = obj.group_subject
         if obj_subject in subjects:
-            subjects[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk})
+            subjects[obj_subject].append({'group_subject': obj_group_subj, 'pk': obj.pk})
         else:
-            subjects.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher.pk}]})
+            subjects.update({obj_subject: [{'group_subject': obj_group_subj, 'pk': obj.pk}]})
 
     replacements = dict()
     for obj in replacement_objs:
         obj_subject = obj.teacher_subject.group_subject.subject
         obj_group_subj = obj.teacher_subject.group_subject
         if obj_subject in replacements:
-            replacements[obj_subject].append({'group_subject': obj_group_subj, 'teacher_pk': obj.teacher_subject.teacher.pk, 'time': obj.date_to})
+            replacements[obj_subject].append({'group_subject': obj_group_subj, 'time': obj.date_to, 'pk': obj.pk})
         else:
-            replacements.update({obj_subject: [{'group_subject': obj_group_subj, 'teacher_pk': obj.teacher_subject.teacher.pk, 'time': obj.date_to}]})
+            replacements.update({obj_subject: [{'group_subject': obj_group_subj, 'time': obj.date_to, 'pk': obj.pk}]})
 
     context = {
         'title': 'Teacher journal list',
@@ -240,21 +240,22 @@ def student_journal(request, student_pk):
     return render(request, 'journal/student_journal.html', context=context)
 
 
-def teacher_journal(request, teacher_pk, group_slug, subject_slug):
+def teacher_journal(request, journal_pk):
     if request.user.role != "Teacher":
-        return redirect('student_journal', request.user.student.pk)
+        if request.user.role == "Student":
+            return redirect('student_journal', request.user.student.pk)
+        return redirect('main')
 
-    group_obj = Group.objects.get(slug=group_slug)
-    subject_obj = Subject.objects.get(slug=subject_slug)
-    group_subject_obj = GroupSubject.objects.get(group=group_obj, subject=subject_obj)
+    teacher_subject_obj = TeacherSubject.objects.get(pk=journal_pk)
+    group_subject_obj = teacher_subject_obj.group_subject
 
-    teacher_obj = Teacher.objects.get(pk=teacher_pk)
-    teacher_subject_obj = TeacherSubject.objects.get(group_subject=group_subject_obj, teacher=teacher_obj)
+    subject_obj = teacher_subject_obj.group_subject.subject
+
     teacher_subject_objs = TeacherSubject.objects.filter(group_subject=group_subject_obj)
     replacement_teachers = Replacement.objects.filter(teacher_subject=teacher_subject_obj)
     other_teachers = Teacher.objects.exclude(pk__in=[obj.teacher.pk for obj in replacement_teachers] + [teacher_subject_obj.teacher.pk])
 
-    students_objs = Student.objects.filter(group=group_obj)
+    students_objs = Student.objects.filter(group=group_subject_obj.group)
     condition = teacher_subject_obj.if_exist()
     students = students_objs.filter(pk__in=teacher_subject_obj.get_students()) if condition \
         else None
@@ -409,11 +410,11 @@ def teacher_journal(request, teacher_pk, group_slug, subject_slug):
         if request.POST['button'] == "delete_lesson":
             try:
                 Lesson.objects.get(pk=request.POST['lesson_pk']).delete()
-                return redirect('teacher_journal', teacher_pk, group_slug, subject_slug)
+                return redirect('teacher_journal', journal_pk)
             except Exception as e:
                 return JsonResponse({'message': f'Error: {e}'}, status=200)
 
-        return redirect('teacher_journal', teacher_pk, group_slug, subject_slug)
+        return redirect('teacher_journal', journal_pk)
 
     return render(request, 'journal/teacher_journal.html', context=context)
 

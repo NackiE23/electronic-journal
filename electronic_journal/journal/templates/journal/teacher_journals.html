@@ -39,7 +39,7 @@
             <ul class="journal_list__item_groups">
                 {% for el in info %}
                     <li class="journal_list__item_groups_group">
-                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.teacher_pk el.group_subject.group.slug el.group_subject.subject.slug %}">{{ el.group_subject.group }}</a>
+                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.pk %}">{{ el.group_subject.group }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -58,7 +58,7 @@
             <ul class="journal_list__item_groups">
                 {% for el in info %}
                     <li class="journal_list__item_groups_group">
-                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.teacher_pk el.group_subject.group.slug el.group_subject.subject.slug %}">{{ el.group_subject.group }}({{ el.time }})</a>
+                        <a class="journal_list__item_groups_group_name" href="{% url 'teacher_journal' el.pk %}">{{ el.group_subject.group }}({{ el.time }})</a>
                     </li>
                 {% endfor %}
             </ul>

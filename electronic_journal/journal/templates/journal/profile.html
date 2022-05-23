@@ -60,9 +60,6 @@
             <li class="profile__additional_list_item">
                 Роль у системі: {% if cur_user.role == "Teacher"%}Викладач{%elif cur_user.role == "Student"%}Студент{%else%}Щось не зрозуміле{% endif %}
             </li>
-            <li class="profile__additional_list_item">
-                Дата народження: {{ cur_user.date_of_birth }}
-            </li>
             {% if cur_user.role == "Teacher" %}
                 <li class="profile__additional_list_item">
                     Куратор групи - 
