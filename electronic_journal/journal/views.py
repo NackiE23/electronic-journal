@@ -1,3 +1,6 @@
+import operator
+from functools import reduce
+
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -95,9 +98,13 @@ def find_person(request):
 
     query = request.GET.get('q')
     if query:
-        results = CustomUser.objects.filter(Q(name__icontains=query) |
-                                            Q(surname__icontains=query) |
-                                            Q(patronymic__icontains=query))
+        query = query.split()
+        results = CustomUser.objects.filter(reduce(operator.and_,
+                                                   (Q(name__icontains=el) |
+                                                    Q(surname__icontains=el) |
+                                                    Q(patronymic__icontains=el) for el in query)
+                                                   ))
+
         if results:
             context.update({'results': results})
         else:
