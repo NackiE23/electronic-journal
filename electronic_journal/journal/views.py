@@ -38,7 +38,7 @@ def profile(request, pk):
         'guest': guest_condition,
     }
 
-    if cur_user.role == "Teacher":
+    if cur_user.role.name == "Викладач":
         teacher = cur_user.teacher
 
         c_def = {
@@ -110,8 +110,7 @@ def find_person(request):
         else:
             context.update({'results': 'Не знайдено жодної подібності'})
     else:
-        results = CustomUser.objects.all().exclude(role="Admin")
-        context.update({'results': results})
+        context.update({'results': None})
 
     return render(request, 'journal/find_person.html', context=context)
 
@@ -241,6 +240,7 @@ def student_journal(request, student_pk):
                     'homework': lesson_obj.homework,
                     'note': lesson_obj.note,
                     'type': lesson_obj.type.name,
+                    'slug_type': lesson_obj.type.slug,
                 }
                 return JsonResponse(result, status=200)
 
@@ -248,8 +248,8 @@ def student_journal(request, student_pk):
 
 
 def teacher_journal(request, journal_pk):
-    if request.user.role != "Teacher":
-        if request.user.role == "Student":
+    if request.user.role.name != "Викладач":
+        if request.user.role.name == "Студент":
             return redirect('student_journal', request.user.student.pk)
         return redirect('main')
 
@@ -362,6 +362,7 @@ def teacher_journal(request, journal_pk):
                 lesson_obj = Lesson.objects.get(pk=request.POST['lesson_pk'])
                 info = {
                     'date': lesson_obj.date,
+                    'type': lesson_obj.type.slug,
                     'topic': lesson_obj.topic,
                     'homework': lesson_obj.homework,
                     'note': lesson_obj.note,
@@ -486,23 +487,25 @@ class RegisterUser(StaffMemberRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Register"
+        # context['roles'] = Role.objects.all()
         context['groups'] = Group.objects.all()
+        context['study_forms'] = StudyForm.objects.all()
         return context
 
     def form_valid(self, form):
         user = form.save()
-        if self.request.POST['choices'] == "Teacher":
-            user.role = self.request.POST['choices']
-            user.save()
+        user.save()
+        role = Role.objects.get(pk=int(self.request.POST['role'])).name
+        if role == "Викладач":
             Teacher.objects.create(user=user)
-        elif self.request.POST['choices'] == "Student":
-            group = self.request.POST['groups']
-            group = Group.objects.get(pk=group)
-            user.role = self.request.POST['choices']
-            user.save()
-            Student.objects.create(user=user, group=group)
-        login(self.request, user)
-        return redirect('own_profile')
+        elif role == "Студент":
+            group_pk = self.request.POST['groups']
+            group = Group.objects.get(pk=group_pk)
+            study_form_pk = self.request.POST['study_forms']
+            study_form = StudyForm.objects.get(pk=study_form_pk)
+            Student.objects.create(user=user, group=group, study_form=study_form)
+        # login(self.request, user)
+        return redirect('register')
 
 
 class PasswordsChangeView(PasswordChangeView):

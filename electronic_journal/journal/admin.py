@@ -16,7 +16,7 @@ class UserInAdmin(UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
 
-    search_fields = ['email', 'name', 'surname', 'is_admin', 'is_staff', 'is_active']
+    search_fields = ['email', 'name', 'surname', 'role', 'is_admin', 'is_staff', 'is_active']
     list_display = ['email', 'get_html_photo', 'is_admin', 'is_staff', 'is_active']
     list_filter = ['is_admin', 'is_staff', 'is_active']
 
@@ -37,7 +37,7 @@ class UserInAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             # 'classes': ('wide',),
-            'fields': ('name', 'surname', 'email', 'password1', 'password2')}
+            'fields': ('role', 'name', 'surname', 'email', 'password1', 'password2')}
          ),
     )
 
@@ -74,18 +74,19 @@ class SlugToName(admin.ModelAdmin):
     prepopulated_fields = {'slug': ("name",)}
 
 
+admin.site.register(Role)
 admin.site.register(Teacher)
 admin.site.register(Specialization)
 admin.site.register(TeacherSpecialization)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(StudyForm)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Attendance)
+# admin.site.register(Attendance)
 admin.site.register(EvaluationSystem)
 admin.site.register(Subject, SlugToName)
 admin.site.register(GroupSubject)
 admin.site.register(TeacherSubject, TeacherSubjectInAdmin)
-admin.site.register(Lesson)
+# admin.site.register(Lesson)
 admin.site.register(LessonType, SlugToName)
-admin.site.register(StudentLesson, StudentLessonAdmin)
+# admin.site.register(StudentLesson, StudentLessonAdmin)
 admin.site.register(Replacement)

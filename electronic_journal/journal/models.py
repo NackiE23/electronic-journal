@@ -7,6 +7,17 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+class Role(models.Model):
+    class Meta:
+        verbose_name = "Роль у системі"
+        verbose_name_plural = "Ролі у системі"
+
+    name = models.CharField(max_length=45, verbose_name="Назва")
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, name, surname, password=None, is_staff=False, is_admin=False, is_active=True):
@@ -42,6 +53,8 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser):
     class Meta:
+        verbose_name = "Користувач"
+        verbose_name_plural = "Користувачі"
         ordering = ['surname', 'name', 'patronymic']
 
     name = models.CharField(max_length=45, null=False, verbose_name="Ім'я")
@@ -53,14 +66,14 @@ class CustomUser(AbstractBaseUser):
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="День народження")
     about = models.TextField(null=True, blank=True, verbose_name="Про себе")
 
-    role = models.CharField(max_length=8, null=False, default="Other", verbose_name="Роль")
+    role = models.ForeignKey("Role", on_delete=models.CASCADE, null=False, verbose_name="Роль у системі")
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ["name", "surname"]
+    REQUIRED_FIELDS = ["name", "surname", "role"]
 
     objects = CustomUserManager()
 
@@ -105,15 +118,21 @@ class CustomUser(AbstractBaseUser):
 
 class Teacher(models.Model):
     class Meta:
+        verbose_name = "Викладач"
+        verbose_name_plural = "Викладачі"
         ordering = ['user']
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
 
     def __str__(self):
         return str(self.user)
 
 
 class Specialization(models.Model):
+    class Meta:
+        verbose_name = "Сцеціалізація"
+        verbose_name_plural = "Спеціалізації"
+
     name = models.CharField(max_length=45, verbose_name="Назва")
 
     def __str__(self):
@@ -121,6 +140,10 @@ class Specialization(models.Model):
 
 
 class TeacherSpecialization(models.Model):
+    class Meta:
+        verbose_name = "Спеціалізація викладача"
+        verbose_name_plural = "Спеціалізації викладачів"
+
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE)
     specialization = models.ForeignKey('Specialization', on_delete=models.CASCADE)
 
@@ -129,6 +152,10 @@ class TeacherSpecialization(models.Model):
 
 
 class Group(models.Model):
+    class Meta:
+        verbose_name = "Група"
+        verbose_name_plural = "Групи"
+
     name = models.CharField(max_length=45, verbose_name="Назва групи")
     slug = models.SlugField(max_length=45, unique=True, verbose_name="URL")
     teacher = models.OneToOneField('Teacher', on_delete=models.CASCADE)
@@ -141,6 +168,10 @@ class Group(models.Model):
 
 
 class StudyForm(models.Model):
+    class Meta:
+        verbose_name = "Форма навчання"
+        verbose_name_plural = "Форми навчання"
+
     name = models.CharField(max_length=15)
 
     def __str__(self):
@@ -149,6 +180,8 @@ class StudyForm(models.Model):
 
 class Student(models.Model):
     class Meta:
+        verbose_name = "Студент"
+        verbose_name_plural = "Студенти"
         ordering = ['user']
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -160,6 +193,10 @@ class Student(models.Model):
 
 
 class Attendance(models.Model):
+    class Meta:
+        verbose_name = "Відвідуваність"
+        verbose_name_plural = "Відвідуваність"
+
     full_name = models.CharField(max_length=45, verbose_name="Повна назва")
     short_name = models.CharField(max_length=5, verbose_name="Скорочена назва")
 
@@ -168,7 +205,11 @@ class Attendance(models.Model):
 
 
 class EvaluationSystem(models.Model):
-    name = models.CharField(max_length=45, verbose_name="Система оцінювання")
+    class Meta:
+        verbose_name = "Система оцінювання"
+        verbose_name_plural = "Системи оцінювання"
+
+    name = models.CharField(max_length=45, verbose_name="Назва")
     numerical_form = models.PositiveIntegerField(verbose_name="Числова форма")
 
     def __str__(self):
@@ -176,6 +217,10 @@ class EvaluationSystem(models.Model):
 
 
 class Subject(models.Model):
+    class Meta:
+        verbose_name = "Предмет"
+        verbose_name_plural = "Предмети"
+
     name = models.CharField(max_length=45, verbose_name="Назва предмету")
     slug = models.SlugField(max_length=45, unique=True, verbose_name="Ідентифікатор")
     short_name = models.CharField(max_length=33, verbose_name="Скорочена назва предмету")
@@ -186,6 +231,10 @@ class Subject(models.Model):
 
 
 class GroupSubject(models.Model):
+    class Meta:
+        verbose_name = "Предмет групи"
+        verbose_name_plural = "Предмети груп"
+
     group = models.ForeignKey('Group', on_delete=models.CASCADE, verbose_name="Група")
     subject = models.ForeignKey('Subject', on_delete=models.CASCADE, verbose_name="Предмет")
     amount_of_hours = models.PositiveIntegerField(verbose_name="Кількість годин")
@@ -195,6 +244,10 @@ class GroupSubject(models.Model):
 
 
 class TeacherSubject(models.Model):
+    class Meta:
+        verbose_name = "Предмет викладача"
+        verbose_name_plural = "Предмети викладачів"
+
     teacher = models.ForeignKey("Teacher", on_delete=models.CASCADE, verbose_name="Викладач")
     group_subject = models.ForeignKey("GroupSubject", on_delete=models.CASCADE, verbose_name="Предмет")
     semester = models.PositiveIntegerField(verbose_name="Семестр")
@@ -224,6 +277,10 @@ class TeacherSubject(models.Model):
 
 
 class LessonType(models.Model):
+    class Meta:
+        verbose_name = "Тип пари"
+        verbose_name_plural = "Типи пар"
+
     name = models.CharField(max_length=25, verbose_name="Назва")
     slug = models.SlugField(max_length=25, unique=True, verbose_name="Ідентифікатор")
 
@@ -233,6 +290,8 @@ class LessonType(models.Model):
 
 class Lesson(models.Model):
     class Meta:
+        verbose_name = "Пара"
+        verbose_name_plural = "Пари"
         ordering = ['date']
 
     date = models.DateField(default=timezone.now, verbose_name="Дата")
@@ -252,11 +311,13 @@ class Lesson(models.Model):
 
 class StudentLesson(models.Model):
     class Meta:
+        verbose_name = "Пара студента"
+        verbose_name_plural = "Пари студентів"
         ordering = ['lesson__date']
 
     lesson = models.ForeignKey("Lesson", on_delete=models.CASCADE, verbose_name="Предмет")
     student = models.ForeignKey("Student", on_delete=models.CASCADE, verbose_name="Студент")
-    mark = models.CharField(max_length=3, null=True, verbose_name="Оцінка")
+    mark = models.CharField(max_length=5, null=True, verbose_name="Оцінка")
     date = models.DateField(auto_now_add=True, verbose_name="Дата")
     read_only = models.BooleanField(default=False)
 
@@ -265,6 +326,10 @@ class StudentLesson(models.Model):
 
 
 class Message(models.Model):
+    class Meta:
+        verbose_name = "Повідомлення"
+        verbose_name_plural = "Повідомлення"
+
     from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="from_user")
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
     time = models.DateTimeField(auto_now_add=True, verbose_name="Час")
@@ -276,10 +341,14 @@ class Message(models.Model):
 
 
 class Replacement(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    teacher_subject = models.ForeignKey(TeacherSubject, on_delete=models.CASCADE)
-    date_from = models.DateField(auto_now_add=True)
-    date_to = models.DateField()
+    class Meta:
+        verbose_name = "Заміна"
+        verbose_name_plural = "Заміни"
+
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name="Викладач на заміну")
+    teacher_subject = models.ForeignKey(TeacherSubject, on_delete=models.CASCADE, verbose_name="Предмет викладача")
+    date_from = models.DateField(auto_now_add=True, verbose_name="З")
+    date_to = models.DateField(verbose_name="До")
 
     def __str__(self):
         return f"{self.teacher} {str(self.teacher_subject.group_subject)}"

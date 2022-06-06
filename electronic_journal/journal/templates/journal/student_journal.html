@@ -1,5 +1,6 @@
 {% extends 'journal/base.html' %}
 {% load dict_filters %}
+{% load journal_tags %}
 {% block main %}
 
 <div class="filters">
@@ -46,7 +47,11 @@
                 <th class="journal__cell journal_header journal__cell_name">Студент</th>
                 {% for lesson in subject.lessons %}
                     <th class="journal__cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-                        <span class="journal__cell_month">{{ lesson.date | date:"d" }}</span>
+                        {% if lesson.type.slug in 'pidsumkova tematichna skorygovana-tema' %}
+                            <span class='journal__cell_month'>{{ lesson.type.name | first_value }}</span>
+                        {% else %}
+                            <span class='journal__cell_month'>{{ lesson.date | date:"d" }}</span>
+                        {% endif %}
                     </th>
                 {% endfor %}
             </tr>
@@ -107,6 +112,12 @@ $(document).ready(function(){
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
+                allow_types = ['pidsumkova', 'tematichna', 'skorygovana-tema']
+                if (allow_types.includes(responce.slug_type)) {
+                    $('#lesson_info_type').parent().hide();
+                } else {
+                    $('#lesson_info_type').parent().show();
+                }
                 $('#lesson_info_teacher').html(responce.teacher);
                 $('#lesson_info_subject').html(responce.subject);
                 $('#lesson_info_last_update').html(responce.last_update);

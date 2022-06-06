@@ -47,13 +47,17 @@
                     <li class="elements_menu__list_item elements-menu__list_item2">
                         <a class="elements_menu__list_item_link" href="{% url 'messages' %}">Повідомлення</a>
                     </li>
-                    {% if user.role == "Teacher" %}
+                    {% if user.role.name == "Викладач" %}
                         <li class="elements_menu__list_item elements-menu__list_item3">
                             <a class="elements_menu__list_item_link" href="{% url 'teacher_journal_list' user.teacher.pk %}">Журнали</a>
                         </li>
-                    {% elif user.role == "Student" %}
+                    {% elif user.role.name == "Студент" %}
                         <li class="elements_menu__list_item elements-menu__list_item3">
                             <a class="elements_menu__list_item_link" href="{% url 'student_journal' user.student.pk %}">Журнали</a>
+                        </li>
+                    {% elif user.is_admin %}
+                        <li class="elements_menu__list_item elements-menu__list_item3">
+                            <a class="elements_menu__list_item_link" href="{% url 'register'%}">Зареєструвати користувача</a>
                         </li>
                     {% endif %}
                     <li class="elements_menu__list_item elements-menu__list_item4">

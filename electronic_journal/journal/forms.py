@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserCreationForm, AuthenticationForm
 
-from .models import Lesson, LessonType, TeacherSubject, Subject, EvaluationSystem, Group, Teacher
+from .models import *
 
 User = get_user_model()
 
@@ -106,8 +106,10 @@ class MyUserChangeForm(forms.ModelForm):
 
 
 class UserAdminCreationForm(forms.ModelForm):
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    role = forms.ModelChoiceField(label="Роль у системі", queryset=Role.objects.all().exclude(name="Адмін"),
+                                  widget=forms.Select)
+    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Підтвердження паролю', widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -118,7 +120,7 @@ class UserAdminCreationForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("Паролі не зходяться")
         return password2
 
     def save(self, commit=True):
@@ -145,9 +147,7 @@ class UserAdminChangeForm(forms.ModelForm):
 
 
 class RegisterUserForm(UserCreationForm):
-    CHOICES = (('Student', 'Студент'), ('Teacher', 'Викладач'), )
-    choices = forms.ChoiceField(label="Роль", widget=forms.Select(attrs={'class': 'form-input'}),
-                                choices=CHOICES)
+    role = forms.ModelChoiceField(label="Роль у системі", queryset=Role.objects.all().exclude(name="Адмін"))
     name = forms.CharField(label="Ім'я", widget=forms.TextInput(attrs={'class': 'form-input'}))
     surname = forms.CharField(label="Призвіще", widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={'class': 'form-input'}))
@@ -156,7 +156,7 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('choices', 'email', 'name', 'surname', 'password1', 'password2')
+        fields = ('role', 'email', 'name', 'surname', 'password1', 'password2')
 
 
 class LoginUserForm(AuthenticationForm):

@@ -97,7 +97,11 @@
                 <th class="journal__cell journal_header journal__cell_name">Студент</th>
                 {% for lesson in lessons %}
                     <th class="journal__cell journal_header lesson_date" id="lesson{{ lesson.pk }}" data-lesson-pk="{{ lesson.pk }}" style="position: relative;">
-                        <span class='journal__cell_month'>{{ lesson.date | date:"d" }}</span>
+                        {% if lesson.type.slug in 'pidsumkova tematichna skorygovana-tema' %}
+                            <span class='journal__cell_month'>{{ lesson.type.name | first_value }}</span>
+                        {% else %}
+                            <span class='journal__cell_month'>{{ lesson.date | date:"d" }}</span>
+                        {% endif %}
                     </th>
                 {% endfor %}
             </tr>
@@ -146,7 +150,7 @@
         <input type="submit" name="submit" value="Підтвердити зміни">
     </form>
 
-    <button class="showDeleteForm" type="submit" name="delete">Видалити урок</button>
+    <button class="showDeleteForm" type="submit" name="delete">Видалити пару</button>
 
     <div class="confirmation" style="color: #212121;">
         <div class="close"></div>
@@ -278,6 +282,12 @@ $(document).ready(function(){
                 lesson_pk: lesson_pk,
             },
             success: function(responce) {
+                allow_types = ['pidsumkova', 'tematichna', 'skorygovana-tema']
+                if (allow_types.includes(responce.type)) {
+                    $('#lesson_update input[name="date"]').parent().hide();
+                } else {
+                    $('#lesson_update input[name="date"]').parent().show();
+                }
                 $('#lesson_update input[name="date"]').val(responce.date);
                 $('#lesson_update input[name="topic"]').val(responce.topic);
                 $('#lesson_update input[name="homework"]').val(responce.homework);

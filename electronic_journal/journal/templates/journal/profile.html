@@ -61,13 +61,15 @@
                 Email: {{ cur_user.email }}
             </li>
             <li class="profile__additional_list_item">
-                Роль у системі: {% if cur_user.role == "Teacher"%}Викладач{%elif cur_user.role == "Student"%}Студент{%else%}Щось не зрозуміле{% endif %}
+                Роль у системі: {{ cur_user.role }}
             </li>
-            {% if cur_user.role == "Teacher" %}
+            {% if cur_user.role.name == "Викладач" %}
+                {% if cur_user.teacher.group %}
                 <li class="profile__additional_list_item">
                     Куратор групи - 
                         <a class="profile__additional_list_item_link" href="{{ cur_user.teacher.group.get_absolute_url }}">{{ cur_user.teacher.group }}</a></li>
                 </li>
+                {% endif %}
                 <li class="profile__additional_list_item">
                     <ol class="profile__additional_list_item_sublist">Предмети, які викладає:
                         {% for subject in subjects %}
@@ -75,7 +77,7 @@
                         {% endfor %}
                     </ol>
                 </li>             
-            {% elif cur_user.role == "Student" %}
+            {% elif cur_user.role.name == "Студент" %}
                 <li class="profile__additional_list_item">
                     Група - 
                         <a class="profile__additional_list_item_link" href="{{ cur_user.student.group.get_absolute_url }}">{{ cur_user.student.group }}</a>

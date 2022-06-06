@@ -1,8 +1,15 @@
 {% extends 'journal/base.html' %}
+{% block head %}
+<style>
+    .form-label {
+        margin-right: 20px;
+    }
+</style>
+{% endblock %}
 
 {% block main %}
 
-<h2>New User</h2>
+<h2>Додати людину</h2>
 
 <div>
     <form id="register-form" method="POST">
@@ -15,7 +22,7 @@
 
         <div id="additional-elements"></div>
 
-        <button type="submit">Регистрация</button>
+        <button type="submit">Зареєструвати</button>
     </form>
 </div>
 
@@ -26,14 +33,20 @@
 <script>
     const form = document.querySelector('#register-form');
     const additional = document.querySelector('#additional-elements')
-    const selected = document.querySelector('#id_choices');
+    const selected = document.querySelector('#id_role');
 
     function student_additional() {
         additional.innerHTML = `
-            <p><label class="form-label" for="id_sb">group </label>
+            <p><label class="form-label" for="id_groups">Група</label>
             <select name="groups" class="form-input" id="id_groups">
                 {% for group in groups %}
                 <option value="{{ group.pk }}">{{ group.name }} </option>
+                {% endfor %}
+            </select>
+            <p><label class="form-label" for="id_study_forms">Форма навчання</label>
+            <select name="study_forms" class="form-input" id="id_study_forms">
+                {% for study_form in study_forms %}
+                <option value="{{ study_form.pk }}">{{ study_form.name }} </option>
                 {% endfor %}
             </select>
         `;
@@ -46,9 +59,9 @@
     }
 
     function change_additional() {
-        if (selected.value == "Student") {
+        if (selected.value == "1") {
             student_additional();
-        } else if (selected.value == "Teacher") {
+        } else if (selected.value == "2") {
             teacher_additional();
         }
     }

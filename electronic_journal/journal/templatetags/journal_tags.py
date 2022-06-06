@@ -28,3 +28,8 @@ def journal_student_pk(value):
 @register.filter(name='get_user_pk')
 def journal_student_as_user_pk(value):
     return value[1].user.pk
+
+
+@register.filter(name='first_value')
+def first_value(value):
+    return value[0]

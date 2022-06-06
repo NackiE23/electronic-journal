@@ -99,6 +99,34 @@ body {
   font-weight: bold;
 }
 
+.lekciya {
+  background-color: #e8f6ee;
+}
+
+.zalik, .ekzamen {
+  background-color: #a84343b3;
+}
+
+.praktichna {
+  background-color: #ece366b3;
+}
+
+.laboratorna {
+  background-color: #ebde49b3;
+}
+
+.pidsumkova {
+  background-color: #75bbd6b3;
+}
+
+.tematichna {
+  background-color: #ece8d1;
+}
+
+.skorygovana-tema {
+  background-color: #d6d2b8;
+}
+
 input[type=submit], .customize_input, button, input, select {
   margin: 5px auto 0 auto;
   padding: 10px 15px;
@@ -400,30 +428,6 @@ header .elements_menu__list_item:hover {
   padding: 10px 0;
   margin-bottom: 10px;
   text-align: center;
-}
-
-.lekciya {
-  background-color: #e8f6ee;
-}
-
-.pidsumkova {
-  background-color: #a84343b3;
-}
-
-.kontrolna {
-  background-color: #75bbd6b3;
-}
-
-.praktichna {
-  background-color: #ece366b3;
-}
-
-.laboratorna {
-  background-color: #ebde49b3;
-}
-
-.samostijna {
-  background-color: #6b69ddb3;
 }
 
 .journal_header:before {
